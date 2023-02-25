@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<h3 class="title" style="text-align: center;">Pending File Upload</h3>
+<!-- <div class="box"> -->
+    <div id="" class="container tab-pane active"><br>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="notification is-danger">
+                {{ messages[0] }}<br> Go to <a href="{{ url_for('auth.login') }}">login page</a>.
+            </div>
+        {% endif %}
+    {% endwith %}
+
+                <form method="POST" action="/pending_upload" enctype="multipart/form-data">
+                    <input type="file" class="custom-file-input" id="customFile" name="file">
+                    <label class="custom-file-label" for="customFile">Choose file</label>
+                    <br>
+                    <br>
+                    <button type="submit" class="btn btn-sm btn-secondary">Upload file</button>
+                </form>
+            </div>
+           
+{% endblock %}

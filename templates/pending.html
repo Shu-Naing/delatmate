@@ -1,0 +1,260 @@
+{% extends "base.html" %}
+{% block content %}
+<h3 class="title" style="text-align: center;">Pending</h3>
+<!-- <div class="box"> -->
+    <div id="" class="container tab-pane active"><br>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="notification is-danger">
+                {{ messages[0] }}<br> Go to <a href="{{ url_for('auth.login') }}">login page</a>.
+            </div>
+        {% endif %}
+    {% endwith %}
+
+                <!-- <form method="POST" action="/pending_upload" enctype="multipart/form-data">
+                    <input type="file" class="custom-file-input" id="customFile" name="file">
+                    <label class="custom-file-label" for="customFile">Choose file</label>
+                    <br>
+                    <br>
+                    <button type="submit" class="btn btn-sm btn-secondary">Upload file</button>
+                </form> -->
+                <a href="{{ url_for('main.pendingfileupload') }}" type="submit">+ New Pending List</a>
+            </div>
+            <div class="container">
+              <div class="form-group row">
+                <form action="/searchpending" method="POST" enctype="multipart/form-data">
+                  <div class="row">
+                    <div class="col-md-3">
+                      <label for="start">PO</label>
+                      <input type="text" class="form-control mt-3" id="po" placeholder="PO Number" name="po">
+                    </div>
+                    <div class="col-md-3">
+                      <label for="start">Style</label>
+                  <input type="name" class="form-control mt-3" id="style" placeholder="Style" name="style">
+                    </div>
+                    <div class="col-md-3">
+                      <label for="start">Buyer</label>
+                  <input type="name" class="form-control mt-3" id="org_buyer" placeholder="Buyer" name="org_buyer">
+                    </div>
+                    <div class="col-md-3">
+                      <label for="start">Color</label>
+                  <input type="name" class="form-control mt-3" id="color" placeholder="Color" name="color">
+                    </div>
+                    <div class="col-md-3">
+                      <label for="start">Group</label>
+                  <input type="name" class="form-control mt-3" id="gp_name" placeholder="Group" name="gp_name">
+                    </div>
+                    <br>
+                    <div class="col-md-3">
+                      <label for="start">Order Date</label>
+                  <div class="col-xs-2">
+                  <input type="date" id="order_date" class="form-control" name="order_date" min="2000-01-02"><br><br>  
+                  </div>
+                    </div>
+                    <div class="col-md-3">
+                      <label for="start">Delivery Date</label>
+                      <div class="col-xs-2">
+                      <input type="date" id="ext_dely" class="form-control" name="ext_dely" min="2000-01-02"><br><br>  
+                      </div>
+                    <button type="submit" class="btn btn-secondary">Search</button>
+                    </div>
+                  </div>
+                </form>
+                <form action="/deletePending" method="POST">
+                  <div class="row">
+                    <div class="col-md-3">
+                      <label for="start_date">Start date:</label>
+                  <input type="date" id="start_date" name="start_date" class="form-control" required>
+                    </div>
+                    <div class="col-md-3">
+                      <label for="end_date">End date:</label>
+                  <input type="date" id="end_date" name="end_date" class="form-control" required>
+                  <br>
+                  <input type="submit" class="btn btn-secondary" value="Delete">
+                    </div>
+                    
+                  </div>
+                </form>
+              </div>
+            </div>
+            <br>
+            <div class="table-responsive">
+                <table class="table table-bordered" id="myTable">
+                    <thead>
+                      <tr>
+                        <th>EX - FTY ( DELY)</th>
+                        <th>MCN ( D/C )</th>
+                        <th>PO#</th>
+                        <th>MYANMAR</th>
+                        <th>Ship To</th>
+                        <th>LABEL</th>
+                        <th>Linked Store</th>
+                        <th>DES</th>
+                        <th>GROUP NAME</th>
+                        <th>Style#</th>
+                        <th>Buyer#</th>
+                        <th>COLOUR</th>
+                        <th>QTY</th>
+                        <th>Vessel</th>
+                        <th>Factory Name</th>
+                        <th>DB/GB Pkg Code</th>
+                        <th>SDN PO</th>
+                        <th>Customer Po#</th>
+                        <th>UPC Number</th>
+                        <th>Linked SO Num</th>
+                        <th>Ref.Number</th>
+                        <th>Material Lot No:</th>
+                        <th>Season</th>
+                        <th>Buyer</th>
+                        <th>ORDER DATE</th>
+                        <th>KZM ID</th>
+                        <th>Remark</th>
+                        <th>ShpgJob</th>
+                        <th>xFty Date</th>
+                        <th>Edit</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for row in all_data %}
+                      <tr>
+                        <td>{{row.ext_dely}}</td>
+                        <td>{{row.mcn}}</td>
+                        <td>{{row.po}}</td>
+                        <td>{{row.myanmar}}</td>
+                        <td>{{row.ship_to}}</td>
+                        <td>{{row.label}}</td>
+                        <td>{{row.linked_store}}</td>
+                        <td>{{row.des}}</td>
+                        <td>{{row.gp_name}}</td>
+                        <td>{{row.style}}</td>
+                        <td>{{row.org_buyer}}</td>
+                        <td>{{row.color}}</td>
+                        <td>{{row.qty}}</td>
+                        <td>{{row.vessel_date}}</td>
+                        <td>{{row.factory}}</td>
+                        <td>{{row.db_gb_code}}</td>
+                        <td>{{row.sdn_po}}</td>
+                        <td>{{row.customer_po}}</td>
+                        <td>{{row.upc_no}}</td>
+                        <td>{{row.linked_so_no}}</td>
+                        <td>{{row.ref_no}}</td>
+                        <td>{{row.material_log_no}}</td>
+                        <td>{{row.season}}</td>
+                        <td>{{row.byer_txt}}</td>
+                        <td>{{row.order_date}}</td>
+                        <td>{{row.kmz_id}}</td>
+                        <td>{{row.remark}}</td>
+                        <td>{{row.shpg_job}}</td>
+                        <td>{{row.xfty_date}}</td>
+                        <td>
+                        <a href="/pendingUpdate"  class="btn btn-primary" value="{{row.id}}" data-bs-toggle="modal" data-bs-target="#myModal{{row.id}}">Edit</a>
+                        </td>
+
+                        <!-- <td>{{row.remark}}</td> -->
+                        <!-- <td>{{row.status}}</td> -->
+                      </tr>
+                      <div class="modal fade" id="myModal{{row.id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+                      
+                            <!-- Modal Header -->
+                            <div class="modal-header">
+                              <h4 class="modal-title">Update Informations</h4>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                      
+                            <!-- Modal body -->
+                            <div class="modal-body">
+                                <form action="{{url_for('auth.pendingUpdate')}}" method="POST">
+                                  <input type="hidden"  name="id" value="{{row.id}}">
+                                  <h5>MCN</h5>
+                                  <input type="text" class="form-control mt-3" name="mcn"  value="{{row.mcn}}">
+                                  <br>
+                                  <!-- <h5>PRODUCT NAME</h5>
+                                  <input type="text" class="form-control mt-3"  value="{{row.product_name}}">
+                                  <br> -->
+                                  <h5>Ship To</h5>
+                                  <input type="text" class="form-control mt-3" name="ship_to" value="{{row.ship_to}}">
+                                  <br>
+                                  <h5>LABEL</h5>
+                                  <input type="text" class="form-control mt-3" name="label" value="{{row.label}}">
+                                  <br>
+                                  <h5>Linked Store</h5>
+                                  <input type="text" class="form-control mt-3" name="linked_store" value="{{row.linked_store}}">
+                                  <br>
+                                  <h5>DES</h5>
+                                  <input type="text" class="form-control mt-3" name="des" value="{{row.des}}">
+                                  <br>
+                                  <h5>QTY</h5>
+                                  <input type="text" class="form-control mt-3" name="qty" value="{{row.qty}}">
+                                  <br>
+                                  <h5>Factory</h5>
+                                  <input type="text" class="form-control mt-3" name="factory" value="{{row.factory}}">
+                                  <br>
+                                  <h5>DB/GB Pkg Code</h5>
+                                  <input type="text" class="form-control mt-3" name="db_gb_code" value="{{row.db_gb_code}}">
+                                  <br>
+                                  <h5>UPC Number</h5>
+                                  <input type="text" class="form-control mt-3" name="upc_no" value="{{row.upc_no}}">
+                                  <br>
+                                  <h5>Linked SO Num</h5>
+                                  <input type="text" class="form-control mt-3" name="linked_so_no" value="{{row.linked_so_no}}">
+                                  <br>
+                                  <h5>Ref.Number</h5>
+                                  <input type="text" class="form-control mt-3" name="ref_no" value="{{row.ref_no}}">
+                                  <br>
+                                  <h5>Material Lot No:</h5>
+                                  <input type="text" class="form-control mt-3" name="material_log_no" value="{{row.material_log_no}}">
+                                  <br>
+                                  <h5>Season</h5>
+                                  <input type="text" class="form-control mt-3" name="season" value="{{row.season}}">
+                                  <br>
+                                  <h5>KZM ID	</h5>
+                                  <input type="text" class="form-control mt-3" name="kmz_id" value="{{row.kmz_id}}">
+                                  <br>
+                                  <h5>Remark</h5>
+                                  <input type="text" class="form-control mt-3" name="remark" value="{{row.remark}}">
+                                  <br>
+                                  <h5>ShpgJob</h5>
+                                  <input type="text" class="form-control mt-3" name="shpg_job" value="{{row.shpg_job}}">
+                                  <br>
+                                  <button class="btn btn-primary" type="submit">Update</button>
+                                </form>
+                      
+                            <!-- Modal footer -->
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                            </div>
+                      
+                        </div>
+                        </div>
+                      </div>
+                      
+                    {% endfor %}
+                    
+                    </tbody>
+                </table>
+                <ul class="pagination">
+                  {% if all_data.has_prev %}
+                   <li class="page-item"><a class="page-link" href="{{ url_for('auth.pendinglist', page_num=all_data.prev_num) }}">Previous</a></li>
+                  {% else %}
+                   <li class="page-item disabled"><span class="page-link">Previous</span>
+                  {% endif %}
+                   </li>
+                     
+                  {% for page in all_data.iter_pages(left_edge=3, right_edge=3) %}
+                  {% if page %}
+                   <li class="page-item"><a class="page-link" href="{{ url_for('auth.pendinglist', page_num=page) }}">{{ page }}</a></li>
+                  {% else %}
+                   <li class="page-item disabled" id="example_ellipsis"><a href="#" class="page-link">…</a></li> 
+                  {% endif %}
+                  {% endfor %}
+                   
+                  {% if all_data.has_next %}
+                   <li class="page-item"><a class="page-link" href="{{ url_for('auth.pendinglist', page_num=all_data.next_num) }}">Next</a></li>
+                  {% else %}
+                   <li class="page-item disabled"><span class="page-link">Next</span>
+                  {% endif %}
+                   </ul>
+              </div>
+{% endblock %}

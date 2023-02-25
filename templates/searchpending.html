@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% block content %}
+<h3 class="title" style="text-align: center;">Pending</h3>
+<!-- <div class="box"> -->
+    <div id="" class="container tab-pane active"><br>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="notification is-danger">
+                {{ messages[0] }}<br> Go to <a href="{{ url_for('auth.login') }}">login page</a>.
+            </div>
+        {% endif %}
+    {% endwith %}
+    
+            </div>
+            <br>
+            <div class="table-responsive">
+                <table class="table table-bordered" id="myTable">
+                    <thead>
+                      <tr>
+                        <th>EX - FTY ( DELY)</th>
+                        <th>MCN ( D/C )</th>
+                        <th>STYLE</th>
+                        <th>MYANMAR</th>
+                        <th>PO#</th>
+                        <th>Ship To</th>
+                        <th>LABEL</th>
+                        <th>Linked Store</th>
+                        <th>DES</th>
+                        <th>Style</th>
+                        <th>Buyer</th>
+                        <th>COLOUR</th>
+                        <th>QTY</th>
+                        <th>Vessel</th>
+                        <th>Factory</th>
+                        <th>DB/GB Pkg Code</th>
+                        <th>SDN PO</th>
+                        <th>Customer Po</th>
+                        <th>UPC Number</th>
+                        <th>Linked SO Num</th>
+                        <th>Ref.Number</th>
+                        <th>Material Lot No:</th>
+                        <th>Season</th>
+                        <th>Buyer</th>
+                        <th>ORDER DATE</th>
+                        <th>KZM ID</th>
+                        <th>Remark</th>
+                        <th>ShpgJob</th>
+                        <th>xFty Date</th>
+                        <th>Edit</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for row in all_data %}
+                      <tr>
+                        <td>{{row.ext_dely}}</td>
+                        <td>{{row.mcn}}</td>
+                        <td>{{row.po}}</td>
+                        <td>{{row.myanmar}}</td>
+                        <td>{{row.ship_to}}</td>
+                        <td>{{row.label}}</td>
+                        <td>{{row.linked_store}}</td>
+                        <td>{{row.des}}</td>
+                        <td>{{row.gp_name}}</td>
+                        <td>{{row.style}}</td>
+                        <td>{{row.org_buyer}}</td>
+                        <td>{{row.color}}</td>
+                        <td>{{row.qty}}</td>
+                        <td>{{row.vessel_date}}</td>
+                        <td>{{row.factory}}</td>
+                        <td>{{row.db_gb_code}}</td>
+                        <td>{{row.sdn_po}}</td>
+                        <td>{{row.customer_po}}</td>
+                        <td>{{row.upc_no}}</td>
+                        <td>{{row.linked_so_no}}</td>
+                        <td>{{row.ref_no}}</td>
+                        <td>{{row.material_log_no}}</td>
+                        <td>{{row.season}}</td>
+                        <td>{{row.byer_txt}}</td>
+                        <td>{{row.order_date}}</td>
+                        <td>{{row.kmz_id}}</td>
+                        <td>{{row.remark}}</td>
+                        <td>{{row.shpg_job}}</td>
+                        <td>{{row.xfty_date}}</td>
+                        <td>
+                        <a href="/erpUpdate"  class="btn btn-primary" value="{{row.id}}" data-bs-toggle="modal" data-bs-target="#myModal{{row.id}}">Edit</a>
+                        </td>
+
+                        <!-- <td>{{row.remark}}</td> -->
+                        <!-- <td>{{row.status}}</td> -->
+                      </tr>
+                      <div class="modal fade" id="myModal{{row.id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+                      
+                            <!-- Modal Header -->
+                            <div class="modal-header">
+                              <h4 class="modal-title">Update Informations</h4>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                      
+                            <!-- Modal body -->
+                            <div class="modal-body">
+                                <form action="{{url_for('auth.erpUpdate')}}" method="POST">
+                                    <input type="text" class="form-control mt-3"  value="{{row.buyer_version}}">
+                                    <input type="text" class="form-control mt-3"  value="{{row.product_name}}">
+                                    <input type="text" class="form-control mt-3"  value="{{row.main_color}}">
+                                    <input type="text" class="form-control mt-3"  value="{{row.season}}">
+                                    <input type="text" class="form-control mt-3"  value="{{row.category}}">
+                                    <input type="text" class="form-control mt-3"  value="{{row.material_classification}}">
+                                    <input type="text" class="form-control mt-3"  value="{{row.material_code}}">
+                                    <input type="text" class="form-control mt-3"  value="{{row.material}}">
+                                    <input type="text" class="form-control mt-3"  value="{{row.material_chinese}}">
+                                    <input type="text" class="form-control mt-3"  value="{{row.size}}">
+                                    <input type="text" class="form-control mt-3"  value="{{row.org_consume}}">
+                                    <input type="text" class="form-control mt-3"  value="{{row.unit}}">
+                                    <input type="text" class="form-control mt-3"  value="{{row.loss}}">
+                                    <input type="text" class="form-control mt-3"  value="{{row.consume_point}}">
+                                    <input type="text" class="form-control mt-3"  value="{{row.order_qty}}">
+                                    <input type="text" class="form-control mt-3"  value="{{row.consume}}">
+                                    <input type="text" class="form-control mt-3"  value="{{row.gp}}">      
+                                  <button class="btn btn-primary" type="submit">Update</button>
+                                </form>
+                      
+                            <!-- Modal footer -->
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                            </div>
+                      
+                        </div>
+                        </div>
+                      </div>
+                      
+                    {% endfor %}
+                    
+                    </tbody>
+                </table>
+              </div>
+             
+{% endblock %}

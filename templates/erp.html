@@ -1,0 +1,219 @@
+{% extends "base.html" %}
+{% block content %}
+<h3 class="title" style="text-align: center;">ERP</h3>
+<!-- <div class="box"> -->
+    <div id="" class="container tab-pane active"><br>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="notification is-danger">
+                {{ messages[0] }}<br> Go to <a href="{{ url_for('auth.login') }}">login page</a>.
+            </div>
+        {% endif %}
+    {% endwith %}
+    <script>
+      $(".custom-file-input").on("change", function() {
+        var fileName = $(this).val().split("\\").pop();
+        $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+      });
+  </script>
+
+                <!-- <form method="POST" action="/erpupload" enctype="multipart/form-data">
+                    <input type="file" class="custom-file-input" id="customFile" name="file">
+                    <label class="custom-file-label" for="customFile">Choose file</label>-->
+                     
+                    <a href="{{ url_for('main.erpfileupload') }}" type="submit">+ New ERP List</a>
+            </div>
+            <div class="container">
+              <form action="/searcherp" method="POST" enctype="multipart/form-data">
+                <div class="row">
+                  <div class="col-md-3">
+                    <input type="text" class="form-control mt-3" id="po" placeholder="PO Number" name="po">
+                  </div>
+                  <div class="col-md-3">
+                    <input type="name" class="form-control mt-3" id="style" placeholder="Style" name="style">
+                  </div>
+                  <div class="col-md-3">
+                    <input type="name" class="form-control mt-3" id="buyer" placeholder="Buyer" name="buyer">
+                  </div>
+                  <div class="col-md-3">
+                    <input type="name" class="form-control mt-3" id="color" placeholder="Color" name="color">   
+                  </div>
+                  <div class="col-md-3">
+                    <input type="name" class="form-control mt-3" id="gp" placeholder="Group" name="gp">  
+                  </div>
+                </div>
+                <br>
+                <div class="col text-center">
+                  <button type="submit" class="btn btn-secondary text-center">Search</button>
+                </div>
+                <br>
+              </form>
+            </div>
+            <br>
+            <div class="table-responsive">
+                <table class="table table-bordered" id="myTable">
+                    <thead>
+                      <tr>
+                        <th>PO</th>
+                        <th>STYLE</th>
+                        <th>BUYER VERSION</th>
+                        <th>BUYER</th>
+                        <th>PRODUCT NAME</th>
+                        <th>MAIN COLOR</th>
+                        <th>SEASON</th>
+                        <th>VESSEL DATE</th>
+                        <th>CATEGORY</th>
+                        <th>MATERIAL CLASSIFICATION</th>
+                        <th>MATERIAL CODE</th>
+                        <th>MATERIAL </th>
+                        <th>MATERIAL NAME IN CHINESE</th>
+                        <th>SIZE</th>
+                        <th>COLOUR</th>
+                        <th>ORIGINAL CONSUME</th>
+                        <th>UNIT</th>
+                        <th>LOSS</th>
+                        <th>CONSUME POINT</th>
+                        <th>ORDER QTY</th>
+                        <th>CONSUME</th>
+                        <th>GROUP</th>
+                        <th>Edit</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for row in all_data %}
+                      <tr>
+                        <td>{{row.po}}</td>
+                        <td>{{row.style}}</td>
+                        <td>{{row.buyer_version}}</td>
+                        <td>{{row.buyer}}</td>
+                        <td>{{row.product_name}}</td>
+                        <td>{{row.main_color}}</td>
+                        <td>{{row.season}}</td>
+                        <td>{{row.vessel_date}}</td>
+                        <td>{{row.category}}</td>
+                        <td>{{row.material_classification}}</td>
+                        <td>{{row.material_code}}</td>
+                        <td>{{row.material}}</td>
+                        <td>{{row.material_chinese}}</td>
+                        <td>{{row.size}}</td>
+                        <td>{{row.color}}</td>
+                        <td>{{row.org_consume}}</td>
+                        <td>{{row.unit}}</td>
+                        <td>{{row.loss}}</td>
+                        <td>{{row.consume_point}}</td>
+                        <td>{{row.order_qty}}</td>
+                        <td>{{row.consume}}</td>
+                        <td>{{row.gp}}</td>
+                        <td>
+                        <a href="/erpUpdate"  class="btn btn-primary" value="{{row.id}}" data-bs-toggle="modal" data-bs-target="#myModal{{row.id}}">Edit</a>
+                        </td>
+                        <!-- <td>{{row.remark}}</td> -->
+                        <!-- <td>{{row.status}}</td> -->
+                      </tr>
+                      <div class="modal fade" id="myModal{{row.id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+                      
+                            <!-- Modal Header -->
+                            <div class="modal-header">
+                              <h4 class="modal-title">Update Informations</h4>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                      
+                            <!-- Modal body -->
+                            <div class="modal-body">
+                                <form action="{{url_for('auth.erpUpdate')}}" method="POST">
+                                    <input type="hidden"  name="id" value="{{row.id}}">
+                                    <h5>BUYER VERSION</h5>
+                                    <input type="text" class="form-control mt-3" name="buyer_version"  value="{{row.buyer_version}}">
+                                    <br>
+                                    <h5>PRODUCT NAME</h5>
+                                    <input type="text" class="form-control mt-3" name="product_name"  value="{{row.product_name}}">
+                                    <br>
+                                    <h5>MAIN COLOR</h5>
+                                    <input type="text" class="form-control mt-3" name="main_color"  value="{{row.main_color}}">
+                                    <br>
+                                    <h5>SEASON</h5>
+                                    <input type="text" class="form-control mt-3" name="season"  value="{{row.season}}">
+                                    <br>
+                                    <h5>CATEGORY</h5>
+                                    <input type="text" class="form-control mt-3" name="category"  value="{{row.category}}">
+                                    <br>
+                                    <h5>MATERIAL CLASSIFICATION</h5>
+                                    <input type="text" class="form-control mt-3" name="material_classification"  value="{{row.material_classification}}">
+                                    <br>
+                                    <h5>MATERIAL CODE</h5>
+                                    <input type="text" class="form-control mt-3" name="material_code"  value="{{row.material_code}}">
+                                    <br>
+                                    <h5>MATERIAL </h5>
+                                    <input type="text" class="form-control mt-3" name="material"  value="{{row.material}}">
+                                    <br>
+                                    <h5>MATERIAL NAME IN CHINESE</h5>
+                                    <input type="text" class="form-control mt-3" name="material_chinese"  value="{{row.material_chinese}}">
+                                    <br>
+                                    <h5>SIZE</h5>
+                                    <input type="text" class="form-control mt-3" name="size"  value="{{row.size}}">
+                                    <br>
+                                    <h5>ORIGINAL CONSUME</h5>
+                                    <input type="text" class="form-control mt-3" name="org_consume"  value="{{row.org_consume}}">
+                                    <br>
+                                    <h5>UNIT</h5>
+                                    <input type="text" class="form-control mt-3" name="unit"  value="{{row.unit}}">
+                                    <br>
+                                    <h5>LOSS</h5>
+                                    <input type="text" class="form-control mt-3" name="loss"  value="{{row.loss}}">
+                                    <br>
+                                    <h5>CONSUME POINT</h5>
+                                    <input type="text" class="form-control mt-3" name="consume_point"  value="{{row.consume_point}}">
+                                    <br>
+                                    <h5>ORDER QTY</h5>
+                                    <input type="text" class="form-control mt-3" name="order_qty"  value="{{row.order_qty}}">
+                                    <br>
+                                    <h5>CONSUME</h5>
+                                    <input type="text" class="form-control mt-3" name="consume"  value="{{row.consume}}">
+                                    <br>
+                                  <button class="btn btn-primary" type="submit">Update</button>
+                                </form>
+                      
+                            <!-- Modal footer -->
+                            <br>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                            </div>
+                      
+                        </div>
+                        </div>
+                      </div>
+                      
+                    {% endfor %}
+                    
+                    </tbody>
+                </table>
+                <ul class="pagination">
+                  {% if all_data.has_prev %}
+                   <li class="page-item"><a class="page-link" href="{{ url_for('auth.erplist', page_num=all_data.prev_num) }}">Previous</a></li>
+                  {% else %}
+                   <li class="page-item disabled"><span class="page-link">Previous</span>
+                  {% endif %}
+                   </li>
+                     
+                  {% for page in all_data.iter_pages(left_edge=3, right_edge=3) %}
+                  {% if page %}
+                   <li class="page-item"><a class="page-link" href="{{ url_for('auth.erplist', page_num=page) }}">{{ page }}</a></li>
+                  {% else %}
+                   <li class="page-item disabled" id="example_ellipsis"><a href="#" class="page-link">…</a></li> 
+                  {% endif %}
+                  {% endfor %}
+                   
+                  {% if all_data.has_next %}
+                   <li class="page-item"><a class="page-link" href="{{ url_for('auth.erplist', page_num=all_data.next_num) }}">Next</a></li>
+                  {% else %}
+                   <li class="page-item disabled"><span class="page-link">Next</span>
+                  {% endif %}
+                   </ul>
+              </div>
+              <br>
+              <br>
+              <br>
+             
+{% endblock %}

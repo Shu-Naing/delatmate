@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="column is-4 is-offset-4">
+    <!-- <h3 class="title">User Infomations</h3> -->
+    <!-- <div class="box"> -->
+
+      <br>
+      <a href="{{ url_for('auth.signup') }}" type="submit">+ New Users</a>
+        <table class="table" >
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Role</th>
+                <th>Change Password</th>
+                <th>Edit User</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for row in all_data %}            
+            <tr>
+                <td>{{row.name}}</td>
+                <td>{{row.role}}</td>
+                <td>
+                <a href="/change_password"  class="btn btn-warning" value="{{row.id}}" data-bs-toggle="modal" data-bs-target="#myModal2{{row.id}}">Change Password</a>
+                </td>
+                <td>
+                  <a href="/updateEmp"  class="btn btn-primary" value="{{row.id}}" data-bs-toggle="modal" data-bs-target="#myModal{{row.id}}">Edit</a>
+                  </td>
+            </tr>
+            <div class="modal" id="myModal{{row.id}}">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+              
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                      <h4 class="modal-title">Update Informations</h4>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+              
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        <form action="{{url_for('auth.updateEmp')}}" method="POST">
+                            <div class="form-group">
+                                <label>Name:</label>
+                                <input type="hidden"  name="id" value="{{row.id}}">
+                                <input type="text" class="form-control" name="name" value="{{row.name}}" required>
+                               </div>
+                               <div class="form-group">
+                                <label>Email:</label>
+                                <input type="text" class="form-control" name="email" value="{{row.email}}" required>
+                               </div>
+                               <div class="form-group">
+                                <label>Phone:</label>
+                                <input type="text" class="form-control" name="phone" value="{{row.phone}}" required>
+                               </div>
+                               <div class="form-group">
+                                <label>Password:</label>
+                                <input type="text" class="form-control" name="password" required>
+                               </div>
+                               <div class="form-group">
+                                <button class="btn btn-primary" type="submit">Update</button>
+                               </div>
+                              </form>
+                              </div>
+                        </form>
+              
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                    </div>
+              
+                </div>
+                </div>
+              </div>
+
+              <div class="modal" id="myModal2{{row.id}}">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+              
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                      <h4 class="modal-title">Change Password</h4>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+              
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        <form action="{{url_for('auth.change_password')}}" method="POST">
+                            <div class="form-group">
+                                <label>Current Password:</label>
+                                <!-- <input type="hidden"  name="id" value="{{row.id}}"> -->
+                                <input type="password" class="form-control" name="current_password" required>
+                               </div>
+                               <div class="form-group">
+                                <label>New Password:</label>
+                                <input type="password" class="form-control" name="new_password" required>
+                               </div>
+                               <div class="form-group">
+                                <button class="btn btn-primary" type="submit">Update</button>
+                               </div>
+                              </form>
+                              </div>
+                        </form>
+              
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                    </div>
+              
+                </div>
+                </div>
+              </div>
+            {% endfor %}
+            </tbody>  
+          </table>
+          <ul class="pagination">
+            {% if all_data.has_prev %}
+             <li class="page-item"><a class="page-link" href="{{ url_for('auth.emplist', page_num=all_data.prev_num) }}">Previous</a></li>
+            {% else %}
+             <li class="page-item disabled"><span class="page-link">Previous</span>
+            {% endif %}
+             </li>
+               
+            {% for page in all_data.iter_pages(left_edge=3, right_edge=3) %}
+            {% if page %}
+             <li class="page-item"><a class="page-link" href="{{ url_for('auth.emplist', page_num=page) }}">{{ page }}</a></li>
+            {% else %}
+             <li class="page-item disabled" id="example_ellipsis"><a href="#" class="page-link">…</a></li> 
+            {% endif %}
+            {% endfor %}
+             
+            {% if all_data.has_next %}
+             <li class="page-item"><a class="page-link" href="{{ url_for('auth.emplist', page_num=all_data.next_num) }}">Next</a></li>
+            {% else %}
+             <li class="page-item disabled"><span class="page-link">Next</span>
+            {% endif %}
+             </ul>
+    </div>
+</div>
+{% endblock %}
+

@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block content %}
+<h3 class="title" style="text-align: center;">ERP</h3>
+<!-- <div class="box"> -->
+    <div id="" class="container tab-pane active"><br>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="notification is-danger">
+                {{ messages[0] }}<br> Go to <a href="{{ url_for('auth.login') }}">login page</a>.
+            </div>
+        {% endif %}
+    {% endwith %}
+    <script>
+      $(".custom-file-input").on("change", function() {
+        var fileName = $(this).val().split("\\").pop();
+        $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+      });
+  </script>
+            </div>
+            <br>
+            <div class="table-responsive">
+                <table class="table table-bordered" id="myTable">
+                    <thead>
+                      <tr>
+                        <th>PO</th>
+                        <th>STYLE</th>
+                        <th>BUYER VERSION</th>
+                        <th>BUYER</th>
+                        <th>PRODUCT NAME</th>
+                        <th>MAIN COLOR</th>
+                        <th>SEASON</th>
+                        <th>VESSEL DATE</th>
+                        <th>CATEGORY</th>
+                        <th>MATERIAL CLASSIFICATION</th>
+                        <th>MATERIAL CODE</th>
+                        <th>MATERIAL </th>
+                        <th>MATERIAL NAME IN CHINESE</th>
+                        <th>SIZE</th>
+                        <th>COLOUR</th>
+                        <th>ORIGINAL CONSUME</th>
+                        <th>UNIT</th>
+                        <th>LOSS</th>
+                        <th>CONSUME POINT</th>
+                        <th>ORDER QTY</th>
+                        <th>CONSUME</th>
+                        <th>GROUP</th>
+                        <th>Edit</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for row in all_data %}
+                      <tr>
+                        <td>{{row.po}}</td>
+                        <td>{{row.style}}</td>
+                        <td>{{row.buyer_version}}</td>
+                        <td>{{row.buyer}}</td>
+                        <td>{{row.product_name}}</td>
+                        <td>{{row.main_color}}</td>
+                        <td>{{row.season}}</td>
+                        <td>{{row.vessel_date}}</td>
+                        <td>{{row.category}}</td>
+                        <td>{{row.material_classification}}</td>
+                        <td>{{row.material_code}}</td>
+                        <td>{{row.material}}</td>
+                        <td>{{row.material_chinese}}</td>
+                        <td>{{row.size}}</td>
+                        <td>{{row.color}}</td>
+                        <td>{{row.org_consume}}</td>
+                        <td>{{row.unit}}</td>
+                        <td>{{row.loss}}</td>
+                        <td>{{row.consume_point}}</td>
+                        <td>{{row.order_qty}}</td>
+                        <td>{{row.consume}}</td>
+                        <td>{{row.gp}}</td>
+                        <td>
+                        </td>
+                      </tr>
+                      {% if page==employees.page %}
+       <li class="page-item active"><a class="page-link" href="{{ url_for('index', page=page) }}">{{ page }}</a></li>
+      {% else %}
+       <li class="page-item"><a class="page-link" href="{{ url_for('index', page=page) }}">{{ page }}</a></li>
+      {% endif %}
+                    {% endfor %}
+                    
+                    </tbody>
+                </table>
+              </div>
+             
+{% endblock %}

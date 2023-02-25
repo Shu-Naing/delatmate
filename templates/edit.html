@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="column is-4 is-offset-4">
+    <h3 class="title">Edit User Informations</h3>
+    <div class="box">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="notification is-danger">
+                    {{ messages[0] }}<br> Go to <a href="{{ url_for('auth.login') }}">login page</a>.
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <form action="/erpUpdate" method="POST" enctype="multipart/form-data">
+            <!-- <div class="field"> -->
+                <!-- <input class="form-control" type="hidden" name="id" value="{{all_data.id}}"> -->
+                <td><input class="form-control" type="hidden" value="{{all_data.id}}" id="id" name="id"></td>
+            
+
+            <!-- </div> -->
+            <div class="form-group">
+                <input type="name" class="form-control" id="po" placeholder="Enter Name" value="{{all_data.po}}" name="name" required>
+              </div>
+    
+            <button class="button is-block is-info is-large is-fullwidth">Update</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
