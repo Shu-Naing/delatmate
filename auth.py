@@ -106,7 +106,6 @@ def emplist(page_num):
         all_data = Mocdm_users.query.paginate(per_page=5, page=page_num, error_out=True)
         return render_template('employee.html',all_data = all_data)
 
-
 @auth.route("/erpupload", methods=['POST'])
 @login_required
 def erpupload():

@@ -40,7 +40,7 @@ class Mocdm_erp(UserMixin, db.Model):
     consume = db.Column(db.String(255))
     gp = db.Column(db.String(255))
     remark = db.Column(db.String(255))
-    status = db.Column(db.String(255))
+    status = db.Column(db.String(10))
     pending_buyer = db.Column(db.String(255))
     created_date = db.Column(db.DateTime, default=datetime.utcnow)
     updated_date = db.Column(db.DateTime, onupdate=datetime.utcnow)
