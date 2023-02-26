@@ -68,7 +68,7 @@ def change_password():
     return redirect(url_for('auth.emplist'))
 
 @auth.route('/signup', methods=['GET', 'POST'])
-# @login_required
+@login_required
 def signup():
     if request.method=='GET': 
         return render_template('signup.html')
