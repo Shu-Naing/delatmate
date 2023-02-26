@@ -9,9 +9,11 @@ class Mocdm_users(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True) 
     email = db.Column(db.String(100), unique=True)
     password = db.Column(db.String(255))
-    name = db.Column(db.String(1000))
-    phone = db.Column(db.String(1000))
-    role = db.Column(db.String(1000))
+    name = db.Column(db.String(255))
+    phone = db.Column(db.String(255))
+    role = db.Column(db.String(255))
+    created_date = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_date = db.Column(db.DateTime, onupdate=datetime.utcnow)
 
 class Mocdm_erp(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True) 
@@ -40,8 +42,8 @@ class Mocdm_erp(UserMixin, db.Model):
     remark = db.Column(db.String(255))
     status = db.Column(db.String(255))
     pending_buyer = db.Column(db.String(255))
-    created_date = db.Column(db.DateTime)
-    updated_date = db.Column(db.DateTime)
+    created_date = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_date = db.Column(db.DateTime, onupdate=datetime.utcnow)
 
 class Mocdm_pending(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True) 
@@ -75,8 +77,8 @@ class Mocdm_pending(UserMixin, db.Model):
     xfty_date = db.Column(db.DateTime)
     previous = db.Column(db.DateTime)
     myanmar = db.Column(db.String(255))
-    created_date = db.Column(db.DateTime)
-    updated_date = db.Column(db.DateTime)
+    created_date = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_date = db.Column(db.DateTime, onupdate=datetime.utcnow)
 
 class Mocdm_consumption(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True) 
@@ -88,8 +90,8 @@ class Mocdm_consumption(UserMixin, db.Model):
     factory_line = db.Column(db.String(255))
     reciever = db.Column(db.String(255))
     remark = db.Column(db.String(255))
-    created_date = db.Column(db.DateTime)
-    updated_date = db.Column(db.DateTime)
+    created_date = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_date = db.Column(db.DateTime, onupdate=datetime.utcnow)
 
 class Mocdm_schedule(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True) 
@@ -104,7 +106,5 @@ class Mocdm_schedule(UserMixin, db.Model):
     version = db.Column(db.String(255))
     image_path = db.Column(db.String(255))
     buyer = db.Column(db.String(255))
-
-class ErrorMessage(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    message = db.Column(db.String(255))
+    created_date = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_date = db.Column(db.DateTime, onupdate=datetime.utcnow)

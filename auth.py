@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, request, flash
 from flask import Flask, request
 from werkzeug.security import generate_password_hash, check_password_hash
-from models import Mocdm_users,Mocdm_erp,Mocdm_pending,Mocdm_consumption,Mocdm_schedule,ErrorMessage
+from models import Mocdm_users,Mocdm_erp,Mocdm_pending,Mocdm_consumption,Mocdm_schedule
 from os.path import join, dirname, realpath
 from flask import Flask, session
 from flask_login import login_user, logout_user, login_required, current_user
@@ -42,7 +42,6 @@ def login():
             return redirect(url_for('auth.login')) 
         login_user(user, remember=remember)
         return redirect(url_for('main.profile'))
-        # return render_template('signup.html')
 
 @auth.route('/logout') 
 @login_required
@@ -57,9 +56,7 @@ def change_password():
         current_password = request.form['current_password']
         new_password = request.form['new_password']
         
-        user = Mocdm_users.query.get(current_user.id)
-        print(user,"----------------------->")
-        
+        user = Mocdm_users.query.get(current_user.id)        
         if check_password_hash(user.password, current_password):
             hashed_password = generate_password_hash(new_password)
             user.password = hashed_password
@@ -71,7 +68,7 @@ def change_password():
     return redirect(url_for('auth.emplist'))
 
 @auth.route('/signup', methods=['GET', 'POST'])
-@login_required
+# @login_required
 def signup():
     if request.method=='GET': 
         return render_template('signup.html')
@@ -132,13 +129,7 @@ def erpupload():
 def erplist(page_num):
     if request.method=='GET':
         all_data = Mocdm_erp.query.paginate(per_page=5, page=page_num, error_out=True)
-        # all_data = Mocdm_erp.query.all().paginate(page=page, per_page=ROWS_PER_PAGE)
         return render_template('erp.html',all_data = all_data)
-
-# def save_error_to_db(error):
-#     error = Mocdm_error(error_message=e)
-#     db.session.merge(error)
-#     db.session.commit()
 
 @auth.route('/erpUpdate', methods=['GET', 'POST'])
 @login_required
@@ -163,15 +154,10 @@ def erpUpdate():
             all_data.consume = request.form['consume']
             db.session.commit()
     except SQLAlchemyError as e:
-        # error_message = "(pymysql.err.DataError) (1265, \"Data truncated for column 'buyer_version' at row 1\") [SQL: UPDATE mocdm_erp SET buyer_version=%(buyer_version)s WHERE mocdm_erp.id = %(mocdm_erp_id)s] [parameters: {'buyer_version': '33afds', 'mocdm_erp_id': 1}] (Background on this error at: http://sqlalche.me/e/14/9h9h)"
-        # error = ErrorMessage(message=error_message) 
-        # db.session.add(error)
-        # db.session.commit()
         current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         logging.basicConfig(filename= f'error_log.log', level=logging.ERROR)
         logging.error(str(e))
     return redirect(url_for('auth.erplist'))
-
 
 @auth.route('/searcherp', methods=['GET','POST'])
 @login_required
@@ -322,7 +308,6 @@ def searchorderlist():
         search7 = "%{}%".format(order_date)
         search8 = "%{}%".format(factory)
         search9 = "%{}%".format(label)
-        # all_data = Mocdm_pending.query.filter((Mocdm_pending.po.like(search1)),(Mocdm_pending.style.like(search2)),(Mocdm_pending.org_buyer.like(search3)),(Mocdm_pending.color.like(search4)),(Mocdm_pending.gp_name.like(search5)),(Mocdm_pending.ext_dely.like(search6)),(Mocdm_pending.order_date.like(search7))).all()
         all_data = db.session.query(
         Mocdm_erp.po,
         Mocdm_pending.label,
@@ -397,9 +382,7 @@ def searchcreport():
 @login_required
 def consumptionreportUpdate():
     if request.method=='POST':
-        # all_data = Mocdm_consumption.query.get(request.form.get('1'))
         data = Mocdm_consumption.query.get(request.form.get('id'))
-        # all_data = Mocdm_pending.query.get(request.form.get('erpid'))
         if data:
             all_data = Mocdm_consumption(id=request.form['id'],issued_qty=request.form['issued_qty'],balance=request.form['balance'],date=request.form['date'],issued_by_leader=request.form['issued_by_leader'],factory_line=request.form['factory_line'],reciever=request.form['reciever'],remark=request.form['remark'])
             db.session.merge(all_data)
