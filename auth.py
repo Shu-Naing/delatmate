@@ -272,12 +272,14 @@ def pending_upload():
     try:
         if request.method == 'POST':
             excel_file = request.files['file']
-            col_names = ['EX - FTY','MCN','PO#', 'Ship To', 'LABEL' , 'Linked Store','DES','GROUP NAME','Style#','Buyer#','COLOUR','QTY','Vessel','Factory Name','DB/GB Pkg Code','SDN PO','Customer Po#','UPC Number','Linked SO Num','Ref.Number','Material Lot No:','Season','Buyer','ORDER DATE','KZM ID','Remark','ShpgJob','xFty Date']
+            col_names = ['Ex-Fty','MCN','PO#', 'Ship To', 'Label' , 'Linked Store','DES','Group Name','Style#','Buyer#','COLOUR','QTY','Vessel','Factory','DB/GB Pkg Code','SDN PO','Customer Po#','UPC Number','Linked SO Num','Ref.Number','Material Lot No:','Season','Buyer','Order Date','KZM ID','Remark','ShpgJob','xFty Date']
             df = pd.read_excel(excel_file,names=col_names,header = None,skiprows=1)
+            # df['Ex-Fty'] = pd.to_datetime(df['Ex-Fty'], format='%Y-%m-%d').dt.strftime('%m/%d/%Y')
+            # df['Ex-Fty'] = pd.to_datetime(df['Ex-Fty'], format='%Y-%m-%d').dt.date
             df = df.fillna('')
             for i,row in df.iterrows():
                 txt = 'MYANMAR'
-                user = Mocdm_pending(ext_dely=row['EX - FTY'],mcn=row['MCN'],po=row['PO#'],ship_to=row['Ship To'],label=row['LABEL'],linked_store=row['Linked Store'],des=row['DES'],gp_name=row['GROUP NAME'],style=row['Style#'],org_buyer=row['Buyer#'],color=row['COLOUR'],qty=row['QTY'],vessel_date=row['Vessel'],factory=row['Factory Name'],db_gb_code=row['DB/GB Pkg Code'],sdn_po=row['SDN PO'],customer_po=row['Customer Po#'],upc_no=row['UPC Number'],linked_so_no=row['Linked SO Num'],ref_no=row['Ref.Number'],material_log_no=row['Material Lot No:'],season=row['Season'],buyer_txt=row['Buyer'],order_date=row['ORDER DATE'],kmz_id=row['KZM ID'],remark=row['Remark'],shpg_job=row['ShpgJob'],xfty_date=row['xFty Date'],myanmar=txt,previous=row['EX - FTY'])
+                user = Mocdm_pending(ext_dely=row['Ex-Fty'],mcn=row['MCN'],po=row['PO#'],ship_to=row['Ship To'],label=row['Label'],linked_store=row['Linked Store'],des=row['DES'],gp_name=row['Group Name'],style=row['Style#'],org_buyer=row['Buyer#'],color=row['COLOUR'],qty=row['QTY'],vessel_date=row['Vessel'],factory=row['Factory'],db_gb_code=row['DB/GB Pkg Code'],sdn_po=row['SDN PO'],customer_po=row['Customer Po#'],upc_no=row['UPC Number'],linked_so_no=row['Linked SO Num'],ref_no=row['Ref.Number'],material_log_no=row['Material Lot No:'],season=row['Season'],buyer_txt=row['Buyer'],order_date=row['Order Date'],kmz_id=row['KZM ID'],remark=row['Remark'],shpg_job=row['ShpgJob'],xfty_date=row['xFty Date'],myanmar=txt,previous=row['Ex-Fty'])
                 db.session.add(user)
                 db.session.commit()
             return redirect(url_for('auth.pendinglist'))
