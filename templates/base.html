@@ -36,9 +36,6 @@
                 <a href="{{ url_for('auth.orderlist') }}" class="navbar-item">
                     Order List
                 </a>
-                <a href="{{ url_for('auth.consumptionreport') }}" class="navbar-item">
-                    Consumption Report
-                </a>
                 <a href="{{ url_for('auth.schedulelist') }}" class="navbar-item">
                     Schedule Report
                 </a>
@@ -68,9 +65,6 @@
                     Sign Up
                 </a>
                 {% if current_user.is_authenticated %}
-                <a href="{{ url_for('auth.consumptionreport') }}" class="navbar-item">
-                    Consumption Report
-                </a>
                 <a href="{{ url_for('auth.schedulelist') }}" class="navbar-item">
                     Schedule Report
                 </a>

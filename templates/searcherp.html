@@ -44,7 +44,6 @@
                         <th>ORDER QTY</th>
                         <th>CONSUME</th>
                         <th>GROUP</th>
-                        <th>Edit</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -75,13 +74,7 @@
                         <td>
                         </td>
                       </tr>
-                      {% if page==employees.page %}
-       <li class="page-item active"><a class="page-link" href="{{ url_for('index', page=page) }}">{{ page }}</a></li>
-      {% else %}
-       <li class="page-item"><a class="page-link" href="{{ url_for('index', page=page) }}">{{ page }}</a></li>
-      {% endif %}
-                    {% endfor %}
-                    
+        {% endfor %}
                     </tbody>
                 </table>
               </div>
