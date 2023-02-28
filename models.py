@@ -47,7 +47,7 @@ class Mocdm_erp(UserMixin, db.Model):
 
 class Mocdm_pending(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True) 
-    ext_dely = db.Column(db.Date)
+    ext_dely = db.Column(db.DateTime)
     mcn = db.Column(db.String(255))
     po = db.Column(db.String(255))
     ship_to = db.Column(db.String(255))
@@ -74,7 +74,7 @@ class Mocdm_pending(UserMixin, db.Model):
     kmz_id = db.Column(db.Integer)
     remark = db.Column(db.String(255))
     shpg_job = db.Column(db.String(255))
-    xfty_date = db.Column(db.Date)
+    xfty_date = db.Column(db.String(255))
     previous = db.Column(db.Date)
     myanmar = db.Column(db.String(255))
     created_date = db.Column(db.DateTime, default=datetime.utcnow)
