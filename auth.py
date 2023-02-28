@@ -83,19 +83,22 @@ def change_password():
 @login_required
 def signup():
     try:
-        if request.method == 'POST':
-            current_password = request.form['current_password']
-            new_password = request.form['new_password']
-            
-            user = Mocdm_users.query.get(current_user.id)        
-            if check_password_hash(user.password, current_password):
-                hashed_password = generate_password_hash(new_password)
-                user.password = hashed_password
-                db.session.commit()
-                return redirect(url_for('auth.emplist'))
-            else:
-                flash('Incorrect password')
-        return redirect(url_for('auth.emplist'))
+        if request.method=='GET': 
+            return render_template('signup.html')
+        else:
+            email = request.form.get('email')
+            name = request.form.get('name')
+            phone = request.form.get('phone')
+            password = request.form.get('password')
+            role = request.form.get('role')
+            user = Mocdm_users.query.filter_by(email=email).first()
+            if user: 
+                flash('Email address already exists')
+                return redirect(url_for('auth.signup'))
+            new_user = Mocdm_users(email=email, name=name,phone=phone, password=generate_password_hash(password, method='sha256'),role=role) 
+            db.session.add(new_user)
+            db.session.commit()
+            return redirect(url_for('auth.login'))
     except SQLAlchemyError as e:
         current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         logging.basicConfig(filename= f'error_log.log', level=logging.ERROR)
@@ -159,7 +162,7 @@ def erpupload():
 @login_required
 def erplist(page_num):
     if request.method=='GET':
-        all_data = Mocdm_erp.query.paginate(per_page=5, page=page_num, error_out=True)
+        all_data = Mocdm_erp.query.paginate(per_page=100, page=page_num, error_out=True)
         return render_template('erp.html',all_data = all_data)
 
 @auth.route('/erpUpdate', methods=['GET', 'POST'])
@@ -274,13 +277,12 @@ def pending_upload():
             excel_file = request.files['file']
             col_names = ['Ex-Fty','MCN','PO#', 'Ship To', 'Label' , 'Linked Store','DES','Group Name','Style#','Buyer#','COLOUR','QTY','Vessel','Factory','DB/GB Pkg Code','SDN PO','Customer Po#','UPC Number','Linked SO Num','Ref.Number','Material Lot No:','Season','Buyer','Order Date','KZM ID','Remark','ShpgJob','xFty Date']
             df = pd.read_excel(excel_file,names=col_names,header = None,skiprows=1)
-            # df['Ex-Fty'] = pd.to_datetime(df['Ex-Fty'], format='%Y-%m-%d').dt.strftime('%m/%d/%Y')
-            # df['Ex-Fty'] = pd.to_datetime(df['Ex-Fty'], format='%Y-%m-%d').dt.date
             df = df.fillna('')
             for i,row in df.iterrows():
                 txt = 'MYANMAR'
-                user = Mocdm_pending(ext_dely=row['Ex-Fty'],mcn=row['MCN'],po=row['PO#'],ship_to=row['Ship To'],label=row['Label'],linked_store=row['Linked Store'],des=row['DES'],gp_name=row['Group Name'],style=row['Style#'],org_buyer=row['Buyer#'],color=row['COLOUR'],qty=row['QTY'],vessel_date=row['Vessel'],factory=row['Factory'],db_gb_code=row['DB/GB Pkg Code'],sdn_po=row['SDN PO'],customer_po=row['Customer Po#'],upc_no=row['UPC Number'],linked_so_no=row['Linked SO Num'],ref_no=row['Ref.Number'],material_log_no=row['Material Lot No:'],season=row['Season'],buyer_txt=row['Buyer'],order_date=row['Order Date'],kmz_id=row['KZM ID'],remark=row['Remark'],shpg_job=row['ShpgJob'],xfty_date=row['xFty Date'],myanmar=txt,previous=row['Ex-Fty'])
-                db.session.add(user)
+                all_data = Mocdm_pending(ext_dely=row['Ex-Fty'],mcn=row['MCN'],po=row['PO#'],ship_to=row['Ship To'],label=row['Label'],linked_store=row['Linked Store'],des=row['DES'],gp_name=row['Group Name'],style=row['Style#'],org_buyer=row['Buyer#'],color=row['COLOUR'],qty=row['QTY'],vessel_date=row['Vessel'],factory=row['Factory'],db_gb_code=row['DB/GB Pkg Code'],sdn_po=row['SDN PO'],customer_po=row['Customer Po#'],upc_no=row['UPC Number'],linked_so_no=row['Linked SO Num'],ref_no=row['Ref.Number'],material_log_no=row['Material Lot No:'],season=row['Season'],buyer_txt=row['Buyer'],order_date=row['Order Date'],kmz_id=row['KZM ID'],remark=row['Remark'],shpg_job=row['ShpgJob'],xfty_date=row['xFty Date'],myanmar=txt,previous=row['Ex-Fty'])
+                print(all_data)
+                db.session.add(all_data)
                 db.session.commit()
             return redirect(url_for('auth.pendinglist'))
     except SQLAlchemyError as e:
@@ -294,7 +296,7 @@ def pending_upload():
 @login_required
 def pendinglist(page_num):
     if request.method=='GET':
-        all_data = Mocdm_pending.query.paginate(per_page=5, page=page_num, error_out=True)
+        all_data = Mocdm_pending.query.paginate(per_page=100, page=page_num, error_out=True)
         return render_template('pending.html',all_data = all_data)
 
 @auth.route('/deletePending', methods=['POST'])
@@ -314,7 +316,7 @@ def deletePending():
 @login_required
 def orderlist(page_num):
     if request.method=='GET':
-        all_data = db.session.query(Mocdm_erp.po,Mocdm_pending.label,Mocdm_pending.des,Mocdm_pending.mcn,Mocdm_pending.previous,Mocdm_pending.ext_dely,Mocdm_pending.myanmar,Mocdm_erp.style,Mocdm_erp.buyer_version,Mocdm_erp.pending_buyer,Mocdm_erp.product_name,Mocdm_erp.main_color,Mocdm_erp.season,Mocdm_erp.vessel_date,Mocdm_erp.category,Mocdm_erp.material_classification,Mocdm_erp.material_code,Mocdm_erp.material,Mocdm_erp.material_chinese,Mocdm_erp.size,Mocdm_erp.color,Mocdm_erp.org_consume,Mocdm_erp.unit,Mocdm_erp.loss,Mocdm_erp.consume_point,Mocdm_erp.order_qty,Mocdm_erp.consume,Mocdm_erp.gp,Mocdm_pending.order_date,Mocdm_pending.factory).join(Mocdm_pending,(Mocdm_pending.po == Mocdm_erp.po) & (Mocdm_pending.color == Mocdm_erp.color) & (Mocdm_pending.style == Mocdm_erp.style) & (Mocdm_pending.org_buyer == Mocdm_erp.buyer),isouter = True).paginate(per_page=5, page=page_num, error_out=True) 
+        all_data = db.session.query(Mocdm_erp.po,Mocdm_pending.label,Mocdm_pending.des,Mocdm_pending.mcn,Mocdm_pending.previous,Mocdm_pending.ext_dely,Mocdm_pending.myanmar,Mocdm_erp.style,Mocdm_erp.buyer_version,Mocdm_erp.pending_buyer,Mocdm_erp.product_name,Mocdm_erp.main_color,Mocdm_erp.season,Mocdm_erp.vessel_date,Mocdm_erp.category,Mocdm_erp.material_classification,Mocdm_erp.material_code,Mocdm_erp.material,Mocdm_erp.material_chinese,Mocdm_erp.size,Mocdm_erp.color,Mocdm_erp.org_consume,Mocdm_erp.unit,Mocdm_erp.loss,Mocdm_erp.consume_point,Mocdm_erp.order_qty,Mocdm_erp.consume,Mocdm_erp.gp,Mocdm_pending.order_date,Mocdm_pending.factory).join(Mocdm_pending,(Mocdm_pending.po == Mocdm_erp.po) & (Mocdm_pending.color == Mocdm_erp.color) & (Mocdm_pending.style == Mocdm_erp.style) & (Mocdm_pending.org_buyer == Mocdm_erp.buyer),isouter = True).paginate(per_page=100, page=page_num, error_out=True) 
         return render_template('orderlist.html',all_data = all_data)
 
 @auth.route('/download/orderlist', methods=['GET', 'POST'])
