@@ -21,32 +21,31 @@
                     <input type="file" class="custom-file-input" id="customFile" name="file">
                     <label class="custom-file-label" for="customFile">Choose file</label>-->
                      
-                    <a href="{{ url_for('main.erpfileupload') }}" type="submit">+ New ERP List</a>
             </div>
             <div class="container">
+              <a href="{{ url_for('main.erpfileupload') }}" type="submit">+ New ERP List</a>
               <form action="/searcherp" method="POST" enctype="multipart/form-data">
                 <div class="row">
-                  <div class="col-md-3">
+                  <div class="col-md-2">
                     <input type="text" class="form-control mt-3" id="po" placeholder="PO Number" name="po">
                   </div>
-                  <div class="col-md-3">
+                  <div class="col-md-2">
                     <input type="name" class="form-control mt-3" id="style" placeholder="Style" name="style">
                   </div>
-                  <div class="col-md-3">
+                  <div class="col-md-2">
                     <input type="name" class="form-control mt-3" id="buyer" placeholder="Buyer" name="buyer">
                   </div>
-                  <div class="col-md-3">
+                  <div class="col-md-2">
                     <input type="name" class="form-control mt-3" id="color" placeholder="Color" name="color">   
                   </div>
-                  <div class="col-md-3">
+                  <div class="col-md-2">
                     <input type="name" class="form-control mt-3" id="gp" placeholder="Group" name="gp">  
                   </div>
+                  <div class="col-md-2">
+                    <input type="submit" class="form-control mt-3" id="gp" placeholder="Group" name="gp" style="background-color: turquoise;">  
+                    <!-- <button type="submit" class="btn btn-secondary">Search</button>   -->
+                  </div>
                 </div>
-                <br>
-                <div class="col text-center">
-                  <button type="submit" class="btn btn-secondary text-center">Search</button>
-                </div>
-                <br>
               </form>
             </div>
             <br>

@@ -20,43 +20,44 @@
                 </form> -->
                 <a href="{{ url_for('main.pendingfileupload') }}" type="submit">+ New Pending List</a>
             </div>
-            <div class="container">
-              <div class="form-group row">
+            <br>
+            <div class="container mt-3">
                 <form action="/searchpending" method="POST" enctype="multipart/form-data">
                   <div class="row">
-                    <div class="col-md-3">
-                      <label for="start">PO</label>
-                      <input type="text" class="form-control mt-3" id="po" placeholder="PO Number" name="po">
-                    </div>
-                    <div class="col-md-3">
-                      <label for="start">Style</label>
-                  <input type="name" class="form-control mt-3" id="style" placeholder="Style" name="style">
-                    </div>
-                    <div class="col-md-3">
-                      <label for="start">Buyer</label>
-                  <input type="name" class="form-control mt-3" id="org_buyer" placeholder="Buyer" name="org_buyer">
-                    </div>
-                    <div class="col-md-3">
-                      <label for="start">Color</label>
-                  <input type="name" class="form-control mt-3" id="color" placeholder="Color" name="color">
-                    </div>
-                    <div class="col-md-3">
-                      <label for="start">Group</label>
-                  <input type="name" class="form-control mt-3" id="gp_name" placeholder="Group" name="gp_name">
-                    </div>
-                    <br>
-                    <div class="col-md-3">
-                      <label for="start">Order Date</label>
-                  <div class="col-xs-2">
-                  <input type="date" id="order_date" class="form-control" name="order_date" min="2000-01-02"><br><br>  
+                      <div class="col-md-3">
+                        <label for="po">PO:</label>
+                        <input type="text" class="form-control mt-3" id="po" placeholder="PO Number" name="po">
+                      </div>
+                      <div class="col-md-3">
+                        <label for="style">Style:</label>
+                        <input type="name" class="form-control mt-3" id="style" placeholder="Style" name="style">
+                      </div>
+                      <div class="col-md-3">
+                        <label for="org_buyer">Buyer:</label>
+                        <input type="name" class="form-control mt-3" id="org_buyer" placeholder="Buyer" name="org_buyer">
+                      </div>
+                      <div class="col-md-3">
+                        <label for="color">Color:</label>
+                        <input type="name" class="form-control mt-3" id="color" placeholder="Color" name="color">
+                      </div>
                   </div>
+                  <br>
+                  <div class="row">
+                    <div class="col-md-3">
+                      <label for="gp_name">Group:</label>
+                     <input type="name" class="form-control mt-3" id="gp_name" placeholder="Group" name="gp_name">
+                    </div>
+                    <div class="col-md-3">
+                      <label for="order_date">Order Date</label>
+                      <input type="date" id="order_date" class="form-control" name="order_date" min="2000-01-02">
                     </div>
                     <div class="col-md-3">
                       <label for="start">Delivery Date</label>
-                      <div class="col-xs-2">
-                      <input type="date" id="ext_dely" class="form-control" name="ext_dely" min="2000-01-02"><br><br>  
-                      </div>
-                    <button type="submit" class="btn btn-secondary">Search</button>
+                      <input type="date" id="ext_dely" class="form-control" name="ext_dely" min="2000-01-02"> 
+                    </div>
+                    <div class="col-md-3">
+                      <button type="submit">Search</button>
+                      <!-- <input type="submit" class="form-control mt-3" placeholder="Search"> -->
                     </div>
                   </div>
                 </form>
@@ -111,6 +112,7 @@
                         <th>Remark</th>
                         <th>ShpgJob</th>
                         <th>xFty Date</th>
+                        <th>Status</th>
                         <th>Edit</th>
                       </tr>
                     </thead>
@@ -146,6 +148,7 @@
                         <td>{{row.remark}}</td>
                         <td>{{row.shpg_job}}</td>
                         <td>{{row.xfty_date}}</td>
+                        <td>{{row.status}}</td>
                         <td>
                         <a href="/pendingUpdate"  class="btn btn-primary" value="{{row.id}}" data-bs-toggle="modal" data-bs-target="#myModal{{row.id}}">Edit</a>
                         </td>
@@ -217,6 +220,17 @@
                                   <br>
                                   <h5>ShpgJob</h5>
                                   <input type="text" class="form-control mt-3" name="shpg_job" value="{{row.shpg_job}}">
+                                  <br>
+                                  <label for="select" class="control-label" >status:</label>
+                                    <div class="form-input">
+                                        <select class="selectpicker form-select" title="Please Select" id="status" name="status" required>
+                                            <option value="No Packing List">No Packing List</option>
+                                            <option value="Pending">Pending</option>
+                                            <option value="Stock OK">Stock OK</option>
+                                            <option value="Completed">Completed</option>
+                                            <option value="Factory">Factory</option>
+                                        </select>
+                                  </div>
                                   <br>
                                   <button class="btn btn-primary" type="submit">Update</button>
                                 </form>
