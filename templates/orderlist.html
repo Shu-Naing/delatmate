@@ -73,6 +73,7 @@
                 <table class="table table-bordered" id="myTable">
                     <thead>
                       <tr>
+                        <th>ID</th>
                         <th>PO</th>
                         <th>LABEL</th>
                         <th>DES</th>
@@ -107,6 +108,7 @@
                     <tbody>
                       {% for row in all_data %}
                       <tr>
+                        <td>{{row.id}}</td>
                         <td>{{row.po}}</td>
                         <td>{{row.label}}</td>
                         <td>{{row.des}}</td>

@@ -12,6 +12,10 @@ from sqlalchemy import exc
 from sqlalchemy.exc import DataError, IntegrityError
 from sqlalchemy.exc import SQLAlchemyError
 from datetime import datetime
+from flask import Flask, send_file
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+import pyttsx3 
 import csv
 import logging
 import traceback
@@ -80,7 +84,7 @@ def change_password():
     return redirect(url_for('auth.emplist')) 
 
 @auth.route('/signup', methods=['GET', 'POST'])
-@login_required
+# @login_required
 def signup():
     try:
         if request.method=='GET': 
@@ -321,23 +325,55 @@ def deletePending():
 @login_required
 def orderlist(page_num):
     if request.method=='GET':
-        all_data = db.session.query(Mocdm_erp.po,Mocdm_pending.label,Mocdm_pending.des,Mocdm_pending.mcn,Mocdm_pending.previous,Mocdm_pending.ext_dely,Mocdm_pending.myanmar,Mocdm_erp.style,Mocdm_erp.buyer_version,Mocdm_erp.pending_buyer,Mocdm_erp.product_name,Mocdm_erp.main_color,Mocdm_erp.season,Mocdm_erp.vessel_date,Mocdm_erp.category,Mocdm_erp.material_classification,Mocdm_erp.material_code,Mocdm_erp.material,Mocdm_erp.material_chinese,Mocdm_erp.size,Mocdm_erp.color,Mocdm_erp.org_consume,Mocdm_erp.unit,Mocdm_erp.loss,Mocdm_erp.consume_point,Mocdm_erp.order_qty,Mocdm_erp.consume,Mocdm_erp.gp,Mocdm_pending.order_date,Mocdm_pending.factory).join(Mocdm_pending,(Mocdm_pending.po == Mocdm_erp.po) & (Mocdm_pending.style == Mocdm_erp.style) & (Mocdm_pending.color == Mocdm_erp.main_color) & (Mocdm_pending.org_buyer == Mocdm_erp.pending_buyer),isouter = True).paginate(per_page=100, page=page_num, error_out=True) 
+        all_data = db.session.query(Mocdm_erp.id,Mocdm_erp.po,Mocdm_pending.label,Mocdm_pending.des,Mocdm_pending.mcn,Mocdm_pending.previous,Mocdm_pending.ext_dely,Mocdm_pending.myanmar,Mocdm_erp.style,Mocdm_erp.buyer_version,Mocdm_erp.pending_buyer,Mocdm_erp.product_name,Mocdm_erp.main_color,Mocdm_erp.season,Mocdm_erp.vessel_date,Mocdm_erp.category,Mocdm_erp.material_classification,Mocdm_erp.material_code,Mocdm_erp.material,Mocdm_erp.material_chinese,Mocdm_erp.size,Mocdm_erp.color,Mocdm_erp.org_consume,Mocdm_erp.unit,Mocdm_erp.loss,Mocdm_erp.consume_point,Mocdm_erp.order_qty,Mocdm_erp.consume,Mocdm_erp.gp,Mocdm_pending.order_date,Mocdm_pending.factory).join(Mocdm_pending,(Mocdm_pending.po == Mocdm_erp.po) & (Mocdm_pending.style == Mocdm_erp.style) & (Mocdm_pending.color == Mocdm_erp.main_color) & (Mocdm_pending.org_buyer == Mocdm_erp.pending_buyer),isouter = True).paginate(per_page=1000, page=page_num, error_out=True) 
         return render_template('orderlist.html',all_data = all_data)
 
 @auth.route('/download/orderlist', methods=['GET', 'POST'])
 def download_report():
     all_data = db.session.query(Mocdm_erp.po,Mocdm_pending.label,Mocdm_pending.des,Mocdm_pending.mcn,Mocdm_pending.previous,Mocdm_pending.ext_dely,Mocdm_pending.myanmar,Mocdm_erp.style,Mocdm_erp.buyer_version,Mocdm_erp.pending_buyer,Mocdm_erp.product_name,Mocdm_erp.main_color,Mocdm_erp.season,Mocdm_erp.vessel_date,Mocdm_erp.category,Mocdm_erp.material_classification,Mocdm_erp.material_code,Mocdm_erp.material,Mocdm_erp.material_chinese,Mocdm_erp.size,Mocdm_erp.color,Mocdm_erp.org_consume,Mocdm_erp.unit,Mocdm_erp.loss,Mocdm_erp.consume_point,Mocdm_erp.order_qty,Mocdm_erp.consume,Mocdm_erp.gp,Mocdm_pending.order_date,Mocdm_pending.factory).join(Mocdm_pending,(Mocdm_pending.po == Mocdm_erp.po) & (Mocdm_pending.style == Mocdm_erp.style) & (Mocdm_pending.color == Mocdm_erp.main_color) & (Mocdm_pending.org_buyer == Mocdm_erp.pending_buyer),isouter = True).all()
-    df = pd.DataFrame((tuple(t) for t in all_data), columns=('PO#','LABEL','DES','D/C','PREVIOUS','DELY','MYANMAR','STYLE','BUYER VERSION','BUYER','PRODUCT NAME','MAIN COLOR','SEASON','VESSEL DATE','CATEGORY','MATERIAL CLASSIFICATION','MATERIAL CODE','MATERIAL NAME IN CHINESE','SIZE','COLOUR','ORIGINAL','CONSUME','UNIT','LOSS','CONSUME POINT','ORDER QTY','CONSUME','GROUP','ORDER DATE','FACTORY'))
+    # all_data = db.session.query(Mocdm_erp.id,Mocdm_erp.po,Mocdm_erp.style,Mocdm_erp.buyer_version,Mocdm_erp.buyer,Mocdm_erp.pending_buyer,Mocdm_erp.product_name,Mocdm_erp.main_color,Mocdm_erp.season,Mocdm_erp.vessel_date,Mocdm_erp.category,Mocdm_erp.material_classification,Mocdm_erp.material_code,Mocdm_erp.material,Mocdm_erp.material_chinese,Mocdm_erp.size,Mocdm_erp.color,Mocdm_erp.org_consume,Mocdm_erp.unit,Mocdm_erp.loss,Mocdm_erp.consume_point,Mocdm_erp.order_qty,Mocdm_erp.consume,Mocdm_erp.gp).all()
+    df = pd.DataFrame((tuple(t) for t in all_data), columns=('PO#','LABEL','DES','D/C','PREVIOUS','DELY','MYANMAR','STYLE','BUYER VERSION','BUYER','PRODUCT NAME','MAIN COLOR','SEASON','VESSEL DATE','CATEGORY','MATERIAL CLASSIFICATION','MATERIAL CODE','MATERIAL NAME IN CHINESE','MATERIAL','SIZE','COLOUR','ORIGINAL CONSUME','UNIT','LOSS','CONSUME POINT','ORDER QTY','CONSUME','GROUP','ORDER DATE','FACTORY'))                                  
+    # df = pd.DataFrame((tuple(t) for t in all_data), columns=('id','po','style','buyer_version','buyer','product_name','main_color','season','vessel_date','category','material_classification','material_code','material','material_chinese','size','color','org_consume','unit','loss','consume_point','order_qty','consume','gp','pending_buyer'))
     out = io.BytesIO()
-    writer = pd.ExcelWriter(out, engine='openpyxl')
+    writer = pd.ExcelWriter(out, engine='xlsxwriter')
     df.to_excel(excel_writer=writer, index=False, sheet_name='Sheet1')
     writer.save()
     writer.close()
     r = make_response(out.getvalue())
-    r.headers["Content-Disposition"] = "attachment; filename=combinefile.xlsx"
+    r.headers["Content-Disposition"] = "attachment; filename=combination.xlsx"
     r.headers["Content-type"] = "application/x-xls"
 
     return r
+
+# @auth.route('/export')
+# def export():
+#     data = db.session.query(Mocdm_erp.po,Mocdm_pending.label,Mocdm_pending.des,Mocdm_pending.mcn,Mocdm_pending.previous,Mocdm_pending.ext_dely,Mocdm_pending.myanmar,Mocdm_erp.style,Mocdm_erp.buyer_version,Mocdm_erp.pending_buyer,Mocdm_erp.product_name,Mocdm_erp.main_color,Mocdm_erp.season,Mocdm_erp.vessel_date,Mocdm_erp.category,Mocdm_erp.material_classification,Mocdm_erp.material_code,Mocdm_erp.material,Mocdm_erp.material_chinese,Mocdm_erp.size,Mocdm_erp.color,Mocdm_erp.org_consume,Mocdm_erp.unit,Mocdm_erp.loss,Mocdm_erp.consume_point,Mocdm_erp.order_qty,Mocdm_erp.consume,Mocdm_erp.gp,Mocdm_pending.order_date,Mocdm_pending.factory).join(Mocdm_pending,(Mocdm_pending.po == Mocdm_erp.po) & (Mocdm_pending.style == Mocdm_erp.style) & (Mocdm_pending.color == Mocdm_erp.main_color) & (Mocdm_pending.org_buyer == Mocdm_erp.pending_buyer),isouter = True).all()
+
+#     # Convert SQLAlchemy query results to a pandas DataFrame
+#     # df = pd.read_sql(data.statement, db.session.bind)
+#     df = pd.DataFrame((list(t) for t in data), columns=('PO#','LABEL','DES','D/C','PREVIOUS','DELY','MYANMAR','STYLE','BUYER VERSION','BUYER','PRODUCT NAME','MAIN COLOR','SEASON','VESSEL DATE','CATEGORY','MATERIAL CLASSIFICATION','MATERIAL CODE','MATERIAL NAME IN CHINESE','SIZE','COLOUR','ORIGINAL','CONSUME','UNIT','LOSS','CONSUME POINT','ORDER QTY','CONSUME','GROUP','ORDER DATE','FACTORY'))
+
+
+#     # Create a response object with the Excel file
+#     r = make_response(df.to_excel('users.xlsx', index=False))
+#     r.headers['Content-Type'] = 'application/x-xls'
+#     r.headers['Content-Disposition'] = 'attachment; filename=users.xlsx'
+
+#     return r
+
+@auth.route('/download')
+def download_excel():
+    file_name = generate_excel()
+    return send_file(file_name, attachment_filename=file_name, as_attachment=True)
+
+def generate_excel():
+    data = db.session.query(Mocdm_erp.po,Mocdm_pending.label,Mocdm_pending.des,Mocdm_pending.mcn,Mocdm_pending.previous,Mocdm_pending.ext_dely,Mocdm_pending.myanmar,Mocdm_erp.style,Mocdm_erp.buyer_version,Mocdm_erp.pending_buyer,Mocdm_erp.product_name,Mocdm_erp.main_color,Mocdm_erp.season,Mocdm_erp.vessel_date,Mocdm_erp.category,Mocdm_erp.material_classification,Mocdm_erp.material_code,Mocdm_erp.material,Mocdm_erp.material_chinese,Mocdm_erp.size,Mocdm_erp.color,Mocdm_erp.org_consume,Mocdm_erp.unit,Mocdm_erp.loss,Mocdm_erp.consume_point,Mocdm_erp.order_qty,Mocdm_erp.consume,Mocdm_erp.gp,Mocdm_pending.order_date,Mocdm_pending.factory).join(Mocdm_pending,(Mocdm_pending.po == Mocdm_erp.po) & (Mocdm_pending.style == Mocdm_erp.style) & (Mocdm_pending.color == Mocdm_erp.main_color) & (Mocdm_pending.org_buyer == Mocdm_erp.pending_buyer),isouter = True).all()
+    df = pd.DataFrame([(Mocdm_erp.po,Mocdm_pending.label,Mocdm_pending.des,Mocdm_pending.mcn,Mocdm_pending.previous,Mocdm_pending.ext_dely,Mocdm_pending.myanmar,Mocdm_erp.style,Mocdm_erp.buyer_version,Mocdm_erp.pending_buyer,Mocdm_erp.product_name,Mocdm_erp.main_color,Mocdm_erp.season,Mocdm_erp.vessel_date,Mocdm_erp.category,Mocdm_erp.material_classification,Mocdm_erp.material_code,Mocdm_erp.material,Mocdm_erp.material_chinese,Mocdm_erp.size,Mocdm_erp.color,Mocdm_erp.org_consume,Mocdm_erp.unit,Mocdm_erp.loss,Mocdm_erp.consume_point,Mocdm_erp.order_qty,Mocdm_erp.consume,Mocdm_erp.gp,Mocdm_pending.order_date,Mocdm_pending.factory) for d in data], columns=['PO#','LABEL','DES','D/C','PREVIOUS','DELY','MYANMAR','STYLE','BUYER VERSION','BUYER','PRODUCT NAME','MAIN COLOR','SEASON','VESSEL DATE','CATEGORY','MATERIAL CLASSIFICATION','MATERIAL CODE','MATERIAL NAME IN CHINESE','SIZE','COLOUR','ORIGINAL','CONSUME','UNIT','LOSS','CONSUME POINT','ORDER QTY','CONSUME','GROUP','ORDER DATE','FACTORY'])
+    file_name = 'data.xlsx'
+    writer = pd.ExcelWriter(file_name, engine='xlsxwriter')
+    df.to_excel(writer, index=False, sheet_name='Data')
+    writer.save()
+    return file_name
 
 @auth.route('/searchorderlist', methods=['GET','POST'])
 @login_required
