@@ -27,7 +27,9 @@
             <br>
             <div class="container">
               <div class="row">
-            <p><a href="{{ url_for('auth.download_consumptionreportreport') }}">Download</a></p>
+            <!-- <p><a href="{{ url_for('auth.download_consumptionreportreport') }}">Download</a></p> -->
+<p><a href="/download/consumptionreport?style={{style}}&dely_date={{dely_date}}&group_name={{group_name}}&qty_no={{qty_no}}&buyer={{buyer}}">Download</a></p>
+
 
               </div>
             </div>
@@ -109,12 +111,8 @@
                             <!-- Modal body -->
                             <div class="modal-body">
                                 <form action="{{url_for('auth.consumptionreportUpdate')}}" method="POST">
-                                  <!-- {% if row.id == 'none' %} -->
-                                    <!-- <input type="hidden"  name="id" value="0"> -->
-                                  <!-- {% else %} -->
-                                    <input type="text"  name="id" value="{{row.id}}">
-                                  <!-- {% endif %} -->
-                                    <input type="text"  name="erpid" value="{{row.erpid}}">
+                                 
+                  
                                     <h5>ISSUED QTY</h5>
                                     <input type="text" class="form-control mt-3" name="issued_qty"  value="{{row.issued_qty}}">
                                     <br>

@@ -6,7 +6,7 @@ db = SQLAlchemy()
 def create_app():
     app = Flask(__name__)
     app.config['SECRET_KEY'] = 'secret-key-goes-here'
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:''@localhost/sunkitdb'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:''@localhost/db4deltamate'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False 
     app.config['UPLOAD_FOLDER'] = 'static/uploads/'
     db.init_app(app)

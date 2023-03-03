@@ -18,12 +18,16 @@
       });
   </script>
 
-    </div>
+
+           
+            <br>
+            </div>
             <br>
             <div class="table-responsive">
                 <table class="table table-bordered" id="myTable">
                     <thead>
                       <tr>
+                        <th>ID</th>
                         <th>PO</th>
                         <th>LABEL</th>
                         <th>DES</th>
@@ -52,14 +56,13 @@
                         <th>ORDER QTY</th>
                         <th>CONSUME</th>
                         <th>GROUP</th>
-                        <th>ORDER DATE</th>
                         <th>FACTORY</th>
-                        <th>Edit</th>
                       </tr>
                     </thead>
                     <tbody>
                       {% for row in all_data %}
                       <tr>
+                        <td>{{row.id}}</td>
                         <td>{{row.po}}</td>
                         <td>{{row.label}}</td>
                         <td>{{row.des}}</td>
@@ -67,7 +70,6 @@
                         <td>{{row.previous}}</td>
                         <td>{{row.order_date}}</td>
                         <td>{{row.myanmar}}</td>
-                        <td>{{row.ext_dely}}</td>
                         <td>{{row.style}}</td>
                         <td>{{row.buyer_version}}</td>
                         <td>{{row.buyer}}</td>
@@ -90,7 +92,6 @@
                         <td>{{row.consume}}</td>
                         <td>{{row.gp}}</td>
                         <td>{{row.factory}}</td>
-                        <td><a href="/erpUpdate" class="btn btn-primary" type="submit" id="id" name="id" value="{{row.id}}" name="id">Edit User</a></td>
 
                         <!-- <td>{{row.remark}}</td> -->
                         <!-- <td>{{row.status}}</td> -->
@@ -141,6 +142,7 @@
                     
                     </tbody>
                 </table>
+               
               </div>
              
 {% endblock %}
