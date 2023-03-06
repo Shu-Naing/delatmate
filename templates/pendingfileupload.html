@@ -12,12 +12,25 @@
     {% endwith %}
 
                 <form method="POST" action="/pending_upload" enctype="multipart/form-data">
-                    <input type="file" class="custom-file-input" id="customFile" name="file">
+                    <input type="file" class="custom-file-input" name="file" id="customFile" />
                     <label class="custom-file-label" for="customFile">Choose file</label>
-                    <br>
-                    <br>
-                    <button type="submit" class="btn btn-sm btn-secondary">Upload file</button>
+                    <input type="submit" class="btn btn-sm btn-secondary" value="Upload File" disabled />
                 </form>
             </div>
             
+            <script type="text/javascript">
+                $(document).ready(
+        function(){
+            $('input:submit').attr('disabled',true);
+            $('input:file').change(
+                function(){
+                    if ($(this).val()){
+                        $('input:submit').removeAttr('disabled'); 
+                    }
+                    else {
+                        $('input:submit').attr('disabled',true);
+                    }
+                });
+        });
+            </script>
 {% endblock %}
