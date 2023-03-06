@@ -64,10 +64,11 @@ def logout():
 def change_password():
     try:
         if request.method == 'POST':
+            id = request.form['id']
             current_password = request.form['current_password']
             new_password = request.form['new_password']
             
-            user = Mocdm_users.query.get(current_user.id)        
+            user = Mocdm_users.query.get(id)        
             if check_password_hash(user.password, current_password):
                 hashed_password = generate_password_hash(new_password)
                 user.password = hashed_password
@@ -84,7 +85,7 @@ def change_password():
     return redirect(url_for('auth.emplist')) 
 
 @auth.route('/signup', methods=['GET', 'POST'])
-# @login_required
+@login_required
 def signup():
     try:
         if request.method=='GET': 
@@ -256,28 +257,34 @@ def searchpending():
 @auth.route('/pendingUpdate', methods=['GET', 'POST'])
 @login_required
 def pendingUpdate():
-    if request.method=='POST':
-        all_data = Mocdm_pending.query.get(request.form.get('id'))
-        all_data.mcn = request.form['mcn']
-        all_data.ship_to = request.form['ship_to']
-        all_data.label = request.form['label']
-        all_data.linked_store = request.form['linked_store']
-        all_data.des = request.form['des']
-        all_data.qty = request.form['qty']
-        all_data.factory = request.form['factory']
-        all_data.db_gb_code = request.form['db_gb_code']
-        all_data.upc_no = request.form['upc_no']
-        all_data.linked_so_no = request.form['linked_so_no']
-        all_data.ref_no = request.form['linked_so_no']
-        all_data.linked_so_no = request.form['ref_no']
-        all_data.material_log_no = request.form['material_log_no']
-        all_data.season = request.form['season']
-        all_data.kmz_id = request.form['kmz_id']
-        all_data.remark = request.form['remark']
-        all_data.shpg_job = request.form['shpg_job']
-        all_data.status = request.form['status']
-        db.session.commit()
-        return redirect(url_for('auth.pendinglist'))
+    try:
+        if request.method=='POST':
+            all_data = Mocdm_pending.query.get(request.form.get('id'))
+            all_data.mcn = request.form['mcn']
+            all_data.ship_to = request.form['ship_to']
+            all_data.label = request.form['label']
+            all_data.linked_store = request.form['linked_store']
+            all_data.des = request.form['des']
+            all_data.qty = request.form['qty']
+            all_data.factory = request.form['factory']
+            all_data.db_gb_code = request.form['db_gb_code']
+            all_data.upc_no = request.form['upc_no']
+            all_data.linked_so_no = request.form['linked_so_no']
+            all_data.ref_no = request.form['linked_so_no']
+            all_data.linked_so_no = request.form['ref_no']
+            all_data.material_log_no = request.form['material_log_no']
+            all_data.season = request.form['season']
+            all_data.kmz_id = request.form['kmz_id']
+            all_data.remark = request.form['remark']
+            all_data.shpg_job = request.form['shpg_job']
+            all_data.status = request.form['status']
+            db.session.commit()
+            return redirect(url_for('auth.pendinglist'))
+    except SQLAlchemyError as e:
+        current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        logging.basicConfig(filename= f'error_log.log', level=logging.ERROR)
+        logging.error(str(e))
+    return redirect(url_for('auth.profile'))
 
 @auth.route("/pending_upload", methods=['POST'])
 @login_required
@@ -330,18 +337,24 @@ def orderlist(page_num):
 
 @auth.route('/download/orderlist', methods=['GET', 'POST'])
 def download_report():
-    all_data = db.session.query(Mocdm_erp.po,Mocdm_pending.label,Mocdm_pending.des,Mocdm_pending.mcn,Mocdm_pending.previous,Mocdm_pending.ext_dely,Mocdm_pending.myanmar,Mocdm_erp.style,Mocdm_erp.buyer_version,Mocdm_erp.pending_buyer,Mocdm_erp.product_name,Mocdm_erp.main_color,Mocdm_erp.season,Mocdm_erp.vessel_date,Mocdm_erp.category,Mocdm_erp.material_classification,Mocdm_erp.material_code,Mocdm_erp.material,Mocdm_erp.material_chinese,Mocdm_erp.size,Mocdm_erp.color,Mocdm_erp.org_consume,Mocdm_erp.unit,Mocdm_erp.loss,Mocdm_erp.consume_point,Mocdm_erp.order_qty,Mocdm_erp.consume,Mocdm_erp.gp,Mocdm_pending.order_date,Mocdm_pending.factory).join(Mocdm_pending,(Mocdm_pending.po == Mocdm_erp.po) & (Mocdm_pending.style == Mocdm_erp.style) & (Mocdm_pending.color == Mocdm_erp.main_color) & (Mocdm_pending.org_buyer == Mocdm_erp.pending_buyer),isouter = True).all()
-    df = pd.DataFrame((tuple(t) for t in all_data), columns=('PO#','LABEL','DES','D/C','PREVIOUS','DELY','MYANMAR','STYLE','BUYER VERSION','BUYER','PRODUCT NAME','MAIN COLOR','SEASON','VESSEL DATE','CATEGORY','MATERIAL CLASSIFICATION','MATERIAL CODE','MATERIAL NAME IN CHINESE','MATERIAL','SIZE','COLOUR','ORIGINAL CONSUME','UNIT','LOSS','CONSUME POINT','ORDER QTY','CONSUME','GROUP','ORDER DATE','FACTORY'))                                  
-    out = io.BytesIO()
-    writer = pd.ExcelWriter(out, engine='xlsxwriter')
-    df.to_excel(excel_writer=writer, index=False, sheet_name='Sheet1')
-    writer.save()
-    writer.close()
-    r = make_response(out.getvalue())
-    r.headers["Content-Disposition"] = "attachment; filename=combination.xlsx"
-    r.headers["Content-type"] = "application/x-xls"
+    try:
+        all_data = db.session.query(Mocdm_erp.po,Mocdm_pending.label,Mocdm_pending.des,Mocdm_pending.mcn,Mocdm_pending.previous,Mocdm_pending.ext_dely,Mocdm_pending.myanmar,Mocdm_erp.style,Mocdm_erp.buyer_version,Mocdm_erp.pending_buyer,Mocdm_erp.product_name,Mocdm_erp.main_color,Mocdm_erp.season,Mocdm_erp.vessel_date,Mocdm_erp.category,Mocdm_erp.material_classification,Mocdm_erp.material_code,Mocdm_erp.material,Mocdm_erp.material_chinese,Mocdm_erp.size,Mocdm_erp.color,Mocdm_erp.org_consume,Mocdm_erp.unit,Mocdm_erp.loss,Mocdm_erp.consume_point,Mocdm_erp.order_qty,Mocdm_erp.consume,Mocdm_erp.gp,Mocdm_pending.order_date,Mocdm_pending.factory).join(Mocdm_pending,(Mocdm_pending.po == Mocdm_erp.po) & (Mocdm_pending.style == Mocdm_erp.style) & (Mocdm_pending.color == Mocdm_erp.main_color) & (Mocdm_pending.org_buyer == Mocdm_erp.pending_buyer),isouter = True).all()
+        df = pd.DataFrame((tuple(t) for t in all_data), columns=('PO#','LABEL','DES','D/C','PREVIOUS','DELY','MYANMAR','STYLE','BUYER VERSION','BUYER','PRODUCT NAME','MAIN COLOR','SEASON','VESSEL DATE','CATEGORY','MATERIAL CLASSIFICATION','MATERIAL CODE','MATERIAL NAME IN CHINESE','MATERIAL','SIZE','COLOUR','ORIGINAL CONSUME','UNIT','LOSS','CONSUME POINT','ORDER QTY','CONSUME','GROUP','ORDER DATE','FACTORY'))                                  
+        out = io.BytesIO()
+        writer = pd.ExcelWriter(out, engine='xlsxwriter')
+        df.to_excel(excel_writer=writer, index=False, sheet_name='Sheet1')
+        writer.save()
+        writer.close()
+        r = make_response(out.getvalue())
+        r.headers["Content-Disposition"] = "attachment; filename=combination.xlsx"
+        r.headers["Content-type"] = "application/x-xls"
 
-    return r
+        return r
+    except SQLAlchemyError as e:
+        current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        logging.basicConfig(filename= f'error_log.log', level=logging.ERROR)
+        logging.error(str(e))
+    return redirect(url_for('auth.profile'))
 
 @auth.route('/searchorderlist', methods=['GET','POST'])
 @login_required
@@ -391,20 +404,27 @@ def consumptionreport(page_num):
 @auth.route('/searchcreport', methods=['GET','POST'])
 @login_required
 def searchcreport():
-    if request.method=='POST':
-        ext_dely = request.form['ext_dely']
-        qty = request.form['qty']
-        gp_name = request.form['gp_name']
-        style = request.form['style']
-        search1 = "%{}%".format(ext_dely)
-        search2 = "%{}%".format(qty)
-        search3 = "%{}%".format(gp_name)
-        search4 = "%{}%".format(style)
-        all_data = Mocdm_pending.query.filter((Mocdm_pending.ext_dely.like(search1)),(Mocdm_pending.qty.like(search2)),(Mocdm_pending.gp_name.like(search3)),(Mocdm_pending.style.like(search4))).all()
-        if not all_data:
-            return "no data"
-        else:
-            return render_template("searchpending.html", all_data = all_data)      
+    try:
+        if request.method=='POST':
+            ext_dely = request.form['ext_dely']
+            qty = request.form['qty']
+            gp_name = request.form['gp_name']
+            style = request.form['style']
+            search1 = "%{}%".format(ext_dely)
+            search2 = "%{}%".format(qty)
+            search3 = "%{}%".format(gp_name)
+            search4 = "%{}%".format(style)
+            all_data = Mocdm_pending.query.filter((Mocdm_pending.ext_dely.like(search1)),(Mocdm_pending.qty.like(search2)),(Mocdm_pending.gp_name.like(search3)),(Mocdm_pending.style.like(search4))).all()
+            if not all_data:
+                return "no data"
+            else:
+                return render_template("searchpending.html", all_data = all_data)   
+    except SQLAlchemyError as e:
+        current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        logging.basicConfig(filename= f'error_log.log', level=logging.ERROR)
+        logging.error(str(e))
+    return redirect(url_for('auth.profile'))
+       
 
 @auth.route('/consumptionreportUpdate', methods=['GET', 'POST'])
 @login_required
@@ -434,23 +454,29 @@ def consumptionreportUpdate():
 
 @auth.route('/download/consumptionreport', methods=['GET', 'POST'])
 def download_consumptionreportreport():
-    style = request.args.get('style')
-    group_name = request.args.get('group_name')
-    qty_no = request.args.get('qty_no')
-    dely_date = request.args.get('dely_date')
-    buyer = request.args.get('buyer')
-    all_data = db.session.query(Mocdm_erp.category,Mocdm_erp.material,Mocdm_erp.color,Mocdm_erp.unit,Mocdm_erp.consume,Mocdm_erp.order_qty,Mocdm_consumption.issued_qty,Mocdm_consumption.balance,Mocdm_consumption.date,Mocdm_consumption.issued_by_leader,Mocdm_consumption.factory_line,Mocdm_consumption.reciever,Mocdm_consumption.remark).join(Mocdm_pending,(Mocdm_pending.po == Mocdm_erp.po) & (Mocdm_pending.color == Mocdm_erp.main_color) & (Mocdm_pending.style == Mocdm_erp.style) & (Mocdm_pending.org_buyer == Mocdm_erp.pending_buyer),isouter = True).join(Mocdm_consumption,(Mocdm_consumption.erp_id == Mocdm_erp.id),isouter = True).filter(Mocdm_pending.gp_name == group_name,Mocdm_pending.style == style,Mocdm_pending.qty == qty_no,Mocdm_pending.ext_dely == dely_date).all()       
-    df = pd.DataFrame((tuple(t) for t in all_data), columns=('CATEGORY','MATERIAL','COLOUR','UNIT','CONSUME','ORDER QTY','ISSUED QTY','BALANCE','DATE','ISSUED BY (Leader)','Factory line','RECEIVER','REMARK'))
-    out = io.BytesIO()
-    writer = pd.ExcelWriter(out, engine='openpyxl')
-    df.to_excel(excel_writer=writer, index=False, sheet_name='Sheet1')
-    writer.save()
-    writer.close()
-    r = make_response(out.getvalue())
-    r.headers["Content-Disposition"] = "attachment; filename=consumptionreport.xlsx"
-    r.headers["Content-type"] = "application/x-xls"
+    try:
+        style = request.args.get('style')
+        group_name = request.args.get('group_name')
+        qty_no = request.args.get('qty_no')
+        dely_date = request.args.get('dely_date')
+        buyer = request.args.get('buyer')
+        all_data = db.session.query(Mocdm_erp.category,Mocdm_erp.material,Mocdm_erp.color,Mocdm_erp.unit,Mocdm_erp.consume,Mocdm_erp.order_qty,Mocdm_consumption.issued_qty,Mocdm_consumption.balance,Mocdm_consumption.date,Mocdm_consumption.issued_by_leader,Mocdm_consumption.factory_line,Mocdm_consumption.reciever,Mocdm_consumption.remark).join(Mocdm_pending,(Mocdm_pending.po == Mocdm_erp.po) & (Mocdm_pending.color == Mocdm_erp.main_color) & (Mocdm_pending.style == Mocdm_erp.style) & (Mocdm_pending.org_buyer == Mocdm_erp.pending_buyer),isouter = True).join(Mocdm_consumption,(Mocdm_consumption.erp_id == Mocdm_erp.id),isouter = True).filter(Mocdm_pending.gp_name == group_name,Mocdm_pending.style == style,Mocdm_pending.qty == qty_no,Mocdm_pending.ext_dely == dely_date).all()       
+        df = pd.DataFrame((tuple(t) for t in all_data), columns=('CATEGORY','MATERIAL','COLOUR','UNIT','CONSUME','ORDER QTY','ISSUED QTY','BALANCE','DATE','ISSUED BY (Leader)','Factory line','RECEIVER','REMARK'))
+        out = io.BytesIO()
+        writer = pd.ExcelWriter(out, engine='openpyxl')
+        df.to_excel(excel_writer=writer, index=False, sheet_name='Sheet1')
+        writer.save()
+        writer.close()
+        r = make_response(out.getvalue())
+        r.headers["Content-Disposition"] = "attachment; filename=consumptionreport.xlsx"
+        r.headers["Content-type"] = "application/x-xls"
 
-    return r
+        return r 
+    except SQLAlchemyError as e:
+        current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        logging.basicConfig(filename= f'error_log.log', level=logging.ERROR)
+        logging.error(str(e))
+    return redirect(url_for('auth.profile'))
 
 @auth.route("/scheduleUpload", methods=['POST'])
 @login_required
@@ -495,9 +521,15 @@ def view_image(id):
 
 @auth.route('/deleteWithTime')
 def deleteWithTime():
-    two_years_ago = datetime.now().replace(year=datetime.now().year-2, month=1, day=1)
-    Mocdm_erp.query.filter(Mocdm_erp.created_date < two_years_ago).delete()
-    Mocdm_pending.query.filter(Mocdm_pending.created_date < two_years_ago).delete()
-    Mocdm_consumption.query.filter(Mocdm_consumption.created_date < two_years_ago).delete()
-    db.session.commit()
-    return ''
+    try:
+        two_years_ago = datetime.now().replace(year=datetime.now().year-2, month=1, day=1)
+        Mocdm_erp.query.filter(Mocdm_erp.created_date < two_years_ago).delete()
+        Mocdm_pending.query.filter(Mocdm_pending.created_date < two_years_ago).delete()
+        Mocdm_consumption.query.filter(Mocdm_consumption.created_date < two_years_ago).delete()
+        db.session.commit()
+        return ''
+    except SQLAlchemyError as e:
+        current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        logging.basicConfig(filename= f'error_log.log', level=logging.ERROR)
+        logging.error(str(e))
+    return redirect(url_for('auth.schedulelist'))

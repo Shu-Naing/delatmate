@@ -89,7 +89,7 @@
                         <form action="{{url_for('auth.change_password')}}" method="POST">
                             <div class="form-group">
                                 <label>Current Password:</label>
-                                <!-- <input type="hidden"  name="id" value="{{row.id}}"> -->
+                                <input type="hidden"  name="id" value="{{row.id}}">
                                 <input type="password" class="form-control" name="current_password" required>
                                </div>
                                <div class="form-group">
