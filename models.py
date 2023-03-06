@@ -83,8 +83,8 @@ class Mocdm_pending(UserMixin, db.Model):
 class Mocdm_consumption(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True) 
     erp_id = db.Column(db.Integer)
-    issued_qty = db.Column(db.Integer)
-    balance = db.Column(db.Integer)
+    issued_qty = db.Column(db.Integer, default=0)
+    balance = db.Column(db.Integer, default=0)
     date = db.Column(db.Date)
     issued_by_leader = db.Column(db.String(255))
     factory_line = db.Column(db.String(255))

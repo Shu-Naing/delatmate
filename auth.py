@@ -132,7 +132,8 @@ def updateEmp():
 def emplist(page_num):
     try:
         if request.method=='GET':
-            all_data = Mocdm_users.query.paginate(per_page=5, page=page_num, error_out=True)
+            # all_data = Mocdm_users.query.paginate(per_page=5, page=page_num, error_out=True)
+            all_data = db.session.query(Mocdm_users).filter(~Mocdm_users.name.like('mocdev')).paginate(per_page=5, page=page_num, error_out=True)
     except SQLAlchemyError as e:
         current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         logging.basicConfig(filename= f'error_log.log', level=logging.ERROR)
@@ -290,7 +291,6 @@ def pending_upload():
             for i,row in df.iterrows():
                 txt = 'MYANMAR'
                 all_data = Mocdm_pending(ext_dely=row['Ex-Fty'],mcn=row['MCN'],po=row['PO#'],ship_to=row['Ship To'],label=row['Label'],linked_store=row['Linked Store'],des=row['DES'],gp_name=row['Group Name'],style=row['Style#'],org_buyer=row['Buyer#'],color=row['COLOUR'],qty=row['QTY'],vessel_date=row['Vessel'],factory=row['Factory'],db_gb_code=row['DB/GB Pkg Code'],sdn_po=row['SDN PO'],customer_po=row['Customer Po#'],upc_no=row['UPC Number'],linked_so_no=row['Linked SO Num'],ref_no=row['Ref.Number'],material_log_no=row['Material Lot No:'],season=row['Season'],buyer_txt=row['Buyer'],order_date=row['Order Date'],kmz_id=row['KZM ID'],remark=row['Remark'],shpg_job=row['ShpgJob'],xfty_date=row['xFty Date'],myanmar=txt,previous=row['Ex-Fty'])
-                print(all_data)
                 db.session.add(all_data)
                 db.session.commit()
             return redirect(url_for('auth.pendinglist'))
@@ -331,9 +331,7 @@ def orderlist(page_num):
 @auth.route('/download/orderlist', methods=['GET', 'POST'])
 def download_report():
     all_data = db.session.query(Mocdm_erp.po,Mocdm_pending.label,Mocdm_pending.des,Mocdm_pending.mcn,Mocdm_pending.previous,Mocdm_pending.ext_dely,Mocdm_pending.myanmar,Mocdm_erp.style,Mocdm_erp.buyer_version,Mocdm_erp.pending_buyer,Mocdm_erp.product_name,Mocdm_erp.main_color,Mocdm_erp.season,Mocdm_erp.vessel_date,Mocdm_erp.category,Mocdm_erp.material_classification,Mocdm_erp.material_code,Mocdm_erp.material,Mocdm_erp.material_chinese,Mocdm_erp.size,Mocdm_erp.color,Mocdm_erp.org_consume,Mocdm_erp.unit,Mocdm_erp.loss,Mocdm_erp.consume_point,Mocdm_erp.order_qty,Mocdm_erp.consume,Mocdm_erp.gp,Mocdm_pending.order_date,Mocdm_pending.factory).join(Mocdm_pending,(Mocdm_pending.po == Mocdm_erp.po) & (Mocdm_pending.style == Mocdm_erp.style) & (Mocdm_pending.color == Mocdm_erp.main_color) & (Mocdm_pending.org_buyer == Mocdm_erp.pending_buyer),isouter = True).all()
-    # all_data = db.session.query(Mocdm_erp.id,Mocdm_erp.po,Mocdm_erp.style,Mocdm_erp.buyer_version,Mocdm_erp.buyer,Mocdm_erp.pending_buyer,Mocdm_erp.product_name,Mocdm_erp.main_color,Mocdm_erp.season,Mocdm_erp.vessel_date,Mocdm_erp.category,Mocdm_erp.material_classification,Mocdm_erp.material_code,Mocdm_erp.material,Mocdm_erp.material_chinese,Mocdm_erp.size,Mocdm_erp.color,Mocdm_erp.org_consume,Mocdm_erp.unit,Mocdm_erp.loss,Mocdm_erp.consume_point,Mocdm_erp.order_qty,Mocdm_erp.consume,Mocdm_erp.gp).all()
     df = pd.DataFrame((tuple(t) for t in all_data), columns=('PO#','LABEL','DES','D/C','PREVIOUS','DELY','MYANMAR','STYLE','BUYER VERSION','BUYER','PRODUCT NAME','MAIN COLOR','SEASON','VESSEL DATE','CATEGORY','MATERIAL CLASSIFICATION','MATERIAL CODE','MATERIAL NAME IN CHINESE','MATERIAL','SIZE','COLOUR','ORIGINAL CONSUME','UNIT','LOSS','CONSUME POINT','ORDER QTY','CONSUME','GROUP','ORDER DATE','FACTORY'))                                  
-    # df = pd.DataFrame((tuple(t) for t in all_data), columns=('id','po','style','buyer_version','buyer','product_name','main_color','season','vessel_date','category','material_classification','material_code','material','material_chinese','size','color','org_consume','unit','loss','consume_point','order_qty','consume','gp','pending_buyer'))
     out = io.BytesIO()
     writer = pd.ExcelWriter(out, engine='xlsxwriter')
     df.to_excel(excel_writer=writer, index=False, sheet_name='Sheet1')
@@ -376,16 +374,17 @@ def searchorderlist():
         logging.error(str(e))
     return render_template("searchpending.html", po = po, all_data = all_data)
 
-@auth.route('/consumptionreport', methods=['GET','POST'])
+@auth.route('/consumptionreport' , defaults={'page_num':1})
+@auth.route('/consumptionreport/<int:page_num>', methods=['GET','POST'])
 @login_required
-def consumptionreport():
+def consumptionreport(page_num):
     if request.method=='GET':
         style = request.args.get('style')
         group_name = request.args.get('group_name')
         qty_no = request.args.get('qty_no')
         dely_date = request.args.get('dely_date')
         buyer = request.args.get('buyer')
-        all_data = db.session.query(Mocdm_erp.id.label("erpid"),Mocdm_consumption.id,Mocdm_erp.category,Mocdm_erp.material,Mocdm_erp.color,Mocdm_erp.unit,Mocdm_erp.consume,Mocdm_erp.order_qty,Mocdm_consumption.issued_qty,Mocdm_consumption.balance,Mocdm_consumption.date,Mocdm_consumption.issued_by_leader,Mocdm_consumption.factory_line,Mocdm_consumption.reciever,Mocdm_consumption.remark).join(Mocdm_pending,(Mocdm_pending.po == Mocdm_erp.po) & (Mocdm_pending.color == Mocdm_erp.main_color) & (Mocdm_pending.style == Mocdm_erp.style) & (Mocdm_pending.org_buyer == Mocdm_erp.pending_buyer),isouter = True).join(Mocdm_consumption,(Mocdm_consumption.erp_id == Mocdm_erp.id),isouter = True).filter(Mocdm_pending.gp_name == group_name,Mocdm_pending.style == style,Mocdm_pending.qty == qty_no,Mocdm_pending.ext_dely == dely_date).all()      
+        all_data = db.session.query(Mocdm_erp.id.label("erpid"),Mocdm_consumption.id,Mocdm_erp.category,Mocdm_erp.material,Mocdm_erp.color,Mocdm_erp.unit,Mocdm_erp.consume,Mocdm_erp.order_qty,Mocdm_consumption.issued_qty,Mocdm_consumption.balance,Mocdm_consumption.date,Mocdm_consumption.issued_by_leader,Mocdm_consumption.factory_line,Mocdm_consumption.reciever,Mocdm_consumption.remark).join(Mocdm_pending,(Mocdm_pending.po == Mocdm_erp.po) & (Mocdm_pending.color == Mocdm_erp.main_color) & (Mocdm_pending.style == Mocdm_erp.style) & (Mocdm_pending.org_buyer == Mocdm_erp.pending_buyer),isouter = True).join(Mocdm_consumption,(Mocdm_consumption.erp_id == Mocdm_erp.id),isouter = True).filter(Mocdm_pending.gp_name == group_name,Mocdm_pending.style == style,Mocdm_pending.qty == qty_no,Mocdm_pending.ext_dely == dely_date).paginate(per_page=100, page=page_num, error_out=True)
         return render_template('consumptionreport.html',all_data = all_data, style=style, group_name=group_name, qty_no=qty_no, dely_date=dely_date, buyer=buyer)
 
 
@@ -405,8 +404,7 @@ def searchcreport():
         if not all_data:
             return "no data"
         else:
-            return render_template("searchpending.html", all_data = all_data)
-
+            return render_template("searchpending.html", all_data = all_data)      
 
 @auth.route('/consumptionreportUpdate', methods=['GET', 'POST'])
 @login_required
@@ -414,16 +412,25 @@ def consumptionreportUpdate():
     if request.method=='POST':
         data = Mocdm_consumption.query.get(request.form.get('id'))
         if data:
-            all_data = Mocdm_consumption(id=request.form['id'],issued_qty=request.form['issued_qty'],balance=request.form['balance'],date=request.form['date'],issued_by_leader=request.form['issued_by_leader'],factory_line=request.form['factory_line'],reciever=request.form['reciever'],remark=request.form['remark'])
+            style = request.args.get('style')
+            group_name = request.args.get('group_name')
+            qty_no = request.args.get('qty_no')
+            dely_date = request.args.get('dely_date')
+            buyer = request.args.get('buyer')
+            all_data = Mocdm_consumption(id=request.form['id'],issued_qty=request.form['issued_qty'] or 0,balance=request.form['balance'] or 0,date=request.form['date'] or None,issued_by_leader=request.form['issued_by_leader'] or None,factory_line=request.form['factory_line'] or None,reciever=request.form['reciever'] or None,remark=request.form['remark'] or None)
             db.session.merge(all_data)
             db.session.commit()
-            return redirect(url_for('auth.consumptionreport'))
+            return redirect(request.referrer or url_for('auth.consumptionreport') + '?style=style&group_name=group_name&qty_no=qty_no&dely_date=dely_date&buyer=buyer')
         else:
-            all_data = Mocdm_consumption(erp_id=request.form['erpid'],issued_qty=request.form['issued_qty'],balance=request.form['balance'],date=request.form['date'],issued_by_leader=request.form['issued_by_leader'],factory_line=request.form['factory_line'],reciever=request.form['reciever'],remark=request.form['remark'])
+            style = request.args.get('style')
+            group_name = request.args.get('group_name')
+            qty_no = request.args.get('qty_no')
+            dely_date = request.args.get('dely_date')
+            buyer = request.args.get('buyer')
+            all_data = Mocdm_consumption(erp_id=request.form['erpid'] ,issued_qty=request.form['issued_qty'] or 0,balance=request.form['balance'] or 0,date=request.form['date'] or None,issued_by_leader=request.form['issued_by_leader'] or None,factory_line=request.form['factory_line'] or None,reciever=request.form['reciever'] or None,remark=request.form['remark'] or None)
             db.session.add(all_data)
             db.session.commit()
-            return redirect(url_for('auth.consumptionreport'))        
-            
+            return redirect(request.referrer or url_for('auth.consumptionreport') + '?style=style&group_name=group_name&qty_no=qty_no&dely_date=dely_date&buyer=buyer')
 
 @auth.route('/download/consumptionreport', methods=['GET', 'POST'])
 def download_consumptionreportreport():
