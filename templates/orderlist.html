@@ -1,9 +1,10 @@
 {% extends "base.html" %}
 {% block content %}
-<br>
-<h3 class="title" style="text-align: center;">Order List</h3>
+
+  <div class="d-flex align-items-center mb-4">
+    <h3 class="title m-0" style="white-space:nowrap;">Order List</h3>
 <!-- <div class="box"> -->
-    <div id="" class="container tab-pane active"><br>
+    <div id="" class="container tab-pane active">
         {% with messages = get_flashed_messages() %}
         {% if messages %}
             <div class="notification is-danger">
@@ -11,6 +12,8 @@
             </div>
         {% endif %}
     {% endwith %}
+  </div>
+</div>
     <div class="my-3 p-3 bg-body rounded shadow-sm border">
       <div class="container">
         <form action="/searchorderlist" method="POST" enctype="multipart/form-data">
