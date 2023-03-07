@@ -13,45 +13,41 @@
         {% endif %}
     {% endwith %}
 
-                <!-- <form method="POST" action="/pending_upload" enctype="multipart/form-data">
-                    <input type="file" class="custom-file-input" id="customFile" name="file">
-                    <label class="custom-file-label" for="customFile">Choose file</label>
-                    <br>
-                    <br>
-                    <button type="submit" class="btn btn-sm btn-secondary">Upload file</button>
-                </form> -->
+               
                 <a href="{{ url_for('main.erpfileupload') }}" type="submit" class="btn btn-outline-primary">+ New ERP List</a>
             </div>
   </div>
 
-            
-            <div class="container">
-
-              <form action="/searcherp" method="POST" enctype="multipart/form-data">
-                <div class="row">
-                  <div class="col-md-2">
-                    <input type="text" class="form-control mt-3" id="po" placeholder="PO Number" name="po">
-                  </div>
-                  <div class="col-md-2">
-                    <input type="name" class="form-control mt-3" id="style" placeholder="Style" name="style">
-                  </div>
-                  <div class="col-md-2">
-                    <input type="name" class="form-control mt-3" id="buyer" placeholder="Buyer" name="buyer">
-                  </div>
-                  <div class="col-md-2">
-                    <input type="name" class="form-control mt-3" id="color" placeholder="Color" name="color">   
-                  </div>
-                  <div class="col-md-2">
-                    <input type="name" class="form-control mt-3" id="gp" placeholder="Group" name="gp">  
-                  </div>
-                  <div class="col-md-2">
-                    <input type="submit" class="form-control btn btn-primary" value="Search">
-                    <!-- <button type="submit" class="btn btn-secondary">Search</button>   -->
-                  </div>
-                </div>
-              </form>
-              
+  <div class="my-3 p-3 bg-body rounded shadow-sm border">
+    <div class="container">
+      <form action="/searcherp" method="POST" enctype="multipart/form-data">
+        <div class="row mb-3">
+            <div class="col-md-3">
+              <label for="po">PO:</label>
+              <input type="text" class="form-control" id="po" placeholder="PO Number" name="po">
             </div>
+            <div class="col-md-3">
+              <label for="style">Style:</label>
+              <input type="name" class="form-control" id="style" placeholder="Style" name="style">
+            </div>
+            <div class="col-md-3">
+              <label for="org_buyer">Buyer:</label>
+              <input type="name" class="form-control" id="org_buyer" placeholder="Buyer" name="org_buyer">
+            </div>
+            <div class="col-md-3">
+              <label for="color">Color:</label>
+              <input type="name" class="form-control" id="color" placeholder="Color" name="color">
+            </div>
+            
+        </div>
+        <div class="row align-items-end">
+          <div class="col-md-3">
+            <input type="submit" class="form-control btn btn-primary" value="Search">
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
             <br>
             <div class="table-responsive">
                 <table class="table table-bordered table-striped" id="myTable">

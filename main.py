@@ -8,6 +8,9 @@ from __init__ import create_app, db
 main = Blueprint('main', __name__)
 # crontab = Crontab(main)
 
+def is_active(page):
+    return True if request.path == page else False
+
 @main.route('/imageupload', methods=['POST'])
 def imageupload():
     file = request.files['image']
@@ -39,7 +42,7 @@ def pendingfileupload():
 @main.route('/profile')
 @login_required
 def profile():
-    return render_template('profile.html', name=current_user.name)
+    return render_template('profile.html', name=current_user.name,  home_active=is_active('/profile'))
 
 @main.route('/edit')
 @login_required

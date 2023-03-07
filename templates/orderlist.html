@@ -11,61 +11,47 @@
             </div>
         {% endif %}
     {% endwith %}
-    <script>
-      $(".custom-file-input").on("change", function() {
-        var fileName = $(this).val().split("\\").pop();
-        $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
-      });
-  </script>
-
-
-            <div class="container">
-              <form action="/searchorderlist" method="POST" enctype="multipart/form-data">
-                <div class="row">
-                  <div class="col-md-3">
-                <input type="text" class="form-control mt-3" id="po" placeholder="PO Number" name="po">
-                  </div>
-                  <div class="col-md-3">
-                <input type="name" class="form-control mt-3" id="style" placeholder="Style" name="style">
-                  </div>
-                  <div class="col-md-3">
-                <input type="name" class="form-control mt-3" id="org_buyer" placeholder="Buyer" name="org_buyer">
-                  </div>
-                  <div class="col-md-3">
-                <input type="name" class="form-control mt-3" id="color" placeholder="Color" name="color">
-                  </div>
-                  <div class="col-md-3">
-                <input type="name" class="form-control mt-3" id="gp_name" placeholder="Group" name="gp_name">
-                  </div>
-                  <div class="col-md-3">
-                <input type="text" class="form-control mt-3" id="factory" placeholder="FACTORY" name="factory">
-                  </div>
-                  <div class="col-md-3">
-                <input type="name" class="form-control mt-3" id="label" placeholder="LABEL" name="label">
-                  </div>
-                  <div class="col-md-3">
-                    <label for="start">Order Date</label>
-                <div class="col-xs-2">
-                <input type="date" id="order_date" class="form-control" name="order_date" min="2000-01-02"><br><br>  
-                </div>
-                  </div>
-                  <div class="col-md-3">
-                    <label for="start">Delivery Date</label>
-                <div class="col-xs-2">
-                <input type="date" id="ext_dely" class="form-control" name="ext_dely" min="2000-01-02"><br><br>  
-                </div>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-md-6">
-                <button type="submit" class="btn btn-secondary">Search</button>
-                  </div>
-                  <div class="col-md-6">
-                <p><a href="{{ url_for('auth.download_report') }}">Download</a></p>
-                  </div>
-                </div>
-              </form>
+    <div class="my-3 p-3 bg-body rounded shadow-sm border">
+      <div class="container">
+        <form action="/searchorderlist" method="POST" enctype="multipart/form-data">
+          <div class="row mb-3">
+              <div class="col-md-3">
+                <label for="po">PO:</label>
+                <input type="text" class="form-control" id="po" placeholder="PO Number" name="po">
+              </div>
+              <div class="col-md-3">
+                <label for="style">Style:</label>
+                <input type="name" class="form-control" id="style" placeholder="Style" name="style">
+              </div>
+              <div class="col-md-3">
+                <label for="org_buyer">Buyer:</label>
+                <input type="name" class="form-control" id="org_buyer" placeholder="Buyer" name="org_buyer">
+              </div>
+              <div class="col-md-3">
+                <label for="color">Color:</label>
+                <input type="name" class="form-control" id="color" placeholder="Color" name="color">
+              </div>
+          </div>
+          <div class="row align-items-end">
+            <div class="col-md-3">
+              <label for="gp_name">Group:</label>
+             <input type="name" class="form-control" id="gp_name" placeholder="Group" name="gp_name">
             </div>
+            <div class="col-md-3">
+              <label for="order_date">Order Date</label>
+              <input type="date" id="order_date" class="form-control" name="order_date" min="2000-01-02">
+            </div>
+            <div class="col-md-3">
+              <label for="start">Delivery Date</label>
+              <input type="date" id="ext_dely" class="form-control" name="ext_dely" min="2000-01-02"> 
+            </div>
+            <div class="col-md-3">
+              <input type="submit" class="form-control btn btn-primary" value="Search">
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
             <br>
             </div>
             <br>

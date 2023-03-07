@@ -15,6 +15,7 @@ from datetime import datetime
 from flask import Flask, send_file
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from flask import current_app
 import pyttsx3 
 import csv
 import logging
@@ -26,7 +27,11 @@ import xlsxwriter
 import io
 from __init__ import db
 
-auth = Blueprint('auth', __name__) 
+auth = Blueprint('auth', __name__)
+
+
+def is_active(page):
+    return True if request.path == page else False
 
 @auth.route('/login', methods=['GET', 'POST']) 
 def login():
@@ -46,6 +51,8 @@ def login():
                 return redirect(url_for('auth.login')) 
             login_user(user, remember=remember)
             session["role"] = user.role
+            current_page = current_app.config.get('CURRENT_PAGE')
+            current_page_home = 'home'
             return redirect(url_for('main.profile'))
     except SQLAlchemyError as e:
         current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
@@ -139,7 +146,7 @@ def emplist(page_num):
         current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         logging.basicConfig(filename= f'error_log.log', level=logging.ERROR)
         logging.error(str(e))
-    return render_template('employee.html',all_data = all_data) 
+    return render_template('employee.html',all_data = all_data, emp_active="is_active('/emp')") 
 
 @auth.route("/erpupload", methods=['POST'])
 @login_required
@@ -173,7 +180,7 @@ def erpupload():
 def erplist(page_num):
     if request.method=='GET':
         all_data = Mocdm_erp.query.paginate(per_page=100, page=page_num, error_out=True)
-        return render_template('erp.html',all_data = all_data)
+        return render_template('erp.html',all_data = all_data, erp_active="is_active('/erp')")
 
 @auth.route('/erpUpdate', methods=['GET', 'POST'])
 @login_required
@@ -313,7 +320,7 @@ def pending_upload():
 def pendinglist(page_num):
     if request.method=='GET':
         all_data = Mocdm_pending.query.paginate(per_page=100, page=page_num, error_out=True)
-        return render_template('pending.html',all_data = all_data)
+        return render_template('pending.html',all_data = all_data, pending_active="is_active('/pending')")
 
 @auth.route('/deletePending', methods=['POST'])
 def deletePending():
@@ -333,7 +340,7 @@ def deletePending():
 def orderlist(page_num):
     if request.method=='GET':
         all_data = db.session.query(Mocdm_erp.id,Mocdm_erp.po,Mocdm_pending.label,Mocdm_pending.des,Mocdm_pending.mcn,Mocdm_pending.previous,Mocdm_pending.ext_dely,Mocdm_pending.myanmar,Mocdm_erp.style,Mocdm_erp.buyer_version,Mocdm_erp.pending_buyer,Mocdm_erp.product_name,Mocdm_erp.main_color,Mocdm_erp.season,Mocdm_erp.vessel_date,Mocdm_erp.category,Mocdm_erp.material_classification,Mocdm_erp.material_code,Mocdm_erp.material,Mocdm_erp.material_chinese,Mocdm_erp.size,Mocdm_erp.color,Mocdm_erp.org_consume,Mocdm_erp.unit,Mocdm_erp.loss,Mocdm_erp.consume_point,Mocdm_erp.order_qty,Mocdm_erp.consume,Mocdm_erp.gp,Mocdm_pending.order_date,Mocdm_pending.factory).join(Mocdm_pending,(Mocdm_pending.po == Mocdm_erp.po) & (Mocdm_pending.style == Mocdm_erp.style) & (Mocdm_pending.color == Mocdm_erp.main_color) & (Mocdm_pending.org_buyer == Mocdm_erp.pending_buyer),isouter = True).paginate(per_page=1000, page=page_num, error_out=True) 
-        return render_template('orderlist.html',all_data = all_data)
+        return render_template('orderlist.html',all_data = all_data, orderlist_active="is_active('/orderlist')")
 
 @auth.route('/download/orderlist', methods=['GET', 'POST'])
 def download_report():
@@ -505,7 +512,7 @@ def scheduleUpload():
 def schedulelist(page_num):
     if request.method=='GET':
         all_data = Mocdm_schedule.query.paginate(per_page=100, page=page_num, error_out=True)
-        return render_template('schedulereport.html',all_data = all_data)
+        return render_template('schedulereport.html',all_data = all_data, schedule_active="is_active('/schedule')")
 
 @auth.route('/deleteSchedule/<id>/', methods = ['GET', 'POST'])
 def deleteSchedule(id):

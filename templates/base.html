@@ -59,38 +59,38 @@
           <div class="collapse navbar-collapse" id="navbarText">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
               <li class="nav-item">
-                <a href="{{ url_for('main.profile') }}" class="nav-link active">
+                <a href="{{ url_for('main.profile') }}" class="nav-link {% if home_active %}active{% endif %}">
                     Home
                 </a>
               </li>
               {% if current_user.is_authenticated %}
 
               <li class="nav-item">
-                <a href="{{ url_for('auth.emplist') }}" class="nav-link">
+                <a href="{{ url_for('auth.emplist') }}" class="nav-link  {% if emp_active %}active{% endif %}">
                     Users
                 </a>
               </li>
 
               <li class="nav-item">
-                <a href="{{ url_for('auth.erplist') }}" class="nav-link">
+                <a href="{{ url_for('auth.erplist') }}" class="nav-link  {% if erp_active %}active{% endif %}">
                     ERP
                 </a>
               </li>
 
               <li class="nav-item">
-                <a href="{{ url_for('auth.pendinglist') }}" class="nav-link">
+                <a href="{{ url_for('auth.pendinglist') }}" class="nav-link  {% if pending_active %}active{% endif %}">
                     Pending
                 </a>
               </li>
 
               <li class="nav-item">
-                <a href="{{ url_for('auth.orderlist') }}" class="nav-link">
+                <a href="{{ url_for('auth.orderlist') }}" class="nav-link  {% if orderlist_active %}active{% endif %}">
                     Order List
                 </a>
               </li>
 
               <li class="nav-item">
-                <a href="{{ url_for('auth.schedulelist') }}" class="nav-link">
+                <a href="{{ url_for('auth.schedulelist') }}" class="nav-link  {% if schedule_active %}active{% endif %}">
                     Schedule Report
                 </a>
               </li>
@@ -127,7 +127,7 @@
               {% if current_user.is_authenticated %}
 
               <li class="nav-item">
-                <a href="{{ url_for('auth.schedulelist') }}" class="nav-link">
+                <a href="{{ url_for('auth.schedulelist') }}" class="nav-link  {% if emp_active %}active{% endif %}">
                     Schedule Report
                 </a>
             </li>
@@ -180,7 +180,7 @@
               {% if current_user.is_authenticated %}
 
               <li class="nav-item">
-                <a href="{{ url_for('auth.orderlist') }}" class="nav-link">
+                <a href="{{ url_for('auth.orderlist') }}" class="nav-link  {% if emp_active %}active{% endif %}">
                     Order List
                 </a>
             </li>

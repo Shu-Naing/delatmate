@@ -9,6 +9,7 @@ def create_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:''@localhost/db4deltamate'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False 
     app.config['UPLOAD_FOLDER'] = 'static/uploads/'
+    app.config['CURRENT_PAGE'] = 'home'
     db.init_app(app)
 
     login_manager = LoginManager() 
