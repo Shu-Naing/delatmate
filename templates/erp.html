@@ -1,8 +1,10 @@
 {% extends "base.html" %}
 {% block content %}
-<h3 class="title" style="text-align: center;">ERP</h3>
+
+  <div class="d-flex align-items-center mb-4">
+    <h3 class="title m-0" style="white-space:nowrap;">ERP</h3>
 <!-- <div class="box"> -->
-    <div id="" class="container tab-pane active"><br>
+    <div id="" class="container tab-pane active">
         {% with messages = get_flashed_messages() %}
         {% if messages %}
             <div class="notification is-danger">
@@ -10,20 +12,21 @@
             </div>
         {% endif %}
     {% endwith %}
-    <script>
-      $(".custom-file-input").on("change", function() {
-        var fileName = $(this).val().split("\\").pop();
-        $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
-      });
-  </script>
 
-                <!-- <form method="POST" action="/erpupload" enctype="multipart/form-data">
+                <!-- <form method="POST" action="/pending_upload" enctype="multipart/form-data">
                     <input type="file" class="custom-file-input" id="customFile" name="file">
-                    <label class="custom-file-label" for="customFile">Choose file</label>-->
-                     
+                    <label class="custom-file-label" for="customFile">Choose file</label>
+                    <br>
+                    <br>
+                    <button type="submit" class="btn btn-sm btn-secondary">Upload file</button>
+                </form> -->
+                <a href="{{ url_for('main.erpfileupload') }}" type="submit" class="btn btn-outline-primary">+ New ERP List</a>
             </div>
+  </div>
+
+            
             <div class="container">
-              <a href="{{ url_for('main.erpfileupload') }}" type="submit">+ New ERP List</a>
+
               <form action="/searcherp" method="POST" enctype="multipart/form-data">
                 <div class="row">
                   <div class="col-md-2">
@@ -42,15 +45,16 @@
                     <input type="name" class="form-control mt-3" id="gp" placeholder="Group" name="gp">  
                   </div>
                   <div class="col-md-2">
-                    <input type="submit" class="form-control mt-3" id="gp" value="Search" style="background-color: turquoise;">  
+                    <input type="submit" class="form-control btn btn-primary" value="Search">
                     <!-- <button type="submit" class="btn btn-secondary">Search</button>   -->
                   </div>
                 </div>
               </form>
+              
             </div>
             <br>
             <div class="table-responsive">
-                <table class="table table-bordered" id="myTable">
+                <table class="table table-bordered table-striped" id="myTable">
                     <thead>
                       <tr>
                         <th>PO</th>

@@ -1,8 +1,10 @@
 {% extends "base.html" %}
 {% block content %}
-<h3 class="title" style="text-align: center;">Pending</h3>
+
+  <div class="d-flex align-items-center mb-4">
+    <h3 class="title m-0" style="white-space:nowrap;">Pending</h3>
 <!-- <div class="box"> -->
-    <div id="" class="container tab-pane active"><br>
+    <div id="" class="container tab-pane active">
         {% with messages = get_flashed_messages() %}
         {% if messages %}
             <div class="notification is-danger">
@@ -18,34 +20,35 @@
                     <br>
                     <button type="submit" class="btn btn-sm btn-secondary">Upload file</button>
                 </form> -->
-                <a href="{{ url_for('main.pendingfileupload') }}" type="submit">+ New Pending List</a>
+                <a href="{{ url_for('main.pendingfileupload') }}" type="submit" class="btn btn-outline-primary">+ New Pending List</a>
             </div>
-            <br>
-            <div class="container mt-3">
+  </div>
+
+            <div class="my-3 p-3 bg-body rounded shadow-sm border">
+              <div class="container">
                 <form action="/searchpending" method="POST" enctype="multipart/form-data">
-                  <div class="row">
+                  <div class="row mb-3">
                       <div class="col-md-3">
                         <label for="po">PO:</label>
-                        <input type="text" class="form-control mt-3" id="po" placeholder="PO Number" name="po">
+                        <input type="text" class="form-control" id="po" placeholder="PO Number" name="po">
                       </div>
                       <div class="col-md-3">
                         <label for="style">Style:</label>
-                        <input type="name" class="form-control mt-3" id="style" placeholder="Style" name="style">
+                        <input type="name" class="form-control" id="style" placeholder="Style" name="style">
                       </div>
                       <div class="col-md-3">
                         <label for="org_buyer">Buyer:</label>
-                        <input type="name" class="form-control mt-3" id="org_buyer" placeholder="Buyer" name="org_buyer">
+                        <input type="name" class="form-control" id="org_buyer" placeholder="Buyer" name="org_buyer">
                       </div>
                       <div class="col-md-3">
                         <label for="color">Color:</label>
-                        <input type="name" class="form-control mt-3" id="color" placeholder="Color" name="color">
+                        <input type="name" class="form-control" id="color" placeholder="Color" name="color">
                       </div>
                   </div>
-                  <br>
-                  <div class="row">
+                  <div class="row align-items-end">
                     <div class="col-md-3">
                       <label for="gp_name">Group:</label>
-                     <input type="name" class="form-control mt-3" id="gp_name" placeholder="Group" name="gp_name">
+                     <input type="name" class="form-control" id="gp_name" placeholder="Group" name="gp_name">
                     </div>
                     <div class="col-md-3">
                       <label for="order_date">Order Date</label>
@@ -56,12 +59,15 @@
                       <input type="date" id="ext_dely" class="form-control" name="ext_dely" min="2000-01-02"> 
                     </div>
                     <div class="col-md-3">
-                      <input type="submit" class="form-control mt-3" value="Search">
+                      <input type="submit" class="form-control btn btn-primary" value="Search">
                     </div>
                   </div>
                 </form>
-                <form action="/deletePending" method="POST">
-                  <div class="row">
+
+                
+
+                <form action="/deletePending" method="POST" class="search-group">
+                  <div class="row align-items-end">
                     <div class="col-md-3">
                       <label for="start_date">Start date:</label>
                   <input type="date" id="start_date" name="start_date" class="form-control" required>
@@ -69,18 +75,21 @@
                     <div class="col-md-3">
                       <label for="end_date">End date:</label>
                   <input type="date" id="end_date" name="end_date" class="form-control" required>
-                  <br>
-                  <input type="submit" class="form-control mt-3" value="Delete">
-
                     </div>
-                    
+                    <div class="col-md-3">
+                      <input type="submit" class="form-control btn btn-danger" value="Delete">
+                    </div>                    
                   </div>
                 </form>
               </div>
             </div>
+
+            </div>
             <br>
-            <div class="table-responsive">
-                <table class="table table-bordered" id="myTable">
+            
+            <div class="container">
+              <div class="table-responsive bg-light p-4 border mb-5">
+                <table class="table table-bordered table-striped" id="myTable">
                     <thead>
                       <tr>
                         <th>EX - FTY ( DELY)</th>
@@ -153,8 +162,6 @@
                         <a href="/pendingUpdate"  class="btn btn-primary" value="{{row.id}}" data-bs-toggle="modal" data-bs-target="#myModal{{row.id}}">Edit</a>
                         </td>
 
-                        <!-- <td>{{row.remark}}</td> -->
-                        <!-- <td>{{row.status}}</td> -->
                       </tr>
                       <div class="modal fade" id="myModal{{row.id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                         <div class="modal-dialog">
@@ -271,4 +278,6 @@
                   {% endif %}
                    </ul>
               </div>
+            </div>
+
 {% endblock %}

@@ -17,76 +17,209 @@
         {% else %}
             <h1>SOrry</h1>
         {% endif %} -->
+
+
+    <style>
+        a{
+            text-decoration: none;
+        }
+
+        .navbar-light .navbar-nav .nav-link.active, 
+        .navbar-light .navbar-nav .nav-link:hover{
+            color:#0033CC
+        }
+
+        .search-group{
+            background: #ddd;
+            padding: 15px;
+            margin-top: 30px;
+        }
+
+        #myTable thead th{
+            white-space: nowrap;
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+
+        .pagination{
+            justify-content: center;
+        }
+
+    </style>
+
 <body>
     <div class="container">
+        <h2  class="h4" style="color: #0033CC; font-weight: bold;"><img src="/static/images/deltamatelogo.jpg" width="60" height="auto" alt="">Delta Mate Myanmar</h2>
     {% if session["role"] == 'superadmin' %}
-        <div id="navbarMenuHeroA" class="navbar-menu">
-            <div class="navbar-end">
-                <a href="{{ url_for('main.index') }}" class="navbar-item">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm border">
+        <div class="container-fluid">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarText">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a href="{{ url_for('main.profile') }}" class="nav-link active">
                     Home
                 </a>
-                {% if current_user.is_authenticated %}
-                <a href="{{ url_for('auth.emplist') }}" class="navbar-item">
+              </li>
+              {% if current_user.is_authenticated %}
+
+              <li class="nav-item">
+                <a href="{{ url_for('auth.emplist') }}" class="nav-link">
                     Users
                 </a>
-                <a href="{{ url_for('auth.erplist') }}" class="navbar-item">
+              </li>
+
+              <li class="nav-item">
+                <a href="{{ url_for('auth.erplist') }}" class="nav-link">
                     ERP
                 </a>
-                <a href="{{ url_for('auth.pendinglist') }}" class="navbar-item">
+              </li>
+
+              <li class="nav-item">
+                <a href="{{ url_for('auth.pendinglist') }}" class="nav-link">
                     Pending
                 </a>
-                <a href="{{ url_for('auth.orderlist') }}" class="navbar-item">
+              </li>
+
+              <li class="nav-item">
+                <a href="{{ url_for('auth.orderlist') }}" class="nav-link">
                     Order List
                 </a>
-                <a href="{{ url_for('auth.schedulelist') }}" class="navbar-item">
+              </li>
+
+              <li class="nav-item">
+                <a href="{{ url_for('auth.schedulelist') }}" class="nav-link">
                     Schedule Report
                 </a>
-                {% endif %}
-                {% if not current_user.is_authenticated %}
-                <a href="{{ url_for('auth.login') }}" class="navbar-item">
+              </li>
+              {% endif %}
+            </ul>
+
+
+            <div>
+                
+            {% if not current_user.is_authenticated %}
+                <a href="{{ url_for('auth.login') }}" class="btn btn-success">
                     Login
                 </a>
-                <a href="{{ url_for('auth.signup') }}" class="navbar-item">
-                    Sign Up
-                </a>
-                {% endif %}
-                {% if current_user.is_authenticated %}
-                <a href="{{ url_for('auth.logout') }}" class="navbar-item">
+            {% endif %}
+            {% if current_user.is_authenticated %}
+                <a href="{{ url_for('auth.logout') }}" class="btn btn-danger">
                     Logout
                 </a>
-                {% endif %}
+            {% endif %}
             </div>
+
+
+          </div>
         </div>
-        {% elif session["role"] == 'admin' %}
-        <div id="myDIV" class="navbar-menu">
-            <div class="navbar-end">
-                {% if current_user.is_authenticated %}
-                <a href="{{ url_for('auth.schedulelist') }}" class="navbar-item">
+      </nav>
+      {% elif session["role"] == 'admin' %}
+      <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm border">
+        <div class="container-fluid">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarText">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              {% if current_user.is_authenticated %}
+
+              <li class="nav-item">
+                <a href="{{ url_for('auth.schedulelist') }}" class="nav-link">
                     Schedule Report
                 </a>
-                <a href="{{ url_for('auth.logout') }}" class="navbar-item">
+            </li>
+
+            <li class="nav-item">
+                <a href="{{ url_for('auth.logout') }}" class="nav-link">
                     Logout
                 </a>
-                {% endif %}
-            </div>
-        </div>
-        {% elif session["role"] == 'factory' %}
-        <div id="myDIV" class="navbar-menu">
-            <div class="navbar-end">
-                {% if current_user.is_authenticated %}
-                <a href="{{ url_for('auth.orderlist') }}" class="navbar-item">
-                    Orderlist
+            </li>
+              {% endif %}
+            </ul>
+
+
+            <div>
+                <div class="collapse navbar-collapse" id="navbarText">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            </ul>
+
+
+            <div>
+            {% if not current_user.is_authenticated %}
+                <a href="{{ url_for('auth.login') }}" class="btn btn-success">
+                    Login
                 </a>
-                <a href="{{ url_for('auth.logout') }}" class="navbar-item">
+            {% endif %}
+            {% if current_user.is_authenticated %}
+                <a href="{{ url_for('auth.logout') }}" class="btn btn-danger">
                     Logout
                 </a>
-                {% endif %}
+            {% endif %}
             </div>
+
+
+          </div>
         </div>
-        {% endif %}
-        <h2 style="color: #0033CC; font-weight: bold;"><img src="/static/images/deltamatelogo.jpg" width="60" height="30" alt="">Delta Mate Myanmar</h2>
-    </div>
-        <div class="">
+      </nav>
+      {% elif session["role"] == 'factory' %}
+      <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm border">
+        <div class="container-fluid">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarText">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a href="{{ url_for('main.profile') }}" class="nav-link active">
+                    Home
+                </a>
+              </li>
+              {% if current_user.is_authenticated %}
+
+              <li class="nav-item">
+                <a href="{{ url_for('auth.orderlist') }}" class="nav-link">
+                    Order List
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a href="{{ url_for('auth.logout') }}" class="nav-link">
+                    Logout
+                </a>
+            </li>
+              {% endif %}
+            </ul>
+
+
+            <div>
+                <div class="collapse navbar-collapse" id="navbarText">
+            
+            </ul>
+
+
+            <div>
+            {% if not current_user.is_authenticated %}
+                <a href="{{ url_for('auth.login') }}" class="btn btn-success">
+                    Login
+                </a>
+            {% endif %}
+            {% if current_user.is_authenticated %}
+                <a href="{{ url_for('auth.logout') }}" class="btn btn-danger">
+                    Logout
+                </a>
+            {% endif %}
+            </div>
+
+
+          </div>
+        </div>
+      </nav>
+      {% endif %}
+
+        <div class="container mt-5">
             {% block content %}{% endblock %}
         </div>
         
