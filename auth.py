@@ -38,14 +38,14 @@ def login():
             password = request.form.get('password')
             remember = True if request.form.get('remember') else False
             user = Mocdm_users.query.filter_by(name=name).first()
-            session["role"] = user.role
             if not user:
-                flash('Please sign up before!')
-                return redirect(url_for('auth.signup'))
+                flash('Please login agin!')
+                return redirect(url_for('auth.login'))
             elif not check_password_hash(user.password, password):
                 flash('Please check your login details and try again.')
                 return redirect(url_for('auth.login')) 
             login_user(user, remember=remember)
+            session["role"] = user.role
             return redirect(url_for('main.profile'))
     except SQLAlchemyError as e:
         current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
