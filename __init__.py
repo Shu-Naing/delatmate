@@ -23,4 +23,6 @@ def create_app():
     app.register_blueprint(auth_blueprint)
     from main import main as main_blueprint
     app.register_blueprint(main_blueprint)
+    from cron_srp import cron_srp as cron_srp_blueprint
+    app.register_blueprint(cron_srp_blueprint)
     return app

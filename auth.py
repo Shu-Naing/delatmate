@@ -218,12 +218,12 @@ def searcherp():
             po = request.form['po']
             style = request.form['style']
             buyer = request.form['buyer']
-            color = request.form['color']
+            main_color = request.form['main_color']
             gp = request.form['gp']
             search1 = "%{}%".format(po)
             search2 = "%{}%".format(style)
             search3 = "%{}%".format(buyer)
-            search4 = "%{}%".format(color)
+            search4 = "%{}%".format(main_color)
             search5 = "%{}%".format(gp)
             all_data = Mocdm_erp.query.filter((Mocdm_erp.po.like(search1)),(Mocdm_erp.style.like(search2)),(Mocdm_erp.buyer.like(search3)),(Mocdm_erp.color.like(search4)),(Mocdm_erp.gp.like(search5))).all()
             return render_template("searcherp.html",po = po, all_data = all_data)
@@ -525,18 +525,3 @@ def deleteSchedule(id):
 def view_image(id):
     image = Mocdm_schedule.query.filter_by(id=id).first()
     return render_template('schedulereport.html', image=image)
-
-@auth.route('/deleteWithTime')
-def deleteWithTime():
-    try:
-        two_years_ago = datetime.now().replace(year=datetime.now().year-2, month=1, day=1)
-        Mocdm_erp.query.filter(Mocdm_erp.created_date < two_years_ago).delete()
-        Mocdm_pending.query.filter(Mocdm_pending.created_date < two_years_ago).delete()
-        Mocdm_consumption.query.filter(Mocdm_consumption.created_date < two_years_ago).delete()
-        db.session.commit()
-        return ''
-    except SQLAlchemyError as e:
-        current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-        logging.basicConfig(filename= f'error_log.log', level=logging.ERROR)
-        logging.error(str(e))
-    return redirect(url_for('auth.schedulelist'))

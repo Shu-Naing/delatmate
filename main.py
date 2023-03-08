@@ -53,23 +53,10 @@ def edit():
 @login_required
 def employee():
     return render_template('employee.html', name=current_user.name)
-
-@main.route('/deleteWithTime')
-def deleteWithTime():
-    two_years_ago = datetime.now().replace(year=datetime.now().year-2, month=1, day=1)
-    Mocdm_erp.query.filter(Mocdm_erp.created_date < two_years_ago).delete()
-    Mocdm_pending.query.filter(Mocdm_pending.created_date < two_years_ago).delete()
-    Mocdm_consumption.query.filter(Mocdm_consumption.created_date < two_years_ago).delete()
-    db.session.commit()
-    print("Cron job running at")
-
-# @crontab.cron_schedule("*/5 * * * *")
-# def run_my_cron_job():
-#     my_cron_job()
-
+    
 app = create_app() 
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-    # app.run(host='150.95.26.122', port=80,debug=True) 
+    # app.run(host='150.95.26.122', debug=False) 
     app.run(debug=True) 
