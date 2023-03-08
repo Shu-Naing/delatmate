@@ -127,6 +127,16 @@
               {% if current_user.is_authenticated %}
 
               <li class="nav-item">
+                <a href="{{ url_for('auth.emplist') }}" class="nav-link  {% if emp_active %}active{% endif %}">
+                    Users
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{ url_for('auth.orderlist') }}" class="nav-link  {% if orderlist_active %}active{% endif %}">
+                    Order List
+                </a>
+              </li>
+              <li class="nav-item">
                 <a href="{{ url_for('auth.schedulelist') }}" class="nav-link  {% if emp_active %}active{% endif %}">
                     Schedule Report
                 </a>

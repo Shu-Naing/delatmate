@@ -41,6 +41,14 @@
              <input type="name" class="form-control" id="gp_name" placeholder="Group" name="gp_name">
             </div>
             <div class="col-md-3">
+              <label for="factory">Factory:</label>
+             <input type="name" class="form-control" id="factory" placeholder="Factory" name="factory">
+            </div>
+            <div class="col-md-3">
+              <label for="label">Label:</label>
+             <input type="name" class="form-control" id="label" placeholder="Label" name="label">
+            </div>
+            <div class="col-md-3">
               <label for="order_date">Order Date</label>
               <input type="date" id="order_date" class="form-control" name="order_date" min="2000-01-02">
             </div>
@@ -55,6 +63,8 @@
         </form>
       </div>
     </div>
+    <br>
+    <p><a href="{{ url_for('auth.download_report') }}">Download</a></p>
             <br>
             </div>
             <br>
