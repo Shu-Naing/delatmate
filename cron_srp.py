@@ -5,11 +5,11 @@ from models import Mocdm_erp,Mocdm_pending,Mocdm_consumption,Mocdm_schedule
 from datetime import datetime
 from sqlalchemy.exc import SQLAlchemyError
 import logging
+from apscheduler.schedulers.background import BackgroundScheduler
 from __init__ import create_app, db
 
 cron_srp = Blueprint('cron_srp', __name__)
 
-@cron_srp.route('/deleteWithTime', methods = ['GET', 'POST'])
 def deleteWithTime():
     try:
         one_years_ago = datetime.now().replace(year=datetime.now().year-1, month=1, day=1)
@@ -23,3 +23,7 @@ def deleteWithTime():
         logging.basicConfig(filename= f'error_log.log', level=logging.ERROR)
         logging.error(str(e))
     return 'OK'
+
+scheduler = BackgroundScheduler(daemon=True)
+scheduler.add_job(deleteWithTime, 'interval', days=1) 
+scheduler.start()

@@ -300,7 +300,7 @@ def pending_upload():
         if request.method == 'POST':
             excel_file = request.files['file']
             col_names = ['Ex-Fty','MCN','PO#', 'Ship To', 'Label' , 'Linked Store','DES','Group Name','Style#','Buyer#','COLOUR','QTY','Vessel','Factory','DB/GB Pkg Code','SDN PO','Customer Po#','UPC Number','Linked SO Num','Ref.Number','Material Lot No:','Season','Buyer','Order Date','KZM ID','Remark','ShpgJob','xFty Date']
-            df = pd.read_excel(excel_file,names=col_names,header = None,skiprows=1)
+            df = pd.read_excel(excel_file,names=col_names,header = None,skiprows=2)
             df = df.fillna('')
             for i,row in df.iterrows():
                 txt = 'MYANMAR'
