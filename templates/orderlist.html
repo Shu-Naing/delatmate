@@ -57,7 +57,7 @@
               <input type="date" id="ext_dely" class="form-control" name="ext_dely" min="2000-01-02"> 
             </div>
             <div class="col-md-3">
-              <input type="submit" class="form-control btn btn-primary" value="Search">
+              <input type="submit" class="form-control btn btn-primary" value="Search" href="/consumptionreport?style={{style}}&dely_date={{dely}}&group_name={{group}}&qty_no={{qty}}&buyer={{buyer}}">
             </div>
           </div>
         </form>
@@ -68,8 +68,8 @@
             <br>
             </div>
             <br>
-            <div class="table-responsive">
-                <table class="table table-bordered table-striped" id="myTable">
+            <div class="table-responsive mb-5">
+                <table class="table table-bordered table-striped mb-4" id="myTable">
                     <thead>
                       <tr>
                         <th>PO</th>
@@ -89,8 +89,8 @@
                         <th>CATEGORY</th>
                         <th>MATERIAL CLASSIFICATION</th>
                         <th>MATERIAL CODE</th>
-                        <th>MATERIAL </th>
                         <th>MATERIAL NAME IN CHINESE</th>
+                        <th>MATERIAL </th>
                         <th>SIZE</th>
                         <th>COLOUR</th>
                         <th>ORIGINAL CONSUME</th>
@@ -100,6 +100,7 @@
                         <th>ORDER QTY</th>
                         <th>CONSUME</th>
                         <th>GROUP</th>
+                        <th>Order Date</th>
                         <th>FACTORY</th>
                       </tr>
                     </thead>
@@ -111,11 +112,11 @@
                         <td>{{row.des}}</td>
                         <td>{{row.mcn}}</td>
                         <td>{{row.previous}}</td>
-                        <td>{{row.order_date}}</td>
+                        <td>{{row.ext_dely}}</td>
                         <td>{{row.myanmar}}</td>
                         <td>{{row.style}}</td>
                         <td>{{row.buyer_version}}</td>
-                        <td>{{row.buyer}}</td>
+                        <td>{{row.pending_buyer}}</td>
                         <td>{{row.product_name}}</td>
                         <td>{{row.main_color}}</td>
                         <td>{{row.season}}</td>
@@ -134,10 +135,8 @@
                         <td>{{row.order_qty}}</td>
                         <td>{{row.consume}}</td>
                         <td>{{row.gp}}</td>
+                        <td>{{row.order_date}}</td>
                         <td>{{row.factory}}</td>
-
-                        <!-- <td>{{row.remark}}</td> -->
-                        <!-- <td>{{row.status}}</td> -->
                       </tr>
                       <div class="modal fade" id="myModal{{row.id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                         <div class="modal-dialog">
@@ -185,6 +184,7 @@
                     
                     </tbody>
                 </table>
+
                 <ul class="pagination">
                   {% if all_data.has_prev %}
                    <li class="page-item"><a class="page-link" href="{{ url_for('auth.orderlist', page_num=all_data.prev_num) }}">Previous</a></li>

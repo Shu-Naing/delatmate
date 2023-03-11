@@ -1,6 +1,6 @@
 from flask_login import UserMixin
 from datetime import datetime
-from sqlalchemy import create_engine, Column, Integer, String
+from sqlalchemy import create_engine, Column, Integer, String, Numeric
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from __init__ import db
@@ -24,7 +24,7 @@ class Mocdm_erp(UserMixin, db.Model):
     product_name = db.Column(db.String(255))
     main_color = db.Column(db.String(255))
     season = db.Column(db.String(255))
-    vessel_date = db.Column(db.DateTime)
+    vessel_date = db.Column(db.Date)
     category = db.Column(db.String(255))
     material_classification = db.Column(db.String(255))
     material_code = db.Column(db.String(255))
@@ -33,11 +33,14 @@ class Mocdm_erp(UserMixin, db.Model):
     size = db.Column(db.String(255))
     color = db.Column(db.String(255))
     org_consume = db.Column(db.String(255))
+    # org_consume = db.Column(db.Numeric(precision=10, scale=6))
     unit = db.Column(db.String(255))
     loss = db.Column(db.String(255))
     consume_point = db.Column(db.String(255))
+    # consume_point = db.Column(db.Numeric(precision=10, scale=6))
     order_qty = db.Column(db.String(255))
     consume = db.Column(db.String(255))
+    # consume = db.Column(db.Numeric(precision=10, scale=6))
     gp = db.Column(db.String(255))
     remark = db.Column(db.String(255))
     pending_buyer = db.Column(db.String(255))
@@ -46,7 +49,7 @@ class Mocdm_erp(UserMixin, db.Model):
 
 class Mocdm_pending(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True) 
-    ext_dely = db.Column(db.DateTime)
+    ext_dely = db.Column(db.Date)
     mcn = db.Column(db.String(255))
     po = db.Column(db.String(255))
     ship_to = db.Column(db.String(255))

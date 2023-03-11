@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content %}
+
+  <div class="d-flex align-items-center mb-4">
+    <h3 class="title m-0" style="white-space:nowrap;">Order List</h3>
+<!-- <div class="box"> -->
+    <div id="" class="container tab-pane active">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="notification is-danger">
+                {{ messages[0] }}<br> Go to <a href="{{ url_for('auth.login') }}">login page</a>.
+            </div>
+        {% endif %}
+    {% endwith %}
+  </div>
+</div>
+{% for search in searches %}
+  <h2>Search {{ loop.index }}</h2>
+  <form method="POST" action="{{ url_for('search') }}">
+    <input type="text" class="form-control" id="po" placeholder="PO Number" name="po">
+    <button type="submit">Search</button>
+  </form>
+  <table>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Date</th>
+    </tr>
+    {% for result in search['all_data'] %}
+    <tr>
+      <td>{{ result.po }}</td>
+      <!-- <td>{{ result.name }}</td> -->
+      <!-- <td>{{ result.date }}</td> -->
+    </tr>
+    {% endfor %}
+  </table>
+{% endfor %}
+             
+{% endblock %}
