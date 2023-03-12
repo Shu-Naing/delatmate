@@ -16,37 +16,37 @@
 </div>
     <div class="my-3 p-3 bg-body rounded shadow-sm border">
       <div class="container">
-        <form action="/searchorderlist" method="POST" enctype="multipart/form-data">
+        <form action="/orderlist" method="POST" enctype="multipart/form-data">
           <div class="row mb-3">
               <div class="col-md-3">
                 <label for="po">PO:</label>
-                <input type="text" class="form-control" id="po" placeholder="PO Number" name="po">
+                <input type="text" class="form-control" id="po" placeholder="{{po}}" name="po">
               </div>
               <div class="col-md-3">
                 <label for="style">Style:</label>
-                <input type="name" class="form-control" id="style" placeholder="Style" name="style">
+                <input type="text" class="form-control" id="style" placeholder="{{style}}" name="style">
               </div>
               <div class="col-md-3">
                 <label for="org_buyer">Buyer:</label>
-                <input type="name" class="form-control" id="org_buyer" placeholder="Buyer" name="org_buyer">
+                <input type="text" class="form-control" id="org_buyer" placeholder="{{buyer}}" name="org_buyer">
               </div>
               <div class="col-md-3">
                 <label for="color">Color:</label>
-                <input type="name" class="form-control" id="color" placeholder="Color" name="color">
+                <input type="text" class="form-control" id="color" placeholder="{{color}}" name="color">
               </div>
           </div>
           <div class="row align-items-end">
             <div class="col-md-3">
               <label for="gp_name">Group:</label>
-             <input type="name" class="form-control" id="gp_name" placeholder="Group" name="gp_name">
+             <input type="text" class="form-control" id="gp_name" placeholder="{{gp_name}}" name="gp_name">
             </div>
             <div class="col-md-3">
               <label for="factory">Factory:</label>
-             <input type="name" class="form-control" id="factory" placeholder="Factory" name="factory">
+             <input type="text" class="form-control" id="factory" placeholder="{{factory}}" name="factory">
             </div>
             <div class="col-md-3">
               <label for="label">Label:</label>
-             <input type="name" class="form-control" id="label" placeholder="Label" name="label">
+             <input type="text" class="form-control" id="label" placeholder="{{label}}" name="label">
             </div>
             <div class="col-md-3">
               <label for="order_date">Order Date</label>
@@ -64,7 +64,8 @@
       </div>
     </div>
     <br>
-    <p><a href="{{ url_for('auth.download_report') }}">Download</a></p>
+    <p><a href="/download_order?po={{po}}&style={{style}}&org_buyer={{org_buyer}}&color={{color}}&gp_name={{gp_name}}&ext_dely={{ext_dely}}&order_date={{order_date}}&factory={{factory}}&label={{label}}">Download</a></p>
+
             <br>
             </div>
             <br>
@@ -111,8 +112,8 @@
                         <td>{{row.label}}</td>
                         <td>{{row.des}}</td>
                         <td>{{row.mcn}}</td>
-                        <td>{{row.previous}}</td>
-                        <td>{{row.ext_dely}}</td>
+                        <td>{{row.previous.strftime('%d/%m/%Y')}}</td>
+                        <td>{{row.ext_dely.strftime('%d/%m/%Y')}}</td>
                         <td>{{row.myanmar}}</td>
                         <td>{{row.style}}</td>
                         <td>{{row.buyer_version}}</td>
@@ -120,7 +121,7 @@
                         <td>{{row.product_name}}</td>
                         <td>{{row.main_color}}</td>
                         <td>{{row.season}}</td>
-                        <td>{{row.vessel_date}}</td>
+                        <td>{{row.vessel_date.strftime('%d/%m/%Y')}}</td>
                         <td>{{row.category}}</td>
                         <td>{{row.material_classification}}</td>
                         <td>{{row.material_code}}</td>
@@ -135,7 +136,7 @@
                         <td>{{row.order_qty}}</td>
                         <td>{{row.consume}}</td>
                         <td>{{row.gp}}</td>
-                        <td>{{row.order_date}}</td>
+                        <td>{{row.order_date.strftime('%d/%m/%Y')}}</td>
                         <td>{{row.factory}}</td>
                       </tr>
                       <div class="modal fade" id="myModal{{row.id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">

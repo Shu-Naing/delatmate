@@ -240,5 +240,54 @@
         </div>
         
 </body>
+<script>
+  function updateModelBox() {
+      $.ajax({
+          type: 'POST',
+          url: '/erpUpdate',
+          success: function(response) {
+            console.log('response', response);
+              // $('#myModal').html(response.success);
+          }
+      });
+  }
+
+  $(".erpUpdateBtn").click(function(e){
+    e.preventDefault();
+    e.stopPropagation();
+    e.stopImmediatePropagation();
+    let getEditRowID = $(this).attr("get-edit-row-value");
+    let getCurrentFormData = $("#erpForm"+getEditRowID+"").serializeArray();    
+    $.ajax({
+          type: 'POST',
+          url: '/erpUpdate',
+          data: getCurrentFormData, 
+          success: function(response) {
+            $("#myModal"+getEditRowID+"").modal('hide');
+            $("[edit-row-value="+getEditRowID+"]").parent("td").parent("tr").html(response);
+          }
+      });
+  });
+
+  $(".erpUpdateBtn").click(function(e){
+    e.preventDefault();
+    e.stopPropagation();
+    e.stopImmediatePropagation();
+    let getEditRowID = $(this).attr("get-edit-row-value");
+    let getCurrentFormData = $("#erpForm"+getEditRowID+"").serializeArray();    
+    $.ajax({
+          type: 'POST',
+          url: '/pendingUpdate',
+          data: getCurrentFormData, 
+          success: function(response) {
+            $("#myModal"+getEditRowID+"").modal('hide');
+            $("[edit-row-value="+getEditRowID+"]").parent("td").parent("tr").html(response);
+          }
+      });
+  });
+
+
+  // call updateModelBox() when you want to update the content
+</script>
 
 </html>

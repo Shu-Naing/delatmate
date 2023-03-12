@@ -1,9 +1,10 @@
 {% extends "base.html" %}
 {% block content %}
-<br>
-<h3 class="title" style="text-align: center;">Order List</h3>
+
+  <div class="d-flex align-items-center mb-4">
+    <h3 class="title m-0" style="white-space:nowrap;">Order List</h3>
 <!-- <div class="box"> -->
-    <div id="" class="container tab-pane active"><br>
+    <div id="" class="container tab-pane active">
         {% with messages = get_flashed_messages() %}
         {% if messages %}
             <div class="notification is-danger">
@@ -11,23 +12,66 @@
             </div>
         {% endif %}
     {% endwith %}
-    <script>
-      $(".custom-file-input").on("change", function() {
-        var fileName = $(this).val().split("\\").pop();
-        $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
-      });
-  </script>
-
-
-           
+  </div>
+</div>
+    <div class="my-3 p-3 bg-body rounded shadow-sm border">
+      <div class="container">
+        <form action="" method="POST" enctype="multipart/form-data">
+          <div class="row mb-3">
+              <div class="col-md-3">
+                <label for="po">PO:</label>
+                <input type="text" class="form-control" id="po" placeholder="PO Number" name="po">
+              </div>
+              <div class="col-md-3">
+                <label for="style">Style:</label>
+                <input type="name" class="form-control" id="style" placeholder="Style" name="style">
+              </div>
+              <div class="col-md-3">
+                <label for="org_buyer">Buyer:</label>
+                <input type="name" class="form-control" id="org_buyer" placeholder="Buyer" name="org_buyer">
+              </div>
+              <div class="col-md-3">
+                <label for="color">Color:</label>
+                <input type="name" class="form-control" id="color" placeholder="Color" name="color">
+              </div>
+          </div>
+          <div class="row align-items-end">
+            <div class="col-md-3">
+              <label for="gp_name">Group:</label>
+             <input type="name" class="form-control" id="gp_name" placeholder="Group" name="gp_name">
+            </div>
+            <div class="col-md-3">
+              <label for="factory">Factory:</label>
+             <input type="name" class="form-control" id="factory" placeholder="Factory" name="factory">
+            </div>
+            <div class="col-md-3">
+              <label for="label">Label:</label>
+             <input type="name" class="form-control" id="label" placeholder="Label" name="label">
+            </div>
+            <div class="col-md-3">
+              <label for="order_date">Order Date</label>
+              <input type="date" id="order_date" class="form-control" name="order_date" min="2000-01-02">
+            </div>
+            <div class="col-md-3">
+              <label for="start">Delivery Date</label>
+              <input type="date" id="ext_dely" class="form-control" name="ext_dely" min="2000-01-02"> 
+            </div>
+            <div class="col-md-3">
+              <input type="submit" class="form-control btn btn-primary" value="Search" href="/consumptionreport?style={{style}}&dely_date={{dely}}&group_name={{group}}&qty_no={{qty}}&buyer={{buyer}}">
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <br>
+    <p><a href="{{ url_for('auth.download_report') }}">Download</a></p>
             <br>
             </div>
             <br>
-            <div class="table-responsive">
-                <table class="table table-bordered" id="myTable">
+            <div class="table-responsive mb-5">
+                <table class="table table-bordered table-striped mb-4" id="myTable">
                     <thead>
                       <tr>
-                        <th>ID</th>
                         <th>PO</th>
                         <th>LABEL</th>
                         <th>DES</th>
@@ -45,8 +89,8 @@
                         <th>CATEGORY</th>
                         <th>MATERIAL CLASSIFICATION</th>
                         <th>MATERIAL CODE</th>
-                        <th>MATERIAL </th>
                         <th>MATERIAL NAME IN CHINESE</th>
+                        <th>MATERIAL </th>
                         <th>SIZE</th>
                         <th>COLOUR</th>
                         <th>ORIGINAL CONSUME</th>
@@ -56,23 +100,23 @@
                         <th>ORDER QTY</th>
                         <th>CONSUME</th>
                         <th>GROUP</th>
+                        <th>Order Date</th>
                         <th>FACTORY</th>
                       </tr>
                     </thead>
                     <tbody>
                       {% for row in all_data %}
                       <tr>
-                        <td>{{row.id}}</td>
                         <td>{{row.po}}</td>
                         <td>{{row.label}}</td>
                         <td>{{row.des}}</td>
                         <td>{{row.mcn}}</td>
                         <td>{{row.previous}}</td>
-                        <td>{{row.order_date}}</td>
+                        <td>{{row.ext_dely}}</td>
                         <td>{{row.myanmar}}</td>
                         <td>{{row.style}}</td>
                         <td>{{row.buyer_version}}</td>
-                        <td>{{row.buyer}}</td>
+                        <td>{{row.pending_buyer}}</td>
                         <td>{{row.product_name}}</td>
                         <td>{{row.main_color}}</td>
                         <td>{{row.season}}</td>
@@ -91,10 +135,8 @@
                         <td>{{row.order_qty}}</td>
                         <td>{{row.consume}}</td>
                         <td>{{row.gp}}</td>
+                        <td>{{row.order_date}}</td>
                         <td>{{row.factory}}</td>
-
-                        <!-- <td>{{row.remark}}</td> -->
-                        <!-- <td>{{row.status}}</td> -->
                       </tr>
                       <div class="modal fade" id="myModal{{row.id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                         <div class="modal-dialog">
@@ -142,7 +184,29 @@
                     
                     </tbody>
                 </table>
-               
+
+                <ul class="pagination">
+                  {% if all_data.has_prev %}
+                   <li class="page-item"><a class="page-link" href="{{ url_for('auth.orderlist', page_num=all_data.prev_num) }}">Previous</a></li>
+                  {% else %}
+                   <li class="page-item disabled"><span class="page-link">Previous</span>
+                  {% endif %}
+                   </li>
+                     
+                  {% for page in all_data.iter_pages(left_edge=3, right_edge=3) %}
+                  {% if page %}
+                   <li class="page-item"><a class="page-link" href="{{ url_for('auth.orderlist', page_num=page) }}">{{ page }}</a></li>
+                  {% else %}
+                   <li class="page-item disabled" id="example_ellipsis"><a href="#" class="page-link">…</a></li> 
+                  {% endif %}
+                  {% endfor %}
+                   
+                  {% if all_data.has_next %}
+                   <li class="page-item"><a class="page-link" href="{{ url_for('auth.orderlist', page_num=all_data.next_num) }}">Next</a></li>
+                  {% else %}
+                   <li class="page-item disabled"><span class="page-link">Next</span>
+                  {% endif %}
+                   </ul>
               </div>
              
 {% endblock %}

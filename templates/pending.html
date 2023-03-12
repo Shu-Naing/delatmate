@@ -26,29 +26,29 @@
 
             <div class="my-3 p-3 bg-body rounded shadow-sm border">
               <div class="container">
-                <form action="/searchpending" method="POST" enctype="multipart/form-data">
+               <form action="/pendinglist" method="POST" enctype="multipart/form-data">
                   <div class="row mb-3">
                       <div class="col-md-3">
                         <label for="po">PO:</label>
-                        <input type="text" class="form-control" id="po" placeholder="PO Number" name="po">
+                        <input type="text" class="form-control" id="po" placeholder="{{po}}" name="po">
                       </div>
                       <div class="col-md-3">
                         <label for="style">Style:</label>
-                        <input type="name" class="form-control" id="style" placeholder="Style" name="style">
+                        <input type="name" class="form-control" id="style" placeholder="{{dtyle}}" name="style">
                       </div>
                       <div class="col-md-3">
                         <label for="org_buyer">Buyer:</label>
-                        <input type="name" class="form-control" id="org_buyer" placeholder="Buyer" name="org_buyer">
+                        <input type="name" class="form-control" id="org_buyer" placeholder="{{org_buyer}}" name="org_buyer">
                       </div>
                       <div class="col-md-3">
                         <label for="color">Color:</label>
-                        <input type="name" class="form-control" id="color" placeholder="Color" name="color">
+                        <input type="name" class="form-control" id="color" placeholder="{{color}}" name="color">
                       </div>
                   </div>
                   <div class="row align-items-end">
                     <div class="col-md-3">
                       <label for="gp_name">Group:</label>
-                     <input type="name" class="form-control" id="gp_name" placeholder="Group" name="gp_name">
+                     <input type="name" class="form-control" id="gp_name" placeholder="{{gp_name}}" name="gp_name">
                     </div>
                     <div class="col-md-3">
                       <label for="order_date">Order Date</label>
@@ -86,9 +86,10 @@
 
             </div>
             <br>
+            <p><a href="/download_pending?po={{po}}&style={{style}}&org_buyer={{org_buyer}}&color={{color}}&gp_name={{gp_name}}&ext_dely={{ext_dely}}&order_date={{order_date}}">Download</a></p>
             
-            <div class="container">
-              <div class="table-responsive bg-light p-4 border mb-5">
+            <!-- <div class="container"> -->
+              <div class="table-responsive bg-light border mb-5">
                 <table class="table table-bordered table-striped" id="myTable">
                     <thead>
                       <tr>
@@ -128,7 +129,7 @@
                     <tbody>
                       {% for row in all_data %}
                       <tr>
-                        <td>{{row.ext_dely}}</td>
+                        <td>{{row.ext_dely.strftime('%d/%m/%Y')}}</td>
                         <td>{{row.mcn}}</td>
                         <td>{{row.po}}</td>
                         <td>{{row.myanmar}}</td>
@@ -141,7 +142,7 @@
                         <td>{{row.org_buyer}}</td>
                         <td>{{row.color}}</td>
                         <td>{{row.qty}}</td>
-                        <td>{{row.vessel_date}}</td>
+                        <td>{{row.vessel_date.strftime('%d/%m/%Y')}}</td>
                         <td>{{row.factory}}</td>
                         <td>{{row.db_gb_code}}</td>
                         <td>{{row.sdn_po}}</td>
@@ -151,15 +152,16 @@
                         <td>{{row.ref_no}}</td>
                         <td>{{row.material_log_no}}</td>
                         <td>{{row.season}}</td>
-                        <td>{{row.byer_txt}}</td>
-                        <td>{{row.order_date}}</td>
+                        <td>{{row.buyer_txt}}</td>
+                        <td>{{row.order_date.strftime('%d/%m/%Y')}}</td>
                         <td>{{row.kmz_id}}</td>
                         <td>{{row.remark}}</td>
                         <td>{{row.shpg_job}}</td>
-                        <td>{{row.xfty_date}}</td>
+                        <td>{{row.xfty_date.strftime('%d/%m/%Y')}}</td>
                         <td>{{row.status}}</td>
                         <td>
-                        <a href="/pendingUpdate"  class="btn btn-primary" value="{{row.id}}" data-bs-toggle="modal" data-bs-target="#myModal{{row.id}}">Edit</a>
+                        <a href="/pendingUpdate"  class="btn btn-primary" value="{{row.id}}" edit-row-value="{{row.id}}" data-bs-toggle="modal" data-bs-target="#myModal{{row.id}}">Edit</a>
+
                         </td>
 
                       </tr>
@@ -175,8 +177,21 @@
                       
                             <!-- Modal body -->
                             <div class="modal-body">
-                                <form action="{{url_for('auth.pendingUpdate')}}" method="POST">
+                                <!-- <form action="{{url_for('auth.pendingUpdate')}}" method="POST"> -->
+                                  <form id="erpForm{{row.id}}" method="POST">
                                   <input type="hidden"  name="id" value="{{row.id}}">
+
+                                  <input type="hidden"  name="ext_dely" value="{{row.ext_dely}}">
+                                  <input type="hidden"  name="po" value="{{row.po}}">
+                                  <input type="hidden"  name="myanmar" value="{{row.myanmar}}">
+                                  <input type="hidden"  name="gp_name" value="{{row.gp_name}}">
+                                  <input type="hidden"  name="style" value="{{row.style}}">
+                                  <input type="hidden"  name="color" value="{{row.color}}">
+                                  <input type="hidden"  name="vessel_date" value="{{row.vessel_date}}">
+                                  <input type="hidden"  name="customer_po" value="{{row.customer_po}}">
+                                  <input type="hidden"  name="buyer_txt" value="{{row.buyer_txt}}">
+                                  <input type="hidden"  name="order_date" value="{{row.order_date}}">
+                                  <input type="hidden"  name="xfty_date" value="{{row.xfty_date}}">
                                   <h5>MCN</h5>
                                   <input type="text" class="form-control mt-3" name="mcn"  value="{{row.mcn}}">
                                   <br>
@@ -239,10 +254,9 @@
                                         </select>
                                   </div>
                                   <br>
-                                  <button class="btn btn-primary" type="submit">Update</button>
+                                  <button class="btn btn-primary erpUpdateBtn" get-edit-row-value="{{row.id}}">Update</button>
                                 </form>
                       
-                            <!-- Modal footer -->
                             <div class="modal-footer">
                               <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
                             </div>

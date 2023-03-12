@@ -1,8 +1,10 @@
 {% extends "base.html" %}
 {% block content %}
-<h3 class="title" style="text-align: center;">ERP</h3>
+
+  <div class="d-flex align-items-center mb-4">
+    <h3 class="title m-0" style="white-space:nowrap;">ERP</h3>
 <!-- <div class="box"> -->
-    <div id="" class="container tab-pane active"><br>
+    <div id="" class="container tab-pane active">
         {% with messages = get_flashed_messages() %}
         {% if messages %}
             <div class="notification is-danger">
@@ -10,16 +12,49 @@
             </div>
         {% endif %}
     {% endwith %}
-    <script>
-      $(".custom-file-input").on("change", function() {
-        var fileName = $(this).val().split("\\").pop();
-        $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
-      });
-  </script>
+
+               
+                <a href="{{ url_for('main.erpfileupload') }}" type="submit" class="btn btn-outline-primary">+ New ERP List</a>
             </div>
+  </div>
+
+  <div class="my-3 p-3 bg-body rounded shadow-sm border">
+    <div class="container">
+      <form action="/searcherp" method="POST" enctype="multipart/form-data">
+        <div class="row mb-3">
+            <div class="col-md-3">
+              <label for="po">PO:</label>
+              <input type="text" class="form-control" id="po" placeholder="PO Number" name="po">
+            </div>
+            <div class="col-md-3">
+              <label for="style">Style:</label>
+              <input type="name" class="form-control" id="style" placeholder="Style" name="style">
+            </div>
+            <div class="col-md-3">
+              <label for="buyer">Buyer:</label>
+              <input type="name" class="form-control" id="buyer" placeholder="Buyer" name="buyer">
+            </div>
+            <div class="col-md-3">
+              <label for="main_color">Color:</label>
+              <input type="name" class="form-control" id="main_color" placeholder="Color" name="main_color">
+            </div>
+            <div class="col-md-3">
+              <label for="gp">Group:</label>
+              <input type="name" class="form-control" id="gp" placeholder="Group" name="gp">
+            </div>
+            
+        </div>
+        <div class="row align-items-end">
+          <div class="col-md-3">
+            <input type="submit" class="form-control btn btn-primary" value="Search">
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
             <br>
             <div class="table-responsive">
-                <table class="table table-bordered" id="myTable">
+                <table class="table table-bordered table-striped" id="myTable">
                     <thead>
                       <tr>
                         <th>PO</th>
@@ -44,6 +79,7 @@
                         <th>ORDER QTY</th>
                         <th>CONSUME</th>
                         <th>GROUP</th>
+                        <th>Edit</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -72,11 +108,94 @@
                         <td>{{row.consume}}</td>
                         <td>{{row.gp}}</td>
                         <td>
+                        <a href="/erpUpdate"  class="btn btn-primary" value="{{row.id}}" data-bs-toggle="modal" data-bs-target="#myModal{{row.id}}">Edit</a>
                         </td>
+                        <!-- <td>{{row.remark}}</td> -->
+                        <!-- <td>{{row.status}}</td> -->
                       </tr>
-        {% endfor %}
+                      <div class="modal fade" id="myModal{{row.id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+                      
+                            <!-- Modal Header -->
+                            <div class="modal-header">
+                              <h4 class="modal-title">Update Informations</h4>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                      
+                            <!-- Modal body -->
+                            <div class="modal-body">
+                                <form action="{{url_for('auth.erpUpdate')}}" method="POST">
+                                    <input type="hidden"  name="id" value="{{row.id}}">
+                                    <h5>BUYER VERSION</h5>
+                                    <input type="text" class="form-control mt-3" name="buyer_version"  value="{{row.buyer_version}}">
+                                    <br>
+                                    <h5>PRODUCT NAME</h5>
+                                    <input type="text" class="form-control mt-3" name="product_name"  value="{{row.product_name}}">
+                                    <br>
+                                    <h5>MAIN COLOR</h5>
+                                    <input type="text" class="form-control mt-3" name="main_color"  value="{{row.main_color}}">
+                                    <br>
+                                    <h5>SEASON</h5>
+                                    <input type="text" class="form-control mt-3" name="season"  value="{{row.season}}">
+                                    <br>
+                                    <h5>CATEGORY</h5>
+                                    <input type="text" class="form-control mt-3" name="category"  value="{{row.category}}">
+                                    <br>
+                                    <h5>MATERIAL CLASSIFICATION</h5>
+                                    <input type="text" class="form-control mt-3" name="material_classification"  value="{{row.material_classification}}">
+                                    <br>
+                                    <h5>MATERIAL CODE</h5>
+                                    <input type="text" class="form-control mt-3" name="material_code"  value="{{row.material_code}}">
+                                    <br>
+                                    <h5>MATERIAL </h5>
+                                    <input type="text" class="form-control mt-3" name="material"  value="{{row.material}}">
+                                    <br>
+                                    <h5>MATERIAL NAME IN CHINESE</h5>
+                                    <input type="text" class="form-control mt-3" name="material_chinese"  value="{{row.material_chinese}}">
+                                    <br>
+                                    <h5>SIZE</h5>
+                                    <input type="text" class="form-control mt-3" name="size"  value="{{row.size}}">
+                                    <br>
+                                    <h5>ORIGINAL CONSUME</h5>
+                                    <input type="text" class="form-control mt-3" name="org_consume"  value="{{row.org_consume}}">
+                                    <br>
+                                    <h5>UNIT</h5>
+                                    <input type="text" class="form-control mt-3" name="unit"  value="{{row.unit}}">
+                                    <br>
+                                    <h5>LOSS</h5>
+                                    <input type="text" class="form-control mt-3" name="loss"  value="{{row.loss}}">
+                                    <br>
+                                    <h5>CONSUME POINT</h5>
+                                    <input type="text" class="form-control mt-3" name="consume_point"  value="{{row.consume_point}}">
+                                    <br>
+                                    <h5>ORDER QTY</h5>
+                                    <input type="text" class="form-control mt-3" name="order_qty"  value="{{row.order_qty}}">
+                                    <br>
+                                    <h5>CONSUME</h5>
+                                    <input type="text" class="form-control mt-3" name="consume"  value="{{row.consume}}">
+                                    <br>
+                                  <button class="btn btn-primary" type="submit">Update</button>
+                                </form>
+                      
+                            <!-- Modal footer -->
+                            <br>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                            </div>
+                      
+                        </div>
+                        </div>
+                      </div>
+                      
+                    {% endfor %}
+                    
                     </tbody>
                 </table>
+                
               </div>
+              <br>
+              <br>
+              <br>
              
 {% endblock %}

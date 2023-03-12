@@ -49,7 +49,7 @@
                   <td>{{style}}</td>
                   <td>{{group_name}}</td>
                   <td>{{qty_no}}</td>
-                  <td>{{dely_date}}</td>
+                  <td>{{dely_date.strftime('%d/%m/%Y')}}</td>
                   <td>{{buyer}}</td>
                 </tr>
                 
@@ -87,7 +87,7 @@
                         <td>{{row.order_qty}}</td>
                         <td>{{row.issued_qty}}</td>
                         <td>{{row.balance}}</td>
-                        <td>{{row.date}}</td>
+                        <td>{{row.date.strftime('%d/%m/%Y')}}</td>
                         <td>{{row.issued_by_leader}}</td>
                         <td>{{row.factory_line}}</td>
                         <td>{{row.reciever}}</td>
@@ -114,9 +114,9 @@
                                 <!-- {% if row.id == 'none' %} -->
                                   <!-- <input type="hidden"  name="id" value="0"> -->
                                 <!-- {% else %} -->
-                                  <input type="text"  name="id" value="{{row.id}}">
+                                  <input type="hidden"  name="id" value="{{row.id}}">
                                 <!-- {% endif %} -->
-                                  <input type="text"  name="erpid" value="{{row.erpid}}">
+                                  <input type="hidden"  name="erpid" value="{{row.erpid}}">
                                   <h5>ISSUED QTY</h5>
                                   <input type="number" class="form-control mt-3" name="issued_qty"  value="{{row.issued_qty}}">
                                   <br>
