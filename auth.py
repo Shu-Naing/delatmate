@@ -329,7 +329,7 @@ def download_pending():
     ws = wb.active
     ws.append(['EX - FTY ( DELY)','MCN ( D/C )','PO#','MYANMAR','Ship To','LABEL','Linked Store','DES','GROUP NAME','Style#','Buyer#','COLOUR','QTY','Vessel','Factory Name','DB/GB Pkg Code','SDN PO','Customer Po#','UPC Number','Linked SO Num',"Ref.Number",'Material Lot No:','Season','Buyer','ORDER DATE','KZM ID','Remark','ShpgJob','xFty Date','Status'])
     for item in all_data:
-        ws.append([item.ext_dely.strftime('%d/%m/%Y'),item.mcn,item.po,item.myanmar,item.ship_to,item.label,item.linked_store,item.des,item.gp_name,item.style,item.org_buyer,item.color,item.qty,item.vessel_date.strftime('%d/%m/%Y'),item.factory,item.db_gb_code,item.sdn_po,item.customer_po,item.upc_no,item.linked_so_no,item.ref_no,item.material_log_no,item.season,item.buyer_txt,item.order_date.strftime('%d/%m/%Y'),item.kmz_id,item.remark,item.shpg_job,item.xfty_date.strftime('%d/%m/%Y'),item.status])
+        ws.append([item.ext_dely,item.mcn,item.po,item.myanmar,item.ship_to,item.label,item.linked_store,item.des,item.gp_name,item.style,item.org_buyer,item.color,item.qty,item.vessel_date,item.factory,item.db_gb_code,item.sdn_po,item.customer_po,item.upc_no,item.linked_so_no,item.ref_no,item.material_log_no,item.season,item.buyer_txt,item.order_date,item.kmz_id,item.remark,item.shpg_job,item.xfty_date,item.status])
     file = BytesIO()
     wb.save(file)
     file.seek(0)
@@ -492,7 +492,7 @@ def download_order():
     ws = wb.active
     ws.append(['PO','LABEL','DES','D/C','PREVIOUS','DELY','MYANMAR','STYLE','BUYER VERSION','BUYER','PRODUCT NAME','MAIN COLOR','SEASON','VESSEL DATE','CATEGORY','MATERIAL CLASSIFICATION','MATERIAL CODE','MATERIAL NAME IN CHINESE','MATERIAL','SIZE','COLOUR','ORIGINAL CONSUME','UNIT','LOSS','CONSUME POINT','ORDER QTY','CONSUME','GROUP','Order Date','FACTORY'])
     for item in all_data:
-        ws.append([item.po,item.label,item.des,item.mcn,item.previous.strftime('%d/%m/%Y'),item.ext_dely.strftime('%d/%m/%Y'),item.myanmar,item.style,item.buyer_version,item.pending_buyer,item.product_name,item.main_color,item.season,item.vessel_date.strftime('%d/%m/%Y'),item.category,item.material_classification,item.material_code,item.material,item.material_chinese,item.size,item.color,item.org_consume,item.unit,item.loss,item.consume_point,item.order_qty,item.consume,item.gp,item.order_date.strftime('%d/%m/%Y'),item.factory])
+        ws.append([item.po,item.label,item.des,item.mcn,item.previous,item.ext_dely,item.myanmar,item.style,item.buyer_version,item.pending_buyer,item.product_name,item.main_color,item.season,item.vessel_date,item.category,item.material_classification,item.material_code,item.material,item.material_chinese,item.size,item.color,item.org_consume,item.unit,item.loss,item.consume_point,item.order_qty,item.consume,item.gp,item.order_date,item.factory])
     file = BytesIO()
     wb.save(file)
     file.seek(0)
@@ -610,10 +610,10 @@ def download_consumptionreportreport():
         wb = Workbook()
         ws = wb.active
         ws.append(['Style','Group Name','Qty','Dely Date','Buyer'])
-        ws.append([style,group_name,qty_no,dely_date.strftime('%d/%m/%Y'),buyer])
+        ws.append([style,group_name,qty_no,dely_date,buyer])
         ws.append(['CATEGORY','MATERIAL','COLOUR','UNIT','CONSUME','ORDER QTY','ISSUED QTY','BALANCE','DATE','ISSUED BY (Leader)','Factory line','RECEIVER','REMARK'])
         for item in all_data:
-            ws.append([item.category,item.material,item.color,item.unit,item.consume,item.order_qty,item.issued_qty,item.balance,item.date.strftime('%d/%m/%Y'),item.issued_by_leader,item.factory_line,item.reciever,item.remark])
+            ws.append([item.category,item.material,item.color,item.unit,item.consume,item.order_qty,item.issued_qty,item.balance,item.date,item.issued_by_leader,item.factory_line,item.reciever,item.remark])
         file = BytesIO()
         wb.save(file)
         file.seek(0)

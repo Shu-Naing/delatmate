@@ -129,7 +129,7 @@
                     <tbody>
                       {% for row in all_data %}
                       <tr>
-                        <td>{{row.ext_dely.strftime('%d/%m/%Y')}}</td>
+                        <td>{{row.ext_dely}}</td>
                         <td>{{row.mcn}}</td>
                         <td>{{row.po}}</td>
                         <td>{{row.myanmar}}</td>
@@ -142,7 +142,7 @@
                         <td>{{row.org_buyer}}</td>
                         <td>{{row.color}}</td>
                         <td>{{row.qty}}</td>
-                        <td>{{row.vessel_date.strftime('%d/%m/%Y')}}</td>
+                        <td>{{row.vessel_date}}</td>
                         <td>{{row.factory}}</td>
                         <td>{{row.db_gb_code}}</td>
                         <td>{{row.sdn_po}}</td>
@@ -153,11 +153,11 @@
                         <td>{{row.material_log_no}}</td>
                         <td>{{row.season}}</td>
                         <td>{{row.buyer_txt}}</td>
-                        <td>{{row.order_date.strftime('%d/%m/%Y')}}</td>
+                        <td>{{row.order_date}}</td>
                         <td>{{row.kmz_id}}</td>
                         <td>{{row.remark}}</td>
                         <td>{{row.shpg_job}}</td>
-                        <td>{{row.xfty_date.strftime('%d/%m/%Y')}}</td>
+                        <td>{{row.xfty_date}}</td>
                         <td>{{row.status}}</td>
                         <td>
                         <a href="/pendingUpdate"  class="btn btn-primary" value="{{row.id}}" edit-row-value="{{row.id}}" data-bs-toggle="modal" data-bs-target="#myModal{{row.id}}">Edit</a>
