@@ -37,19 +37,21 @@
             <table class="table">
               <thead>
                 <tr class="table-secondary">
-                  <th>Style</th>
+                  <th>Factory</th>
                   <th>Group Name</th>
                   <th>Qty</th>
                   <th>Dely Date</th>
+                  <th>Style</th>
                   <th>Buyer</th>
                 </tr>
               </thead>
               <tbody>     
                 <tr>
-                  <td>{{style}}</td>
+                  <td>{{factory}}</td>
                   <td>{{group_name}}</td>
                   <td>{{qty_no}}</td>
                   <td>{{dely_date}}</td>
+                  <td>{{style}}</td>
                   <td>{{buyer}}</td>
                 </tr>
                 
@@ -63,9 +65,9 @@
                         <th>CATEGORY</th>
                         <th>MATERIAL</th>
                         <th>COLOUR</th>
-                        <th>UNIT</th>
+                        <th>QTY</th>
                         <th>CONSUME</th>
-                        <th>ORDER QTY</th>
+                        <th>TOTAL QTY</th>
                         <th>ISSUED QTY</th>
                         <th>BALANCE</th>
                         <th>DATE</th>
@@ -82,7 +84,7 @@
                         <td>{{row.category}}</td>
                         <td>{{row.material}}</td>
                         <td>{{row.color}}</td>
-                        <td>{{row.unit}}</td>
+                        <td>{{row.qty}}</td>
                         <td>{{row.consume}}</td>
                         <td>{{row.order_qty}}</td>
                         <td>{{row.issued_qty}}</td>
@@ -95,8 +97,6 @@
                         <td>
                         <a href="/consumptionreportUpdate"  class="btn btn-primary" value="{{row.id}}" data-bs-toggle="modal" data-bs-target="#myModal{{row.id}}">Edit</a>
                         </td>
-                        <!-- <td>{{row.remark}}</td> -->
-                        <!-- <td>{{row.status}}</td> -->
                       </tr>
                       <div class="modal fade" id="myModal{{row.id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                         <div class="modal-dialog">

@@ -207,37 +207,59 @@ def erplist(page_num):
         search5 = "%{}%".format(gp)
         all_data = Mocdm_erp.query.filter((Mocdm_erp.po.like(search1)),(Mocdm_erp.style.like(search2)),(Mocdm_erp.buyer.like(search3)),(Mocdm_erp.color.like(search4)),(Mocdm_erp.gp.like(search5))).paginate(per_page=100, page=page_num, error_out=True)
         return render_template("erp.html",po = po,gp=gp,buyer=buyer,main_color=main_color, all_data = all_data, erp_active="is_active('/erp')")
+        # return redirect(url_for('auth.erplist', po = po,gp=gp,buyer=buyer,main_color=main_color, all_data = all_data, erp_active="is_active('/erp')"))
 
 @auth.route('/download_erp', methods=['GET', 'POST'])
 def download_erp():
-    po = request.args.get('po')
-    style = request.args.get('style')
-    buyer = request.args.get('buyer')
-    main_color = request.args.get('main_color')
-    gp = request.args.get('gp')
-    po = "%{}%".format(po)
-    style = "%{}%".format(style)
-    buyer = "%{}%".format(buyer)
-    main_color = "%{}%".format(main_color)
-    gp = "%{}%".format(gp)
-    all_data = Mocdm_erp.query.filter((Mocdm_erp.po.like(po)),(Mocdm_erp.style.like(style)),(Mocdm_erp.buyer.like(buyer)),(Mocdm_erp.color.like(main_color)),(Mocdm_erp.gp.like(gp))).all()
-    wb = Workbook()
-    ws = wb.active
-    ws.append(['PO','STYLE','BUYER VERSION','BUYER','PRODUCT NAME','MAIN COLOR','SEASON','VESSEL DATE','CATEGORY','MATERIAL CLASSIFICATION','MATERIAL CODE','MATERIAL' ,'MATERIAL NAME IN CHINESE','SIZE','COLOUR','ORIGINAL CONSUME','UNIT','LOSS','CONSUME POINT','ORDER QTY','CONSUME','GROUP'])
-    for item in all_data:
-        ws.append([item.po,item.style,item.buyer_version,item.buyer,item.product_name,item.main_color,item.season,item.vessel_date.strftime('%d/%m/%Y'),item.category,item.material_classification,item.material_code,item.material,item.material_chinese,item.size,item.color,item.org_consume,item.unit,item.loss,item.consume_point,item.order_qty,item.consume,item.gp])
-    file = BytesIO()
-    wb.save(file)
-    file.seek(0)
-    filename = 'erp.xlsx'
-    r = Response(
-        file.read(),
-        headers={
-            'Content-Disposition': f'attachment;filename={filename}',
-            'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-        }
-    )
-    return r
+    if request.args.get('search') == 'true':
+        po = request.args.get('po')
+        style = request.args.get('style')
+        buyer = request.args.get('buyer')
+        main_color = request.args.get('main_color')
+        gp = request.args.get('gp')
+        po = "%{}%".format(po)
+        style = "%{}%".format(style)
+        buyer = "%{}%".format(buyer)
+        main_color = "%{}%".format(main_color)
+        gp = "%{}%".format(gp)
+        all_data = Mocdm_erp.query.filter((Mocdm_erp.po.like(po)),(Mocdm_erp.style.like(style)),(Mocdm_erp.buyer.like(buyer)),(Mocdm_erp.color.like(main_color)),(Mocdm_erp.gp.like(gp))).all()
+        wb = Workbook()
+        ws = wb.active
+        ws.append(['PO','STYLE','BUYER VERSION','BUYER','PRODUCT NAME','MAIN COLOR','SEASON','VESSEL DATE','CATEGORY','MATERIAL CLASSIFICATION','MATERIAL CODE','MATERIAL' ,'MATERIAL NAME IN CHINESE','SIZE','COLOUR','ORIGINAL CONSUME','UNIT','LOSS','CONSUME POINT','ORDER QTY','CONSUME','GROUP'])
+        for item in all_data:
+            ws.append([item.po,item.style,item.buyer_version,item.buyer,item.product_name,item.main_color,item.season,item.vessel_date.strftime('%d/%m/%Y'),item.category,item.material_classification,item.material_code,item.material,item.material_chinese,item.size,item.color,item.org_consume,item.unit,item.loss,item.consume_point,item.order_qty,item.consume,item.gp])
+        file = BytesIO()
+        wb.save(file)
+        file.seek(0)
+        filename = 'erp.xlsx'
+        r = Response(
+            file.read(),
+            headers={
+                'Content-Disposition': f'attachment;filename={filename}',
+                'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            }
+        )
+        return r
+    else:
+        all_data1 = Mocdm_erp.query.all()
+        wb = Workbook()
+        ws = wb.active
+        ws.append(['PO','STYLE','BUYER VERSION','BUYER','PRODUCT NAME','MAIN COLOR','SEASON','VESSEL DATE','CATEGORY','MATERIAL CLASSIFICATION','MATERIAL CODE','MATERIAL' ,'MATERIAL NAME IN CHINESE','SIZE','COLOUR','ORIGINAL CONSUME','UNIT','LOSS','CONSUME POINT','ORDER QTY','CONSUME','GROUP'])
+        for item in all_data1:
+            ws.append([item.po,item.style,item.buyer_version,item.buyer,item.product_name,item.main_color,item.season,item.vessel_date.strftime('%d/%m/%Y'),item.category,item.material_classification,item.material_code,item.material,item.material_chinese,item.size,item.color,item.org_consume,item.unit,item.loss,item.consume_point,item.order_qty,item.consume,item.gp])
+        file = BytesIO()
+        wb.save(file)
+        file.seek(0)
+        filename = 'erp.xlsx'
+        r = Response(
+            file.read(),
+            headers={
+                'Content-Disposition': f'attachment;filename={filename}',
+                'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            }
+        )
+        return r
+        
 
 @auth.route('/erpUpdate', methods=['GET', 'POST'])
 @login_required
@@ -266,6 +288,8 @@ def erpUpdate():
             all_data.consume_point = request.form['consume_point']
             all_data.order_qty = request.form['order_qty']
             all_data.consume = request.form['consume']
+            all_data.remark = request.form['remark']
+            all_data.status = request.form['status']
             db.session.commit()
     except SQLAlchemyError as e:
         current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
@@ -274,7 +298,7 @@ def erpUpdate():
     # return redirect(url_for('auth.erplist'))
     # return f"Email for user {id} has been updated to {  buyer_version}."
     # return render_template("erp.html")
-    return f"<td>{all_data.po}</td>,<td>{all_data.style}</td>,<td>{all_data.buyer_version}</td>,<td>{all_data.buyer}</td>,<td>{all_data.product_name}</td>,<td>{all_data.main_color}</td>,<td>{all_data.season}</td>,<td>{all_data.vessel_date.strftime('%d/%m/%Y')}</td>,<td>{all_data.category}</td>,<td>{all_data.material_classification}</td>,<td>{all_data.material_code}</td>,<td>{all_data.material}</td>,<td>{all_data.material_chinese}</td>,<td>{all_data.size}</td>,<td>{all_data.color}</td>,<td>{all_data.org_consume}</td>,<td>{all_data.unit}</td>,<td>{all_data.loss}</td>,<td>{all_data.consume_point}</td>,<td>{all_data.order_qty}</td>,<td>{all_data.consume}</td>,<td>{all_data.gp}</td>,<td><a href='/erpUpdate'  class='btn btn-primary' value='{id}' edit-row-value='{id}' data-bs-toggle='modal' data-bs-target='#myModal{id}'>Edit</a></td>"
+    return f"<td>{all_data.po}</td>,<td>{all_data.style}</td>,<td>{all_data.buyer_version}</td>,<td>{all_data.buyer}</td>,<td>{all_data.product_name}</td>,<td>{all_data.main_color}</td>,<td>{all_data.season}</td>,<td>{all_data.vessel_date.strftime('%d/%m/%Y')}</td>,<td>{all_data.category}</td>,<td>{all_data.material_classification}</td>,<td>{all_data.material_code}</td>,<td>{all_data.material}</td>,<td>{all_data.material_chinese}</td>,<td>{all_data.size}</td>,<td>{all_data.color}</td>,<td>{all_data.org_consume}</td>,<td>{all_data.unit}</td>,<td>{all_data.loss}</td>,<td>{all_data.consume_point}</td>,<td>{all_data.order_qty}</td>,<td>{all_data.consume}</td>,<td>{all_data.gp}</td>,<td>{all_data.remark}</td>,<td>{all_data.status}</td>,<td><a href='/erpUpdate'  class='btn btn-primary' value='{id}' edit-row-value='{id}' data-bs-toggle='modal' data-bs-target='#myModal{id}'>Edit</a></td>"
 
 @auth.route('/pendinglist', defaults={'page_num':1}, methods=['GET', 'POST'])
 @auth.route('/pendinglist/<int:page_num>', methods=['GET','POST'])
@@ -310,38 +334,58 @@ def pendinglist(page_num):
 
 @auth.route('/download_pending', methods=['GET', 'POST'])
 def download_pending():
-    po = request.args.get('po')
-    style = request.args.get('style')
-    org_buyer = request.args.get('org_buyer')
-    color = request.args.get('color')
-    gp_name = request.args.get('gp_name')
-    ext_dely = request.args.get('ext_dely')
-    order_date = request.args.get('order_date')
-    po = "%{}%".format(po)
-    style = "%{}%".format(style)
-    org_buyer = "%{}%".format(org_buyer)
-    color = "%{}%".format(color)
-    gp_name = "%{}%".format(gp_name)
-    ext_dely = "%{}%".format(ext_dely)
-    order_date = "%{}%".format(order_date)
-    all_data = Mocdm_pending.query.filter((Mocdm_pending.po.like(po)),(Mocdm_pending.style.like(style)),(Mocdm_pending.org_buyer.like(org_buyer)),(Mocdm_pending.color.like(color)),(Mocdm_pending.gp_name.like(gp_name)),(Mocdm_pending.ext_dely.like(ext_dely)),(Mocdm_pending.order_date.like(order_date))).all()
-    wb = Workbook()
-    ws = wb.active
-    ws.append(['EX - FTY ( DELY)','MCN ( D/C )','PO#','MYANMAR','Ship To','LABEL','Linked Store','DES','GROUP NAME','Style#','Buyer#','COLOUR','QTY','Vessel','Factory Name','DB/GB Pkg Code','SDN PO','Customer Po#','UPC Number','Linked SO Num',"Ref.Number",'Material Lot No:','Season','Buyer','ORDER DATE','KZM ID','Remark','ShpgJob','xFty Date','Status'])
-    for item in all_data:
-        ws.append([item.ext_dely,item.mcn,item.po,item.myanmar,item.ship_to,item.label,item.linked_store,item.des,item.gp_name,item.style,item.org_buyer,item.color,item.qty,item.vessel_date,item.factory,item.db_gb_code,item.sdn_po,item.customer_po,item.upc_no,item.linked_so_no,item.ref_no,item.material_log_no,item.season,item.buyer_txt,item.order_date,item.kmz_id,item.remark,item.shpg_job,item.xfty_date,item.status])
-    file = BytesIO()
-    wb.save(file)
-    file.seek(0)
-    filename = 'pending.xlsx'
-    r = Response(
-        file.read(),
-        headers={
-            'Content-Disposition': f'attachment;filename={filename}',
-            'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-        }
-    )
-    return r
+    if request.args.get('search') == 'true':
+        po = request.args.get('po')
+        style = request.args.get('style')
+        org_buyer = request.args.get('org_buyer')
+        color = request.args.get('color')
+        gp_name = request.args.get('gp_name')
+        ext_dely = request.args.get('ext_dely')
+        order_date = request.args.get('order_date')
+        po = "%{}%".format(po)
+        style = "%{}%".format(style)
+        org_buyer = "%{}%".format(org_buyer)
+        color = "%{}%".format(color)
+        gp_name = "%{}%".format(gp_name)
+        ext_dely = "%{}%".format(ext_dely)
+        order_date = "%{}%".format(order_date)
+        all_data = Mocdm_pending.query.filter((Mocdm_pending.po.like(po)),(Mocdm_pending.style.like(style)),(Mocdm_pending.org_buyer.like(org_buyer)),(Mocdm_pending.color.like(color)),(Mocdm_pending.gp_name.like(gp_name)),(Mocdm_pending.ext_dely.like(ext_dely)),(Mocdm_pending.order_date.like(order_date))).all()
+        wb = Workbook()
+        ws = wb.active
+        ws.append(['EX - FTY ( DELY)','MCN ( D/C )','PO#','MYANMAR','Ship To','LABEL','Linked Store','DES','GROUP NAME','Style#','Buyer#','COLOUR','QTY','Vessel','Factory Name','DB/GB Pkg Code','SDN PO','Customer Po#','UPC Number','Linked SO Num',"Ref.Number",'Material Lot No:','Season','Buyer','ORDER DATE','KZM ID','Remark','ShpgJob','xFty Date','Status'])
+        for item in all_data:
+            ws.append([item.ext_dely,item.mcn,item.po,item.myanmar,item.ship_to,item.label,item.linked_store,item.des,item.gp_name,item.style,item.org_buyer,item.color,item.qty,item.vessel_date,item.factory,item.db_gb_code,item.sdn_po,item.customer_po,item.upc_no,item.linked_so_no,item.ref_no,item.material_log_no,item.season,item.buyer_txt,item.order_date,item.kmz_id,item.remark,item.shpg_job,item.xfty_date,item.status])
+        file = BytesIO()
+        wb.save(file)
+        file.seek(0)
+        filename = 'pending.xlsx'
+        r = Response(
+            file.read(),
+            headers={
+                'Content-Disposition': f'attachment;filename={filename}',
+                'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            }
+        )
+        return r
+    else:
+        all_data1 = Mocdm_pending.query.all()
+        wb = Workbook()
+        ws = wb.active
+        ws.append(['EX - FTY ( DELY)','MCN ( D/C )','PO#','MYANMAR','Ship To','LABEL','Linked Store','DES','GROUP NAME','Style#','Buyer#','COLOUR','QTY','Vessel','Factory Name','DB/GB Pkg Code','SDN PO','Customer Po#','UPC Number','Linked SO Num',"Ref.Number",'Material Lot No:','Season','Buyer','ORDER DATE','KZM ID','Remark','ShpgJob','xFty Date','Status'])
+        for item in all_data1:
+            ws.append([item.ext_dely,item.mcn,item.po,item.myanmar,item.ship_to,item.label,item.linked_store,item.des,item.gp_name,item.style,item.org_buyer,item.color,item.qty,item.vessel_date,item.factory,item.db_gb_code,item.sdn_po,item.customer_po,item.upc_no,item.linked_so_no,item.ref_no,item.material_log_no,item.season,item.buyer_txt,item.order_date,item.kmz_id,item.remark,item.shpg_job,item.xfty_date,item.status])
+        file = BytesIO()
+        wb.save(file)
+        file.seek(0)
+        filename = 'pending.xlsx'
+        r = Response(
+            file.read(),
+            headers={
+                'Content-Disposition': f'attachment;filename={filename}',
+                'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            }
+        )
+        return r
 
 @auth.route('/pendingUpdate', methods=['GET', 'POST'])
 @login_required
@@ -469,42 +513,62 @@ def orderlist(page_num):
 
 @auth.route('/download_order', methods=['GET', 'POST'])
 def download_order():
-    po = request.args.get('po')
-    style = request.args.get('style')
-    org_buyer = request.args.get('org_buyer')
-    color = request.args.get('color')
-    gp_name = request.args.get('gp_name')
-    ext_dely = request.args.get('ext_dely')
-    order_date = request.args.get('order_date')
-    factory = request.args.get('factory')
-    label = request.args.get('label')
-    po = "%{}%".format(po)
-    style = "%{}%".format(style)
-    org_buyer = "%{}%".format(org_buyer)
-    color = "%{}%".format(color)
-    gp_name = "%{}%".format(gp_name)
-    ext_dely = "%{}%".format(ext_dely)
-    order_date = "%{}%".format(order_date)
-    factory = "%{}%".format(factory)
-    label = "%{}%".format(label)
-    all_data = db.session.query(Mocdm_erp.po,Mocdm_pending.label,Mocdm_pending.des,Mocdm_pending.mcn,Mocdm_pending.previous,Mocdm_pending.ext_dely,Mocdm_pending.myanmar,Mocdm_erp.style,Mocdm_erp.buyer_version,Mocdm_erp.pending_buyer,Mocdm_erp.product_name,Mocdm_erp.main_color,Mocdm_erp.season,Mocdm_erp.vessel_date,Mocdm_erp.category,Mocdm_erp.material_classification,Mocdm_erp.material_code,Mocdm_erp.material,Mocdm_erp.material_chinese,Mocdm_erp.size,Mocdm_erp.color,Mocdm_erp.org_consume,Mocdm_erp.unit,Mocdm_erp.loss,Mocdm_erp.consume_point,Mocdm_erp.order_qty,Mocdm_erp.consume,Mocdm_erp.gp,Mocdm_pending.order_date,Mocdm_pending.factory).join(Mocdm_pending,(Mocdm_pending.po == Mocdm_erp.po) & (Mocdm_pending.style == Mocdm_erp.style) & (Mocdm_pending.color == Mocdm_erp.main_color) & (Mocdm_pending.org_buyer == Mocdm_erp.pending_buyer),isouter = True).filter((Mocdm_pending.po.like(po)),(Mocdm_pending.style.like(style)),(Mocdm_pending.org_buyer.like(org_buyer)),(Mocdm_pending.color.like(color)),(Mocdm_pending.gp_name.like(gp_name)),(Mocdm_pending.ext_dely.like(ext_dely)),(Mocdm_pending.order_date.like(order_date)),(Mocdm_pending.factory.like(factory)),(Mocdm_pending.label.like(label))).all()
-    wb = Workbook()
-    ws = wb.active
-    ws.append(['PO','LABEL','DES','D/C','PREVIOUS','DELY','MYANMAR','STYLE','BUYER VERSION','BUYER','PRODUCT NAME','MAIN COLOR','SEASON','VESSEL DATE','CATEGORY','MATERIAL CLASSIFICATION','MATERIAL CODE','MATERIAL NAME IN CHINESE','MATERIAL','SIZE','COLOUR','ORIGINAL CONSUME','UNIT','LOSS','CONSUME POINT','ORDER QTY','CONSUME','GROUP','Order Date','FACTORY'])
-    for item in all_data:
-        ws.append([item.po,item.label,item.des,item.mcn,item.previous,item.ext_dely,item.myanmar,item.style,item.buyer_version,item.pending_buyer,item.product_name,item.main_color,item.season,item.vessel_date,item.category,item.material_classification,item.material_code,item.material,item.material_chinese,item.size,item.color,item.org_consume,item.unit,item.loss,item.consume_point,item.order_qty,item.consume,item.gp,item.order_date,item.factory])
-    file = BytesIO()
-    wb.save(file)
-    file.seek(0)
-    filename = 'combination.xlsx'
-    r = Response(
-        file.read(),
-        headers={
-            'Content-Disposition': f'attachment;filename={filename}',
-            'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-        }
-    )
-    return r
+    if request.args.get('search') == 'true':
+        po = request.args.get('po')
+        style = request.args.get('style')
+        org_buyer = request.args.get('org_buyer')
+        color = request.args.get('color')
+        gp_name = request.args.get('gp_name')
+        ext_dely = request.args.get('ext_dely')
+        order_date = request.args.get('order_date')
+        factory = request.args.get('factory')
+        label = request.args.get('label')
+        po = "%{}%".format(po)
+        style = "%{}%".format(style)
+        org_buyer = "%{}%".format(org_buyer)
+        color = "%{}%".format(color)
+        gp_name = "%{}%".format(gp_name)
+        ext_dely = "%{}%".format(ext_dely)
+        order_date = "%{}%".format(order_date)
+        factory = "%{}%".format(factory)
+        label = "%{}%".format(label)
+        all_data = db.session.query(Mocdm_erp.po,Mocdm_pending.label,Mocdm_pending.des,Mocdm_pending.mcn,Mocdm_pending.previous,Mocdm_pending.ext_dely,Mocdm_pending.myanmar,Mocdm_erp.style,Mocdm_erp.buyer_version,Mocdm_erp.pending_buyer,Mocdm_erp.product_name,Mocdm_erp.main_color,Mocdm_erp.season,Mocdm_erp.vessel_date,Mocdm_erp.category,Mocdm_erp.material_classification,Mocdm_erp.material_code,Mocdm_erp.material,Mocdm_erp.material_chinese,Mocdm_erp.size,Mocdm_erp.color,Mocdm_erp.org_consume,Mocdm_erp.unit,Mocdm_erp.loss,Mocdm_erp.consume_point,Mocdm_erp.order_qty,Mocdm_erp.consume,Mocdm_erp.gp,Mocdm_pending.order_date,Mocdm_pending.factory).join(Mocdm_pending,(Mocdm_pending.po == Mocdm_erp.po) & (Mocdm_pending.style == Mocdm_erp.style) & (Mocdm_pending.color == Mocdm_erp.main_color) & (Mocdm_pending.org_buyer == Mocdm_erp.pending_buyer),isouter = True).filter((Mocdm_pending.po.like(po)),(Mocdm_pending.style.like(style)),(Mocdm_pending.org_buyer.like(org_buyer)),(Mocdm_pending.color.like(color)),(Mocdm_pending.gp_name.like(gp_name)),(Mocdm_pending.ext_dely.like(ext_dely)),(Mocdm_pending.order_date.like(order_date)),(Mocdm_pending.factory.like(factory)),(Mocdm_pending.label.like(label))).all()
+        wb = Workbook()
+        ws = wb.active
+        ws.append(['PO','LABEL','DES','D/C','PREVIOUS','DELY','MYANMAR','STYLE','BUYER VERSION','BUYER','PRODUCT NAME','MAIN COLOR','SEASON','VESSEL DATE','CATEGORY','MATERIAL CLASSIFICATION','MATERIAL CODE','MATERIAL NAME IN CHINESE','MATERIAL','SIZE','COLOUR','ORIGINAL CONSUME','UNIT','LOSS','CONSUME POINT','ORDER QTY','CONSUME','GROUP','Order Date','FACTORY'])
+        for item in all_data:
+            ws.append([item.po,item.label,item.des,item.mcn,item.previous,item.ext_dely,item.myanmar,item.style,item.buyer_version,item.pending_buyer,item.product_name,item.main_color,item.season,item.vessel_date,item.category,item.material_classification,item.material_code,item.material,item.material_chinese,item.size,item.color,item.org_consume,item.unit,item.loss,item.consume_point,item.order_qty,item.consume,item.gp,item.order_date,item.factory])
+        file = BytesIO()
+        wb.save(file)
+        file.seek(0)
+        filename = 'combination.xlsx'
+        r = Response(
+            file.read(),
+            headers={
+                'Content-Disposition': f'attachment;filename={filename}',
+                'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            }
+        )
+        return r
+    else:
+        all_data1 = db.session.query(Mocdm_erp.po,Mocdm_pending.label,Mocdm_pending.des,Mocdm_pending.mcn,Mocdm_pending.previous,Mocdm_pending.ext_dely,Mocdm_pending.myanmar,Mocdm_erp.style,Mocdm_erp.buyer_version,Mocdm_erp.pending_buyer,Mocdm_erp.product_name,Mocdm_erp.main_color,Mocdm_erp.season,Mocdm_erp.vessel_date,Mocdm_erp.category,Mocdm_erp.material_classification,Mocdm_erp.material_code,Mocdm_erp.material,Mocdm_erp.material_chinese,Mocdm_erp.size,Mocdm_erp.color,Mocdm_erp.org_consume,Mocdm_erp.unit,Mocdm_erp.loss,Mocdm_erp.consume_point,Mocdm_erp.order_qty,Mocdm_erp.consume,Mocdm_erp.gp,Mocdm_pending.order_date,Mocdm_pending.factory).join(Mocdm_pending,(Mocdm_pending.po == Mocdm_erp.po) & (Mocdm_pending.style == Mocdm_erp.style) & (Mocdm_pending.color == Mocdm_erp.main_color) & (Mocdm_pending.org_buyer == Mocdm_erp.pending_buyer),isouter = True).all()
+        wb = Workbook()
+        ws = wb.active
+        ws.append(['PO','LABEL','DES','D/C','PREVIOUS','DELY','MYANMAR','STYLE','BUYER VERSION','BUYER','PRODUCT NAME','MAIN COLOR','SEASON','VESSEL DATE','CATEGORY','MATERIAL CLASSIFICATION','MATERIAL CODE','MATERIAL NAME IN CHINESE','MATERIAL','SIZE','COLOUR','ORIGINAL CONSUME','UNIT','LOSS','CONSUME POINT','ORDER QTY','CONSUME','GROUP','Order Date','FACTORY'])
+        for item in all_data1:
+            ws.append([item.po,item.label,item.des,item.mcn,item.previous,item.ext_dely,item.myanmar,item.style,item.buyer_version,item.pending_buyer,item.product_name,item.main_color,item.season,item.vessel_date,item.category,item.material_classification,item.material_code,item.material,item.material_chinese,item.size,item.color,item.org_consume,item.unit,item.loss,item.consume_point,item.order_qty,item.consume,item.gp,item.order_date,item.factory])
+        file = BytesIO()
+        wb.save(file)
+        file.seek(0)
+        filename = 'combination.xlsx'
+        r = Response(
+            file.read(),
+            headers={
+                'Content-Disposition': f'attachment;filename={filename}',
+                'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            }
+        )
+        return r
 
 @auth.route('/download/orderlist', methods=['GET', 'POST'])
 def download_report():

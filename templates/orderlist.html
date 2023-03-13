@@ -64,8 +64,12 @@
       </div>
     </div>
     <br>
-    <p><a href="/download_order?po={{po}}&style={{style}}&org_buyer={{org_buyer}}&color={{color}}&gp_name={{gp_name}}&ext_dely={{ext_dely}}&order_date={{order_date}}&factory={{factory}}&label={{label}}">Download</a></p>
-
+    
+            {% if request.method == 'POST' %}
+            <p><a href="/download_order?search=true&po={{po}}&style={{style}}&org_buyer={{org_buyer}}&color={{color}}&gp_name={{gp_name}}&ext_dely={{ext_dely}}&order_date={{order_date}}&factory={{factory}}&label={{label}}">Download</a></p>
+            {% elif request.method == 'GET' %}
+              <p><a href="/download_order?search=false">Download</a></p>
+            {% endif %}
             <br>
             </div>
             <br>
@@ -90,8 +94,9 @@
                         <th>CATEGORY</th>
                         <th>MATERIAL CLASSIFICATION</th>
                         <th>MATERIAL CODE</th>
-                        <th>MATERIAL NAME IN CHINESE</th>
                         <th>MATERIAL </th>
+                        <th>MATERIAL NAME IN CHINESE</th>
+
                         <th>SIZE</th>
                         <th>COLOUR</th>
                         <th>ORIGINAL CONSUME</th>

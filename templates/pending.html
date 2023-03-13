@@ -86,7 +86,11 @@
 
             </div>
             <br>
-            <p><a href="/download_pending?po={{po}}&style={{style}}&org_buyer={{org_buyer}}&color={{color}}&gp_name={{gp_name}}&ext_dely={{ext_dely}}&order_date={{order_date}}">Download</a></p>
+            {% if request.method == 'POST' %}
+            <p><a href="/download_pending?search=true&po={{po}}&style={{style}}&org_buyer={{org_buyer}}&color={{color}}&gp_name={{gp_name}}&ext_dely={{ext_dely}}&order_date={{order_date}}">Download</a></p>
+            {% elif request.method == 'GET' %}
+              <p><a href="/download_pending?search=false">Download</a></p>
+            {% endif %}
             
             <!-- <div class="container"> -->
               <div class="table-responsive bg-light border mb-5">
