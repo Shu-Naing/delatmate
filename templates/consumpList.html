@@ -1,0 +1,192 @@
+{% extends "base.html" %}
+{% block content %}
+
+  <div class="d-flex align-items-center mb-4">
+    <h3 class="title m-0" style="white-space:nowrap;">Consumption List</h3>
+<!-- <div class="box"> -->
+    <div id="" class="container tab-pane active">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="notification is-danger">
+                {{ messages[0] }}<br> Go to <a href="{{ url_for('auth.login') }}">login page</a>.
+            </div>
+        {% endif %}
+    {% endwith %}
+  </div>
+</div>
+    <div class="my-3 p-3 bg-body rounded shadow-sm border">
+      <div class="container">
+        <form action="/consump_search" method="POST" enctype="multipart/form-data">
+          <div class="row mb-3">
+              <div class="col-md-3">
+                <label for="po">PO:</label>
+                <input type="text" class="form-control" id="po" placeholder="{{po}}" name="po" value="{{session['po']}}">
+              </div>
+              <div class="col-md-3">
+                <label for="style">Style:</label>
+                <input type="text" class="form-control" id="style" placeholder="{{style}}" name="style" value="{{session['style']}}">
+              </div>
+              <div class="col-md-3">
+                <label for="org_buyer">Buyer:</label>
+                <input type="text" class="form-control" id="org_buyer" placeholder="{{org_buyer}}" name="org_buyer" value="{{session['org_buyer']}}">
+              </div>
+              <div class="col-md-3">
+                <label for="color">Color:</label>
+                <input type="text" class="form-control" id="color" placeholder="{{color}}" name="color" value="{{session['color']}}">
+              </div>
+              <div class="col-md-3">
+                <label for="gp_name">Group:</label>
+                <input type="text" class="form-control" id="gp_name" placeholder="{{gp_name}}" name="gp_name" value="{{session['gp_name']}}">
+              </div>
+              <div class="col-md-3">
+                <label for="order_date">Order Date</label>
+                <input type="date" id="order_date" class="form-control" name="order_date" min="2000-01-02" value="{{session['order_date']}}">
+              </div>
+              <div class="col-md-3">
+                <label for="ext_dely">Delivery Date</label>
+                <input type="date" id="ext_dely" class="form-control" name="ext_dely" min="2000-01-02" value="{{session['ext_dely']}}">
+              </div>
+          </div>
+          <div class="row align-items-end">
+            <div class="col-md-3">
+              <label for="des">DES:</label>
+             <input type="text" class="form-control" id="des" placeholder="{{des}}" name="des">
+            </div>
+            <div class="col-md-3">
+              <label for="factory">Factory:</label>
+             <input type="text" class="form-control" id="factory" placeholder="{{factory}}" name="factory">
+            </div>
+            <div class="col-md-3">
+              <input type="submit" class="form-control btn btn-primary" value="Search" href="/consumptionreport?style={{style}}&dely_date={{dely}}&group_name={{group}}&qty_no={{qty}}&buyer={{buyer}}">
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <br>
+            </div>
+            <br>
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped" id="myTable">
+                    <thead>
+                      <tr>
+                        <th>FACTORY</th>
+                        <th>GROUP</th>
+                        <th>QTY</th>
+                        <th>EXT-DELY</th>
+                        <th>STYLE</th>
+                        <th>BUYER</th>
+                        <th>Details</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for row in all_data %}
+                      <tr>
+                        <td>{{row.factory}}</td>
+                        <td>{{row.gp_name}}</td>
+                        <td>{{row.qty}}</td>
+                        <td>{{row.ext_dely}}</td>
+                        <td>{{row.style}}</td>
+                        <td>{{row.org_buyer}}</td>
+                        <td>
+                          <a type="submit" href="/consumption_list_report?factory={{row.factory}}&gp_name={{row.gp_name}}&qty={{row.qty}}&ext_dely={{row.ext_dely}}&style={{row.style}}&org_buyer={{row.org_buyer}}">View Detail</a>
+                        </td>
+                        <!-- <td>
+                          <form action="/imageupload" method="post" enctype="multipart/form-data">
+                            <input type="hidden"  name="id" value="{{row.id}}">
+                            <input type="file" name="image">
+                            <input type="submit" value="Upload">
+                            <img src="{{row.image_path}}" alt="" width="100px" height="100px">
+                          </form>                    
+                        </td> -->
+                    <!-- <td>
+                      <a href="/deleteSchedule/{{row.id}}" class="btn btn-danger btn-xs" onclick="return confirm('Are You Sure To Delete ?')">Delete</a>
+                    </td> -->
+                        <!-- <td>{{row.remark}}</td> -->
+                        <!-- <td>{{row.status}}</td> -->
+                      </tr>
+                      <div class="modal fade" id="myModal{{row.id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+                      
+                            <!-- Modal Header -->
+                            <div class="modal-header">
+                              <h4 class="modal-title">Update Informations</h4>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                      
+                            <!-- Modal body -->
+                            <div class="modal-body">
+                                <form action="{{url_for('auth.erpUpdate')}}" method="POST">
+                                    <input type="hidden"  name="id" value="{{row.id}}">
+                                    <h5>BUYER VERSION</h5>
+                                    <input type="text" class="form-control mt-3" name="buyer_version"  value="{{row.buyer_version}}">
+                                    <br>
+                                    <h5>PRODUCT NAME</h5>
+                                    <input type="text" class="form-control mt-3" name="product_name"  value="{{row.product_name}}">
+                                    <br>
+                                    <h5>MAIN COLOR</h5>
+                                    <input type="text" class="form-control mt-3" name="main_color"  value="{{row.main_color}}">
+                                    <br>
+                                    <h5>SEASON</h5>
+                                    <input type="text" class="form-control mt-3" name="season"  value="{{row.season}}">
+                                    <br>
+                                    <h5>CATEGORY</h5>
+                                    <input type="text" class="form-control mt-3" name="category"  value="{{row.category}}">
+                                    <br>
+                                    <h5>MATERIAL CLASSIFICATION</h5>
+                                    <input type="text" class="form-control mt-3" name="material_classification"  value="{{row.material_classification}}">
+                                    <br>
+                                    <h5>MATERIAL CODE</h5>
+                                    <input type="text" class="form-control mt-3" name="material_code"  value="{{row.material_code}}">
+                                    <br>
+                                    <h5>MATERIAL </h5>
+                                    <input type="text" class="form-control mt-3" name="material"  value="{{row.material}}">
+                                    <br>
+                                    <h5>MATERIAL NAME IN CHINESE</h5>
+                                    <input type="text" class="form-control mt-3" name="material_chinese"  value="{{row.material_chinese}}">
+                                    <br>
+                                    <h5>SIZE</h5>
+                                    <input type="text" class="form-control mt-3" name="size"  value="{{row.size}}">
+                                    <br>
+                                    <h5>ORIGINAL CONSUME</h5>
+                                    <input type="text" class="form-control mt-3" name="org_consume"  value="{{row.org_consume}}">
+                                    <br>
+                                    <h5>UNIT</h5>
+                                    <input type="text" class="form-control mt-3" name="unit"  value="{{row.unit}}">
+                                    <br>
+                                    <h5>LOSS</h5>
+                                    <input type="text" class="form-control mt-3" name="loss"  value="{{row.loss}}">
+                                    <br>
+                                    <h5>CONSUME POINT</h5>
+                                    <input type="text" class="form-control mt-3" name="consume_point"  value="{{row.consume_point}}">
+                                    <br>
+                                    <h5>ORDER QTY</h5>
+                                    <input type="text" class="form-control mt-3" name="order_qty"  value="{{row.order_qty}}">
+                                    <br>
+                                    <h5>CONSUME</h5>
+                                    <input type="text" class="form-control mt-3" name="consume"  value="{{row.consume}}">
+                                    <br>
+                                  <button class="btn btn-primary" type="submit">Update</button>
+                                </form>
+                      
+                            <!-- Modal footer -->
+                            <br>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                            </div>
+                      
+                        </div>
+                        </div>
+                      </div>
+                      
+                    {% endfor %}
+                    
+                    </tbody>
+                </table>
+               
+              </div>
+              <br>
+              <br>
+              <br>           
+{% endblock %}

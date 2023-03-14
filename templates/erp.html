@@ -24,23 +24,23 @@
         <div class="row mb-3">
             <div class="col-md-3">
               <label for="po">PO:</label>
-              <input type="text" class="form-control" id="po" name="po" placeholder="{{po}}">
+              <input type="text" class="form-control" id="po" name="po" value="{{session['po']}}">
             </div>
             <div class="col-md-3">
               <label for="style">Style:</label>
-              <input type="text" class="form-control" id="style"  name="style" placeholder="{{style}}">
+              <input type="text" class="form-control" id="style"  name="style" value="{{session['style']}}">
             </div>
             <div class="col-md-3">
               <label for="buyer">Buyer:</label>
-              <input type="text" class="form-control" id="buyer" name="buyer" placeholder="{{buyer}}">
+              <input type="text" class="form-control" id="buyer" name="buyer" value="{{session['buyer']}}">
             </div>
             <div class="col-md-3">
               <label for="main_color">Color:</label>
-              <input type="text" class="form-control" id="main_color" name="main_color" placeholder="{{main_color}}">
+              <input type="text" class="form-control" id="main_color" name="main_color" value="{{session['main_color']}}">
             </div>
             <div class="col-md-3">
               <label for="gp">Group:</label>
-              <input type="text" class="form-control" id="gp" name="gp" placeholder="{{gp}}">
+              <input type="text" class="form-control" id="gp" name="gp" value="{{session['main_color']}}">
             </div>
             
         </div>

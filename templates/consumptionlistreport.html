@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+{% block content %}
+<br>
+<h3 class="title" style="text-align: center;">Consumption List Report</h3>
+<!-- <div class="box"> -->
+    <div id="" class="container tab-pane active"><br>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="notification is-danger">
+                {{ messages[0] }}<br> Go to <a href="{{ url_for('auth.login') }}">login page</a>.
+            </div>
+        {% endif %}
+    {% endwith %}
+    <script>
+      $(".custom-file-input").on("change", function() {
+        var fileName = $(this).val().split("\\").pop();
+        $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+      });
+  </script>
+
+                <!-- <form method="POST" action="/erpupload" enctype="multipart/form-data">
+                    <input type="file" class="custom-file-input" id="customFile" name="file">
+                    <label class="custom-file-label" for="customFile">Choose file</label>
+                    <br>
+                    <br> -->
+            </div>
+            <br>
+            <div class="container">
+              <div class="row">
+            <!-- <p><a href="{{ url_for('auth.download_consumptionreportreport') }}">Download</a></p> -->
+<p><a href="/download/consumption_list_report?factory={{factory}}&gp_name={{gp_name}}&qty={{qty}}&ext_dely={{ext_dely}}&style={{style}}&org_buyer={{org_buyer}}">Download</a></p>
+
+
+              </div>
+            </div>
+            <br>
+            <table class="table">
+              <thead>
+                <tr class="table-secondary">
+                  <th>FACTORY</th>
+                  <th>GROUP</th>
+                  <th>QTY</th>
+                  <th>DELY</th>
+                  <th>STYLE</th>
+                  <th>BUYER</th>
+                </tr>
+              </thead>
+              <tbody>     
+                <tr>
+                  <td>{{factory}}</td>
+                  <td>{{gp_name}}</td>
+                  <td>{{qty}}</td>
+                  <td>{{ext_dely}}</td>
+                  <td>{{style}}</td>
+                  <td>{{org_buyer}}</td>
+                </tr>
+                
+              </tbody>
+            </table>
+          </div>
+            <div class="table-responsive">
+                <table class="table table-bordered" id="myTable">
+                    <thead>
+                      <tr class="table-secondary">
+                        <th>CATEGORY</th>
+                        <th>MATERIAL</th>
+                        <th>COLOUR</th>
+                        <th>QTY</th>
+                        <th>CONSUME</th>
+                        <th>TOTAL QTY</th>
+                        <th>ISSUED QTY</th>
+                        <th>BALANCE</th>
+                        <th>DATE</th>
+                        <th>ISSUED BY (Leader)</th>
+                        <th>Factory line</th>
+                        <th>RECEIVER</th>
+                        <th>REMARK</th>
+                        <th>Edit</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for row in all_data %}
+                      <tr>
+                        <td>{{row.category}}</td>
+                        <td>{{row.material}}</td>
+                        <td>{{row.color}}</td>
+                        <td>{{row.qty}}</td>
+                        <td>{{row.consume}}</td>
+                        <td>{{row.order_qty}}</td>
+                        <td>{{row.issued_qty}}</td>
+                        <td>{{row.balance}}</td>
+                        <td>{{row.date}}</td>
+                        <td>{{row.issued_by_leader}}</td>
+                        <td>{{row.factory_line}}</td>
+                        <td>{{row.reciever}}</td>
+                        <td>{{row.remark}}</td>
+                        <td>
+                        <a href="/consumptionreportUpdate"  class="btn btn-primary" value="{{row.id}}" data-bs-toggle="modal" data-bs-target="#myModal{{row.id}}">Edit</a>
+                        </td>
+                      </tr>
+                      <div class="modal fade" id="myModal{{row.id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+                      
+                            <!-- Modal Header -->
+                            <div class="modal-header">
+                              <h4 class="modal-title">Update Informations</h4>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                      
+                            <!-- Modal body -->
+                            <div class="modal-body">
+                              <form action="{{url_for('auth.consumptionreportUpdate')}}" method="POST">
+                                <!-- {% if row.id == 'none' %} -->
+                                  <!-- <input type="hidden"  name="id" value="0"> -->
+                                <!-- {% else %} -->
+                                  <input type="hidden"  name="id" value="{{row.id}}">
+                                <!-- {% endif %} -->
+                                  <input type="hidden"  name="erpid" value="{{row.erpid}}">
+                                  <h5>ISSUED QTY</h5>
+                                  <input type="number" class="form-control mt-3" name="issued_qty"  value="{{row.issued_qty}}">
+                                  <br>
+                                  <h5>BALANCE</h5>
+                                  <input type="number" class="form-control mt-3" name="balance"  value="{{row.balance}}">
+                                  <br>
+                                  <h5>DATE</h5>
+                                  <input type="date" class="form-control mt-3" name="date"  value="{{row.date}}">
+                                  <br>
+                                  <h5>ISSUED BY (Leader)</h5>
+                                  <input type="text" class="form-control mt-3" name="issued_by_leader"  value="{{row.issued_by_leader}}">
+                                  <br>
+                                  <h5>Factory line</h5>
+                                  <input type="text" class="form-control mt-3" name="factory_line"  value="{{row.factory_line}}">
+                                  <br>
+                                  <h5>RECEIVER</h5>
+                                  <input type="text" class="form-control mt-3" name="reciever"  value="{{row.reciever}}">
+                                  <br>
+                                  <h5>REMARK</h5>
+                                  <input type="text" class="form-control mt-3" name="remark"  value="{{row.remark}}">
+                                  <br>
+                                <button class="btn btn-primary" type="submit">Update</button>
+                              </form>
+                      
+                            <!-- Modal footer -->
+                            <br>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                            </div>
+                      
+                        </div>
+                        </div>
+                      </div>
+                      
+                    {% endfor %}
+                    
+                    </tbody>
+                </table>
+                <ul class="pagination">
+                  {% if all_data.has_prev %}
+                   <li class="page-item"><a class="page-link" href="{{ url_for('auth.consumptionreport', page_num=all_data.prev_num) }}">Previous</a></li>
+                  {% else %}
+                   <li class="page-item disabled"><span class="page-link">Previous</span>
+                  {% endif %}
+                   </li>
+                     
+                  {% for page in all_data.iter_pages(left_edge=3, right_edge=3) %}
+                  {% if page %}
+                   <li class="page-item"><a class="page-link" href="{{ url_for('auth.consumptionreport', page_num=page) }}">{{ page }}</a></li>
+                  {% else %}
+                   <li class="page-item disabled" id="example_ellipsis"><a href="#" class="page-link">…</a></li> 
+                  {% endif %}
+                  {% endfor %}
+                   
+                  {% if all_data.has_next %}
+                   <li class="page-item"><a class="page-link" href="{{ url_for('auth.consumptionreport', page_num=all_data.next_num) }}">Next</a></li>
+                  {% else %}
+                   <li class="page-item disabled"><span class="page-link">Next</span>
+                  {% endif %}
+                   </ul>
+              </div>
+              </div>
+             
+{% endblock %}

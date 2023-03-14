@@ -20,41 +20,41 @@
           <div class="row mb-3">
               <div class="col-md-3">
                 <label for="po">PO:</label>
-                <input type="text" class="form-control" id="po" placeholder="{{po}}" name="po">
+                <input type="text" class="form-control" id="po" name="po" value="{{session['po']}}">
               </div>
               <div class="col-md-3">
                 <label for="style">Style:</label>
-                <input type="text" class="form-control" id="style" placeholder="{{style}}" name="style">
+                <input type="text" class="form-control" id="style"  name="style" value="{{session['style']}}">
               </div>
               <div class="col-md-3">
                 <label for="org_buyer">Buyer:</label>
-                <input type="text" class="form-control" id="org_buyer" placeholder="{{buyer}}" name="org_buyer">
+                <input type="text" class="form-control" id="org_buyer"  name="org_buyer" value="{{session['org_buyer']}}">
               </div>
               <div class="col-md-3">
                 <label for="color">Color:</label>
-                <input type="text" class="form-control" id="color" placeholder="{{color}}" name="color">
+                <input type="text" class="form-control" id="color"  name="color" value="{{session['color']}}">
               </div>
           </div>
           <div class="row align-items-end">
             <div class="col-md-3">
               <label for="gp_name">Group:</label>
-             <input type="text" class="form-control" id="gp_name" placeholder="{{gp_name}}" name="gp_name">
+             <input type="text" class="form-control" id="gp_name" name="gp_name" value="{{session['gp_name']}}">
             </div>
             <div class="col-md-3">
               <label for="factory">Factory:</label>
-             <input type="text" class="form-control" id="factory" placeholder="{{factory}}" name="factory">
+             <input type="text" class="form-control" id="factory"  name="factory" value="{{session['factory']}}">
             </div>
             <div class="col-md-3">
               <label for="label">Label:</label>
-             <input type="text" class="form-control" id="label" placeholder="{{label}}" name="label">
+             <input type="text" class="form-control" id="label"  name="label" value="{{session['label']}}">
             </div>
             <div class="col-md-3">
               <label for="order_date">Order Date</label>
-              <input type="date" id="order_date" class="form-control" name="order_date" min="2000-01-02">
+              <input type="date" id="order_date" class="form-control" name="order_date" min="2000-01-02" value="{{session['order_date']}}">
             </div>
             <div class="col-md-3">
               <label for="start">Delivery Date</label>
-              <input type="date" id="ext_dely" class="form-control" name="ext_dely" min="2000-01-02"> 
+              <input type="date" id="ext_dely" class="form-control" name="ext_dely" min="2000-01-02" value="{{session['ext_dely']}}"> 
             </div>
             <div class="col-md-3">
               <input type="submit" class="form-control btn btn-primary" value="Search" href="/consumptionreport?style={{style}}&dely_date={{dely}}&group_name={{group}}&qty_no={{qty}}&buyer={{buyer}}">
