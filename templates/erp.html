@@ -20,7 +20,7 @@
 
   <div class="my-3 p-3 bg-body rounded shadow-sm border">
     <div class="container">
-      <form id="myForm" action="/erplist" method="POST" enctype="multipart/form-data">
+      <form action="/erplist" method="POST" enctype="multipart/form-data">
         <div class="row mb-3">
             <div class="col-md-3">
               <label for="po">PO:</label>
@@ -46,7 +46,7 @@
         </div>
         <div class="row align-items-end">
           <div class="col-md-3">
-            <input type="submit" class="form-control btn btn-primary" value="Search">
+            <input type="submit" class="form-control btn btn-primary" value="Search" href="/erplist?&po={{po}}&style={{style}}&buyer={{buyer}}&main_color={{main_color}}&gp={{gp}}">
           </div>
           <div class="col-md-3">
             <button class="form-control btn btn-success" onclick="resetForm()">Reset</button>
@@ -55,7 +55,7 @@
       </form>
     </div>
   </div>
-  {% if request.method == 'POST' %}
+  {% if request.method == 'POST' or request.args.get('search')=='True'  %}
     <p><a href="/download_erp?search=true&po={{po}}&style={{style}}&buyer={{buyer}}&main_color={{main_color}}&gp={{gp}}">Download</a></p>
   {% elif request.method == 'GET' %}
     <p><a href="/download_erp?search=false">Download</a></p>
@@ -238,6 +238,30 @@
                     
                     </tbody>
                 </table>
+                {% if request.method == 'POST' or request.args.get('search')=='True' %}
+                <ul class="pagination">
+                  {% if all_data.has_prev %}
+                   <li class="page-item"><a class="page-link" href="{{ url_for('auth.erplist', page_num=all_data.prev_num) }}">Previous</a></li>
+                  {% else %}
+                   <li class="page-item disabled"><span class="page-link">Previous</span>
+                  {% endif %}
+                   </li>
+                     
+                  {% for page in all_data.iter_pages(left_edge=3, right_edge=3) %}
+                  {% if page %}
+                   <li class="page-item"><a class="page-link" href="{{ url_for('auth.erplist', page_num=page, po = po,gp=gp,buyer=buyer,main_color=main_color,search=True) }}">{{ page }}</a></li>
+                  {% else %}
+                   <li class="page-item disabled" id="example_ellipsis"><a href="#" class="page-link">…</a></li> 
+                  {% endif %}
+                  {% endfor %}
+                   
+                  {% if all_data.has_next %}
+                   <li class="page-item"><a class="page-link" href="{{ url_for('auth.erplist', page_num=all_data.next_num) }}">Next</a></li>
+                  {% else %}
+                   <li class="page-item disabled"><span class="page-link">Next</span>
+                  {% endif %}
+                </ul>
+                {% elif request.method == 'GET' %}
                 <ul class="pagination">
                   {% if all_data.has_prev %}
                    <li class="page-item"><a class="page-link" href="{{ url_for('auth.erplist', page_num=all_data.prev_num) }}">Previous</a></li>
@@ -260,6 +284,8 @@
                    <li class="page-item disabled"><span class="page-link">Next</span>
                   {% endif %}
                    </ul>
+                {% endif %}
+                
               </div>
               <br>
               <br>
