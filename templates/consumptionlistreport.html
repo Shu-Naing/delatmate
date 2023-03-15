@@ -28,7 +28,7 @@
             <div class="container">
               <div class="row">
             <!-- <p><a href="{{ url_for('auth.download_consumptionreportreport') }}">Download</a></p> -->
-<p><a href="/download/consumption_list_report?factory={{factory}}&gp_name={{gp_name}}&qty={{qty}}&ext_dely={{ext_dely}}&style={{style}}&org_buyer={{org_buyer}}">Download</a></p>
+            <p><a href="/download/consumption_list_report?factory={{factory}}&gp_name={{gp_name}}&qty={{qty}}&ext_dely={{ext_dely}}&style={{style}}&org_buyer={{org_buyer}}">Download</a></p>
 
 
               </div>
@@ -89,7 +89,11 @@
                         <td>{{row.order_qty}}</td>
                         <td>{{row.issued_qty}}</td>
                         <td>{{row.balance}}</td>
+                        {% if row.date %}
+                        <td>{{row.date.strftime('%m/%d/%Y')}}</td>
+                        {% else %}
                         <td>{{row.date}}</td>
+                        {% endif %}
                         <td>{{row.issued_by_leader}}</td>
                         <td>{{row.factory_line}}</td>
                         <td>{{row.reciever}}</td>

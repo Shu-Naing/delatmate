@@ -114,11 +114,6 @@
                   Consumption List
                 </a>
             </li>
-            <li class="nav-item">
-              <a href="{{ url_for('auth.deltamate') }}" class="nav-link ">
-              DDD  
-              </a>
-          </li>
               {% endif %}
             </ul>
 
@@ -296,13 +291,14 @@
           }
       });
   });
-const form = document.getElementById('my-form');
-
-// Loop through each element in the form
-form.querySelectorAll('input, select, textarea').forEach(element => {
-  // Remove the session data associated with this element
-  sessionStorage.removeItem(element.name);
-});
+  function resetForm() {
+  var inputs = document.getElementsByTagName('input');
+  for (var i = 0; i < inputs.length; i++) {
+    if (inputs[i].type === 'text' || inputs[i].type === 'password' || inputs[i].type === 'email' || inputs[i].type === 'date' || inputs[i].type === 'phone'|| inputs[i].type === 'number') {
+      inputs[i].value = '';
+    }
+  }
+}
 </script>
 
 </html>

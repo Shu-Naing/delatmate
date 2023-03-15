@@ -57,7 +57,10 @@
               <input type="date" id="ext_dely" class="form-control" name="ext_dely" min="2000-01-02" value="{{session['ext_dely']}}"> 
             </div>
             <div class="col-md-3">
-              <input type="submit" class="form-control btn btn-primary" value="Search" href="/consumptionreport?style={{style}}&dely_date={{dely}}&group_name={{group}}&qty_no={{qty}}&buyer={{buyer}}">
+              <input type="submit" class="form-control btn btn-primary" value="Search">
+            </div>
+            <div class="col-md-3">
+              <button class="form-control btn btn-success" onclick="resetForm()">Reset</button>
             </div>
           </div>
         </form>
@@ -117,8 +120,16 @@
                         <td>{{row.label}}</td>
                         <td>{{row.des}}</td>
                         <td>{{row.mcn}}</td>
+                        {% if row.previous %}
+                        <td>{{row.previous.strftime('%m/%d/%Y')}}</td>
+                        {% else %}
                         <td>{{row.previous}}</td>
+                        {% endif %}
+                        {% if row.ext_dely %}
+                        <td>{{row.ext_dely.strftime('%m/%d/%Y')}}</td>
+                        {% else %}
                         <td>{{row.ext_dely}}</td>
+                        {% endif %}
                         <td>{{row.myanmar}}</td>
                         <td>{{row.style}}</td>
                         <td>{{row.buyer_version}}</td>
@@ -126,7 +137,11 @@
                         <td>{{row.product_name}}</td>
                         <td>{{row.main_color}}</td>
                         <td>{{row.season}}</td>
+                        {% if row.vessel_date %}
+                        <td>{{row.vessel_date.strftime('%m/%d/%Y')}}</td>
+                        {% else %}
                         <td>{{row.vessel_date}}</td>
+                        {% endif %}
                         <td>{{row.category}}</td>
                         <td>{{row.material_classification}}</td>
                         <td>{{row.material_code}}</td>
@@ -141,7 +156,11 @@
                         <td>{{row.order_qty}}</td>
                         <td>{{row.consume}}</td>
                         <td>{{row.gp}}</td>
+                        {% if row.order_date %}
+                        <td>{{row.order_date.strftime('%m/%d/%Y')}}</td>
+                        {% else %}
                         <td>{{row.order_date}}</td>
+                        {% endif %}
                         <td>{{row.factory}}</td>
                       </tr>
                       <div class="modal fade" id="myModal{{row.id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
