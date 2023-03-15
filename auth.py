@@ -877,7 +877,7 @@ def consump_list():
 @auth.route('/consumption_list_report/<int:page_num>', methods=['GET','POST'])
 @login_required
 def consumption_list_report(page_num):
-    # try:
+    try:
         if request.method=='GET':
             factory = request.args.get('factory')
             gp_name = request.args.get('gp_name')
@@ -888,13 +888,12 @@ def consumption_list_report(page_num):
             style = request.args.get('style')
             org_buyer = request.args.get('org_buyer')
             all_data = db.session.query(Mocdm_erp.id.label("erpid"),Mocdm_consumption.id,Mocdm_erp.category,Mocdm_erp.material,Mocdm_erp.color,Mocdm_erp.unit,Mocdm_erp.consume,Mocdm_erp.order_qty,Mocdm_consumption.issued_qty,Mocdm_consumption.balance,Mocdm_consumption.date,Mocdm_consumption.issued_by_leader,Mocdm_consumption.factory_line,Mocdm_consumption.reciever,Mocdm_consumption.remark,Mocdm_pending.qty).join(Mocdm_pending,(Mocdm_pending.po == Mocdm_erp.po) & (Mocdm_pending.color == Mocdm_erp.main_color) & (Mocdm_pending.style == Mocdm_erp.style) & (Mocdm_pending.org_buyer == Mocdm_erp.pending_buyer),isouter = True).join(Mocdm_consumption,(Mocdm_consumption.erp_id == Mocdm_erp.id),isouter = True).filter(Mocdm_pending.factory == factory,Mocdm_pending.gp_name == gp_name,Mocdm_pending.qty == qty,Mocdm_pending.ext_dely == ext_dely,Mocdm_pending.style == style,Mocdm_pending.org_buyer == org_buyer).paginate(per_page=100, page=page_num, error_out=True)
-            print(all_data)
             return render_template('consumptionlistreport.html',factory=factory, gp_name=gp_name, qty=qty, ext_dely=new_date_string, style=style, org_buyer=org_buyer, all_data = all_data)
-    # except SQLAlchemyError as e:
-    #     current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    #     logging.basicConfig(filename= f'error_log.log', level=logging.DEBUG)
-    #     logging.error(str(e))
-    # return render_template('consumptionlistreport.html',factory=factory, gp_name=gp_name, qty=qty, ext_dely=new_date_string, style=style, org_buyer=org_buyer, all_data = all_data)
+    except SQLAlchemyError as e:
+        current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        logging.basicConfig(filename= f'error_log.log', level=logging.DEBUG)
+        logging.error(str(e))
+    return render_template('consumptionlistreport.html',factory=factory, gp_name=gp_name, qty=qty, ext_dely=new_date_string, style=style, org_buyer=org_buyer, all_data = all_data)
 
 @auth.route('/download/consumption_list_report', methods=['GET', 'POST'])
 def download_consumptionlistreportreport():
