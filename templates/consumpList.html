@@ -98,100 +98,32 @@
                         <td>
                           <a type="submit" href="/consumption_list_report?factory={{row.factory}}&gp_name={{row.gp_name}}&qty={{row.qty}}&ext_dely={{row.ext_dely}}&style={{row.style}}&org_buyer={{row.org_buyer}}">View Detail</a>
                         </td>
-                        <!-- <td>
-                          <form action="/imageupload" method="post" enctype="multipart/form-data">
-                            <input type="hidden"  name="id" value="{{row.id}}">
-                            <input type="file" name="image">
-                            <input type="submit" value="Upload">
-                            <img src="{{row.image_path}}" alt="" width="100px" height="100px">
-                          </form>                    
-                        </td> -->
-                    <!-- <td>
-                      <a href="/deleteSchedule/{{row.id}}" class="btn btn-danger btn-xs" onclick="return confirm('Are You Sure To Delete ?')">Delete</a>
-                    </td> -->
-                        <!-- <td>{{row.remark}}</td> -->
-                        <!-- <td>{{row.status}}</td> -->
-                      </tr>
-                      <div class="modal fade" id="myModal{{row.id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                        <div class="modal-dialog">
-                          <div class="modal-content">
-                      
-                            <!-- Modal Header -->
-                            <div class="modal-header">
-                              <h4 class="modal-title">Update Informations</h4>
-                              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                            </div>
-                      
-                            <!-- Modal body -->
-                            <div class="modal-body">
-                                <form action="{{url_for('auth.erpUpdate')}}" method="POST">
-                                    <input type="hidden"  name="id" value="{{row.id}}">
-                                    <h5>BUYER VERSION</h5>
-                                    <input type="text" class="form-control mt-3" name="buyer_version"  value="{{row.buyer_version}}">
-                                    <br>
-                                    <h5>PRODUCT NAME</h5>
-                                    <input type="text" class="form-control mt-3" name="product_name"  value="{{row.product_name}}">
-                                    <br>
-                                    <h5>MAIN COLOR</h5>
-                                    <input type="text" class="form-control mt-3" name="main_color"  value="{{row.main_color}}">
-                                    <br>
-                                    <h5>SEASON</h5>
-                                    <input type="text" class="form-control mt-3" name="season"  value="{{row.season}}">
-                                    <br>
-                                    <h5>CATEGORY</h5>
-                                    <input type="text" class="form-control mt-3" name="category"  value="{{row.category}}">
-                                    <br>
-                                    <h5>MATERIAL CLASSIFICATION</h5>
-                                    <input type="text" class="form-control mt-3" name="material_classification"  value="{{row.material_classification}}">
-                                    <br>
-                                    <h5>MATERIAL CODE</h5>
-                                    <input type="text" class="form-control mt-3" name="material_code"  value="{{row.material_code}}">
-                                    <br>
-                                    <h5>MATERIAL </h5>
-                                    <input type="text" class="form-control mt-3" name="material"  value="{{row.material}}">
-                                    <br>
-                                    <h5>MATERIAL NAME IN CHINESE</h5>
-                                    <input type="text" class="form-control mt-3" name="material_chinese"  value="{{row.material_chinese}}">
-                                    <br>
-                                    <h5>SIZE</h5>
-                                    <input type="text" class="form-control mt-3" name="size"  value="{{row.size}}">
-                                    <br>
-                                    <h5>ORIGINAL CONSUME</h5>
-                                    <input type="text" class="form-control mt-3" name="org_consume"  value="{{row.org_consume}}">
-                                    <br>
-                                    <h5>UNIT</h5>
-                                    <input type="text" class="form-control mt-3" name="unit"  value="{{row.unit}}">
-                                    <br>
-                                    <h5>LOSS</h5>
-                                    <input type="text" class="form-control mt-3" name="loss"  value="{{row.loss}}">
-                                    <br>
-                                    <h5>CONSUME POINT</h5>
-                                    <input type="text" class="form-control mt-3" name="consume_point"  value="{{row.consume_point}}">
-                                    <br>
-                                    <h5>ORDER QTY</h5>
-                                    <input type="text" class="form-control mt-3" name="order_qty"  value="{{row.order_qty}}">
-                                    <br>
-                                    <h5>CONSUME</h5>
-                                    <input type="text" class="form-control mt-3" name="consume"  value="{{row.consume}}">
-                                    <br>
-                                  <button class="btn btn-primary" type="submit">Update</button>
-                                </form>
-                      
-                            <!-- Modal footer -->
-                            <br>
-                            <div class="modal-footer">
-                              <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-                            </div>
-                      
-                        </div>
-                        </div>
-                      </div>
-                      
                     {% endfor %}
-                    
                     </tbody>
                 </table>
-                -->
+                <ul class="pagination">
+                  {% if all_data.has_prev %}
+                   <li class="page-item"><a class="page-link" href="{{ url_for('auth.consump_list', page_num=all_data.prev_num) }}">Previous</a></li>
+                  {% else %}
+                   <li class="page-item disabled"><span class="page-link">Previous</span>
+                  {% endif %}
+                   </li>
+                     
+                  {% for page in all_data.iter_pages(left_edge=3, right_edge=3) %}
+                  {% if page %}
+                   <li class="page-item"><a class="page-link" href="{{ url_for('auth.consump_list', page_num=page) }}">{{ page }}</a></li>
+                  {% else %}
+                   <li class="page-item disabled" id="example_ellipsis"><a href="#" class="page-link">…</a></li> 
+                  {% endif %}
+                  {% endfor %}
+                   
+                  {% if all_data.has_next %}
+                   <li class="page-item"><a class="page-link" href="{{ url_for('auth.consump_list', page_num=all_data.next_num) }}">Next</a></li>
+                  {% else %}
+                   <li class="page-item disabled"><span class="page-link">Next</span>
+                  {% endif %}
+                   </ul>
+              </div>
               </div>
               <br>
               <br>
