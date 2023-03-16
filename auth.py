@@ -863,7 +863,7 @@ def scheduleUpload():
             df = pd.read_excel(excel_file,names=col_names,header = None,skiprows=1)
             df = df.fillna('')
             for i,row in df.iterrows():
-                all_data = Mocdm_schedule(line=row['LINE'],dely=row['DELY'],qty=row['QTY'],target=row['Target(H/W)'],balance=row['Balance(PVC)'],zip_thread=row['Zip & Thread'],group=row['Group'],style=row['Style'],version=row['Version'],buyer=row['Buyer'],factory=['Factory'],total=row['total'],data_date=row['data_date'])
+                all_data = Mocdm_schedule(line=row['LINE'],dely=row['DELY'],qty=row['QTY'],target=row['Target(H/W)'],balance=row['Balance(PVC)'],zip_thread=row['Zip & Thread'],group=row['Group'],style=row['Style'],version=row['Version'],buyer=row['Buyer'],factory=row['Factory'],total=row['total'],data_date=row['data_date'])
                 db.session.add(all_data)
                 db.session.commit()
             return redirect(url_for('auth.schedulelist'))
