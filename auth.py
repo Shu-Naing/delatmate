@@ -17,6 +17,7 @@ from flask import Flask, send_file
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from flask import current_app
+from jinja2 import Environment
 from openpyxl import Workbook
 from openpyxl import load_workbook
 from openpyxl.styles import Alignment
@@ -59,6 +60,7 @@ def login():
                 return redirect(url_for('auth.login')) 
             login_user(user, remember=remember)
             session["role"] = user.role
+            session["user_session"] = user.id
             current_page = current_app.config.get('CURRENT_PAGE')
             current_page_home = 'home'
             return redirect(url_for('main.profile'))
@@ -189,68 +191,52 @@ def erpupload():
 @auth.route('/erplist/<int:page_num>', methods=['GET', 'POST'])
 @login_required
 def erplist(page_num):
-    # try:
+    try:
         if request.method=='POST' or request.args.get('search')=='True' :
             if (request.args.get('po')): 
-                po = request.args.get('po') 
-            else: 
-                po = request.form['po']
+                po = request.args.get('po')
+            else:
+                po = request.form.get('po', '')
 
-                print(po)
-            # style = request.form['style']
-            # buyer = request.form['buyer']
-            # main_color = request.form['main_color']
-            # gp = request.form['gp']
+            if (request.args.get('style')): 
+                style = request.args.get('style')
+            else:
+                style = request.form.get('style', '')
+
+            if (request.args.get('buyer')): 
+                buyer = request.args.get('buyer')
+            else:
+                buyer = request.form.get('buyer', '')
+
+            if (request.args.get('main_color')): 
+                main_color = request.args.get('main_color')
+            else:
+                main_color = request.form.get('main_color', '')
+
+            if (request.args.get('gp')): 
+                gp = request.args.get('gp')
+            else:
+                gp = request.form.get('gp', '')
             session['po'] = po
-            # session['style'] = style
-            # session['buyer'] = buyer
-            # session['main_color'] = main_color
-            # session['gp'] = gp
+            session['style'] = style
+            session['buyer'] = buyer
+            session['main_color'] = main_color
+            session['gp'] = gp
             search1 = "%{}%".format(po)
-            # search2 = "%{}%".format(style)
-            # search3 = "%{}%".format(buyer)
-            # search4 = "%{}%".format(main_color)
-            # search5 = "%{}%".format(gp)
-            all_data = Mocdm_erp.query.filter((Mocdm_erp.po.like(search1))).paginate(per_page=100, page=page_num, error_out=True)
-            # all_data = Mocdm_erp.query.filter((Mocdm_erp.po.like(search1)),(Mocdm_erp.style.like(search2)),(Mocdm_erp.buyer.like(search3)),(Mocdm_erp.main_color.like(search4)),(Mocdm_erp.gp.like(search5))).paginate(per_page=100, page=page_num, error_out=True)
-            return render_template("erp.html",po = po,all_data = all_data, erp_active="is_active('/erp')")
+            search2 = "%{}%".format(style)
+            search3 = "%{}%".format(buyer)
+            search4 = "%{}%".format(main_color)
+            search5 = "%{}%".format(gp)
+            all_data = Mocdm_erp.query.filter((Mocdm_erp.po.like(search1)),(Mocdm_erp.style.like(search2)),(Mocdm_erp.buyer.like(search3)),(Mocdm_erp.main_color.like(search4)),(Mocdm_erp.gp.like(search5))).paginate(per_page=100, page=page_num, error_out=True)
+            return render_template("erp.html",po = po,style=style,gp=gp,buyer=buyer,main_color=main_color,all_data = all_data, erp_active="is_active('/erp')")
         else:         
-            # po = request.args.get('po')
-            # style = request.args.get('style')
-            # gp = request.args.get('gp')
-            # main_color = request.args.get('main_color')
-            # buyer = request.args.get('buyer')
             all_data = Mocdm_erp.query.paginate(per_page=100, page=page_num, error_out=True)
             return render_template('erp.html',all_data = all_data, erp_active="is_active('/erp')")
-        # else:
-        # if (request.args.get('po')): 
-        #     po = request.args.get('po') 
-        # else: 
-        #     po = request.form['po']
-
-        #     print(po)
-        # style = request.form['style']
-        # buyer = request.form['buyer']
-        # main_color = request.form['main_color']
-        # gp = request.form['gp']
-        # session['po'] = po
-        # session['style'] = style
-        # session['buyer'] = buyer
-        # session['main_color'] = main_color
-        # session['gp'] = gp
-        # search1 = "%{}%".format(po)
-        # search2 = "%{}%".format(style)
-        # search3 = "%{}%".format(buyer)
-        # search4 = "%{}%".format(main_color)
-        # search5 = "%{}%".format(gp)
-        # all_data = Mocdm_erp.query.filter((Mocdm_erp.po.like(search1))).paginate(per_page=100, page=page_num, error_out=True)
-        # all_data = Mocdm_erp.query.filter((Mocdm_erp.po.like(search1)),(Mocdm_erp.style.like(search2)),(Mocdm_erp.buyer.like(search3)),(Mocdm_erp.main_color.like(search4)),(Mocdm_erp.gp.like(search5))).paginate(per_page=100, page=page_num, error_out=True)
-        # return render_template("erp.html",po = po,all_data = all_data, erp_active="is_active('/erp')")
-    # except SQLAlchemyError as e:
-    #     current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    #     logging.basicConfig(filename= f'error_log.log', level=logging.ERROR)
-    #     logging.error(str(e))
-    # return render_template('erp.html',po = po,gp=gp,style=style,buyer=buyer,main_color=main_color,all_data = all_data, erp_active="is_active('/erp')")
+    except SQLAlchemyError as e:
+        current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        logging.basicConfig(filename= f'error_log.log', level=logging.ERROR)
+        logging.error(str(e))
+    return render_template('erp.html',po = po,gp=gp,style=style,buyer=buyer,main_color=main_color,all_data = all_data, erp_active="is_active('/erp')")
     
 
 @auth.route('/download_erp', methods=['GET', 'POST'])
@@ -271,7 +257,7 @@ def download_erp():
         ws = wb.active
         ws.append(['PO','STYLE','BUYER VERSION','BUYER','PRODUCT NAME','MAIN COLOR','SEASON','VESSEL DATE','CATEGORY','MATERIAL CLASSIFICATION','MATERIAL CODE','MATERIAL' ,'MATERIAL NAME IN CHINESE','SIZE','COLOUR','ORIGINAL CONSUME','UNIT','LOSS','CONSUME POINT','ORDER QTY','CONSUME','GROUP'])
         for item in all_data:
-            ws.append([item.po,item.style,item.buyer_version,item.buyer,item.product_name,item.main_color,item.season,item.vessel_date.strftime('%d/%m/%Y'),item.category,item.material_classification,item.material_code,item.material,item.material_chinese,item.size,item.color,item.org_consume,item.unit,item.loss,item.consume_point,item.order_qty,item.consume,item.gp])
+            ws.append([item.po,item.style,item.buyer_version,item.buyer,item.product_name,item.main_color,item.season,item.vessel_date.strftime('%m/%d/%Y'),item.category,item.material_classification,item.material_code,item.material,item.material_chinese,item.size,item.color,item.org_consume,item.unit,item.loss,item.consume_point,item.order_qty,item.consume,item.gp])
         file = BytesIO()
         wb.save(file)
         file.seek(0)
@@ -290,7 +276,7 @@ def download_erp():
         ws = wb.active
         ws.append(['PO','STYLE','BUYER VERSION','BUYER','PRODUCT NAME','MAIN COLOR','SEASON','VESSEL DATE','CATEGORY','MATERIAL CLASSIFICATION','MATERIAL CODE','MATERIAL' ,'MATERIAL NAME IN CHINESE','SIZE','COLOUR','ORIGINAL CONSUME','UNIT','LOSS','CONSUME POINT','ORDER QTY','CONSUME','GROUP'])
         for item in all_data1:
-            ws.append([item.po,item.style,item.buyer_version,item.buyer,item.product_name,item.main_color,item.season,item.vessel_date.strftime('%d/%m/%Y'),item.category,item.material_classification,item.material_code,item.material,item.material_chinese,item.size,item.color,item.org_consume,item.unit,item.loss,item.consume_point,item.order_qty,item.consume,item.gp])
+            ws.append([item.po,item.style,item.buyer_version,item.buyer,item.product_name,item.main_color,item.season,item.vessel_date.strftime('%m/%d/%Y'),item.category,item.material_classification,item.material_code,item.material,item.material_chinese,item.size,item.color,item.org_consume,item.unit,item.loss,item.consume_point,item.order_qty,item.consume,item.gp])
         file = BytesIO()
         wb.save(file)
         file.seek(0)
@@ -345,40 +331,66 @@ def erpUpdate():
 @auth.route('/pendinglist/<int:page_num>', methods=['GET','POST'])
 @login_required
 def pendinglist(page_num):
-    if request.method=='GET':
-        po = request.args.get('po')
-        style = request.args.get('style')
-        gp_name = request.args.get('gp_name')
-        color = request.args.get('color')
-        org_buyer = request.args.get('org_buyer')
-        ext_dely = request.args.get('ext_dely')
-        order_date = request.args.get('order_date')
-        all_data = Mocdm_pending.query.paginate(per_page=100, page=page_num, error_out=True)
-        return render_template('pending.html',po = po,style=style,org_buyer=org_buyer,color=color,gp_name=gp_name,ext_dely=ext_dely,order_date=order_date,all_data = all_data, pending_active="is_active('/pending')")
+    if request.method=='POST' or request.args.get('search')=='True' :
+            if (request.args.get('po')): 
+                po = request.args.get('po')
+            else:
+                po = request.form.get('po', '')
+
+            if (request.args.get('style')): 
+                style = request.args.get('style')
+            else:
+                style = request.form.get('style', '')
+
+            if (request.args.get('org_buyer')): 
+                org_buyer = request.args.get('org_buyer')
+            else:
+                org_buyer = request.form.get('org_buyer', '')
+
+            if (request.args.get('color')): 
+                color = request.args.get('color')
+            else:
+                color = request.form.get('color', '')
+
+            if (request.args.get('gp_name')): 
+                gp_name = request.args.get('gp_name')
+            else:
+                gp_name = request.form.get('gp_name', '')
+
+            if (request.args.get('ext_dely')): 
+                ext_dely = request.args.get('ext_dely')
+            else:
+                ext_dely = request.form.get('ext_dely', '')
+
+            if (request.args.get('order_date')): 
+                order_date = request.args.get('order_date')
+            else:
+                order_date = request.form.get('order_date', '')
+
+            if (request.args.get('order_date')): 
+                order_date = request.args.get('order_date')
+            else:
+                order_date = request.form.get('order_date', '') 
+            session['po'] = po
+            session['style'] = style
+            session['org_buyer'] = org_buyer
+            session['color'] = color
+            session['gp_name'] = gp_name
+            session['ext_dely'] = ext_dely
+            session['order_date'] = order_date
+            search1 = "%{}%".format(po)
+            search2 = "%{}%".format(style)
+            search3 = "%{}%".format(org_buyer)
+            search4 = "%{}%".format(color)
+            search5 = "%{}%".format(gp_name)
+            search6 = "%{}%".format(ext_dely)
+            search7 = "%{}%".format(order_date)
+            all_data = Mocdm_pending.query.filter((Mocdm_pending.po.like(search1)),(Mocdm_pending.style.like(search2)),(Mocdm_pending.org_buyer.like(search3)),(Mocdm_pending.color.like(search4)),(Mocdm_pending.gp_name.like(search5)),(Mocdm_pending.ext_dely.like(search6)),(Mocdm_pending.order_date.like(search7))).paginate(per_page=100, page=page_num, error_out=True)
+            return render_template("pending.html",po = po,style=style,org_buyer=org_buyer,color=color,gp_name=gp_name,ext_dely=ext_dely,order_date=order_date, all_data = all_data, pending_active="is_active('/pending')")       
     else:
-        po = request.form['po']
-        style = request.form['style']
-        org_buyer = request.form['org_buyer']
-        color = request.form['color']
-        gp_name = request.form['gp_name']
-        ext_dely = request.form['ext_dely']
-        order_date = request.form['order_date']
-        session['po'] = po
-        session['style'] = style
-        session['org_buyer'] = org_buyer
-        session['color'] = color
-        session['gp_name'] = gp_name
-        session['ext_dely'] = ext_dely
-        session['order_date'] = order_date
-        search1 = "%{}%".format(po)
-        search2 = "%{}%".format(style)
-        search3 = "%{}%".format(org_buyer)
-        search4 = "%{}%".format(color)
-        search5 = "%{}%".format(gp_name)
-        search6 = "%{}%".format(ext_dely)
-        search7 = "%{}%".format(order_date)
-        all_data = Mocdm_pending.query.filter((Mocdm_pending.po.like(search1)),(Mocdm_pending.style.like(search2)),(Mocdm_pending.org_buyer.like(search3)),(Mocdm_pending.color.like(search4)),(Mocdm_pending.gp_name.like(search5)),(Mocdm_pending.ext_dely.like(search6)),(Mocdm_pending.order_date.like(search7))).paginate(per_page=100, page=page_num, error_out=True)
-        return render_template("pending.html",po = po,style=style,org_buyer=org_buyer,color=color,gp_name=gp_name,ext_dely=ext_dely,order_date=order_date, all_data = all_data, pending_active="is_active('/pending')")
+        all_data = Mocdm_pending.query.paginate(per_page=100, page=page_num, error_out=True)
+        return render_template('pending.html',all_data = all_data, pending_active="is_active('/pending')")
+
 
 @auth.route('/download_pending', methods=['GET', 'POST'])
 def download_pending():
@@ -402,7 +414,11 @@ def download_pending():
         ws = wb.active
         ws.append(['EX - FTY ( DELY)','MCN ( D/C )','PO#','MYANMAR','Ship To','LABEL','Linked Store','DES','GROUP NAME','Style#','Buyer#','COLOUR','QTY','Vessel','Factory Name','DB/GB Pkg Code','SDN PO','Customer Po#','UPC Number','Linked SO Num',"Ref.Number",'Material Lot No:','Season','Buyer','ORDER DATE','KZM ID','Remark','ShpgJob','xFty Date','Status'])
         for item in all_data:
-            ws.append([item.ext_dely,item.mcn,item.po,item.myanmar,item.ship_to,item.label,item.linked_store,item.des,item.gp_name,item.style,item.org_buyer,item.color,item.qty,item.vessel_date,item.factory,item.db_gb_code,item.sdn_po,item.customer_po,item.upc_no,item.linked_so_no,item.ref_no,item.material_log_no,item.season,item.buyer_txt,item.order_date,item.kmz_id,item.remark,item.shpg_job,item.xfty_date,item.status])
+            if item.xfty_date == None or '':
+                x = item.xfty_date
+            else:
+                x = item.xfty_date.strftime('%m/%d/%Y')
+            ws.append([item.ext_dely.strftime('%m/%d/%Y'),item.mcn,item.po,item.myanmar,item.ship_to,item.label,item.linked_store,item.des,item.gp_name,item.style,item.org_buyer,item.color,item.qty,item.vessel_date.strftime('%d/%m/%Y'),item.factory,item.db_gb_code,item.sdn_po,item.customer_po,item.upc_no,item.linked_so_no,item.ref_no,item.material_log_no,item.season,item.buyer_txt,item.order_date.strftime('%d/%m/%Y'),item.kmz_id,item.remark,item.shpg_job,x,item.status])
         file = BytesIO()
         wb.save(file)
         file.seek(0)
@@ -421,7 +437,11 @@ def download_pending():
         ws = wb.active
         ws.append(['EX - FTY ( DELY)','MCN ( D/C )','PO#','MYANMAR','Ship To','LABEL','Linked Store','DES','GROUP NAME','Style#','Buyer#','COLOUR','QTY','Vessel','Factory Name','DB/GB Pkg Code','SDN PO','Customer Po#','UPC Number','Linked SO Num',"Ref.Number",'Material Lot No:','Season','Buyer','ORDER DATE','KZM ID','Remark','ShpgJob','xFty Date','Status'])
         for item in all_data1:
-            ws.append([item.ext_dely,item.mcn,item.po,item.myanmar,item.ship_to,item.label,item.linked_store,item.des,item.gp_name,item.style,item.org_buyer,item.color,item.qty,item.vessel_date,item.factory,item.db_gb_code,item.sdn_po,item.customer_po,item.upc_no,item.linked_so_no,item.ref_no,item.material_log_no,item.season,item.buyer_txt,item.order_date,item.kmz_id,item.remark,item.shpg_job,item.xfty_date,item.status])
+            if item.xfty_date == None or '':
+                x = item.xfty_date
+            else:
+                x = item.xfty_date.strftime('%m/%d/%Y')
+            ws.append([item.ext_dely.strftime('%m/%d/%Y'),item.mcn,item.po,item.myanmar,item.ship_to,item.label,item.linked_store,item.des,item.gp_name,item.style,item.org_buyer,item.color,item.qty,item.vessel_date.strftime('%d/%m/%Y'),item.factory,item.db_gb_code,item.sdn_po,item.customer_po,item.upc_no,item.linked_so_no,item.ref_no,item.material_log_no,item.season,item.buyer_txt,item.order_date.strftime('%d/%m/%Y'),item.kmz_id,item.remark,item.shpg_job,x,item.status])
         file = BytesIO()
         wb.save(file)
         file.seek(0)
@@ -451,7 +471,11 @@ def pendingUpdate():
             all_data.customer_po = request.form['customer_po']
             all_data.buyer_txt = request.form['buyer_txt']
             all_data.order_date = request.form['order_date']
-            all_data.xfty_date = request.form['xfty_date']
+            if not request.form['xfty_date']:
+                l = None
+            else:
+                l = datetime.strptime(request.form['xfty_date'], '%Y-%m-%d')
+            all_data.xfty_date = l
             all_data.mcn = request.form['mcn']
             all_data.ship_to = request.form['ship_to']
             all_data.label = request.form['label']
@@ -471,12 +495,17 @@ def pendingUpdate():
             all_data.shpg_job = request.form['shpg_job']
             all_data.status = request.form['status']
             db.session.commit()
+            if not all_data.xfty_date:
+                w = all_data.xfty_date
+            else:
+                w = all_data.xfty_date.strftime('%m/%d/%Y')
+            
     except SQLAlchemyError as e:
         current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         logging.basicConfig(filename= f'error_log.log', level=logging.ERROR)
         logging.error(str(e))
     # return redirect(url_for('auth.pendinglist'))
-    return f"<td>{all_data.ext_dely}</td>,<td>{all_data.mcn}</td>,<td>{all_data.po}</td>,<td>{all_data.myanmar}</td>,<td>{all_data.ship_to}</td>,<td>{all_data.label}</td>,<td>{all_data.linked_store}</td>,<td>{all_data.des}</td>,<td>{all_data.gp_name}</td>,<td>{all_data.style}</td>,<td>{all_data.org_buyer}</td>,<td>{all_data.color}</td>,<td>{all_data.qty}</td>,<td>{all_data.vessel_date}</td>,<td>{all_data.factory}</td>,<td>{all_data.db_gb_code}</td>,<td>{all_data.sdn_po}</td>,<td>{all_data.customer_po}</td>,<td>{all_data.upc_no}</td>,<td>{all_data.linked_so_no}</td>,<td>{all_data.ref_no}</td>,<td>{all_data.material_log_no}</td>,<td>{all_data.season}</td>,<td>{all_data.buyer_txt}</td>,<td>{all_data.order_date}</td>,<td>{all_data.kmz_id}</td>,<td>{all_data.remark}</td>,<td>{all_data.shpg_job}</td>,<td>{all_data.xfty_date}</td>,<td>{all_data.status}</td>,<td><a href='/pendingUpdate'  class='btn btn-primary' value='{all_data.id}' edit-row-value='{all_data.id}' data-bs-toggle='modal' data-bs-target='#myModal{all_data.id}'>Edit</a></td>"
+    return f"<td>{all_data.ext_dely}</td>,<td>{all_data.mcn}</td>,<td>{all_data.po}</td>,<td>{all_data.myanmar}</td>,<td>{all_data.ship_to}</td>,<td>{all_data.label}</td>,<td>{all_data.linked_store}</td>,<td>{all_data.des}</td>,<td>{all_data.gp_name}</td>,<td>{all_data.style}</td>,<td>{all_data.org_buyer}</td>,<td>{all_data.color}</td>,<td>{all_data.qty}</td>,<td>{all_data.vessel_date}</td>,<td>{all_data.factory}</td>,<td>{all_data.db_gb_code}</td>,<td>{all_data.sdn_po}</td>,<td>{all_data.customer_po}</td>,<td>{all_data.upc_no}</td>,<td>{all_data.linked_so_no}</td>,<td>{all_data.ref_no}</td>,<td>{all_data.material_log_no}</td>,<td>{all_data.season}</td>,<td>{all_data.buyer_txt}</td>,<td>{all_data.order_date}</td>,<td>{all_data.kmz_id}</td>,<td>{all_data.remark}</td>,<td>{all_data.shpg_job}</td>,<td>{w}</td>,<td>{all_data.status}</td>,<td><a href='/pendingUpdate'  class='btn btn-primary' value='{all_data.id}' edit-row-value='{all_data.id}' data-bs-toggle='modal' data-bs-target='#myModal{all_data.id}'>Edit</a></td>"
 
 @auth.route("/pending_upload", methods=['POST'])
 @login_required
@@ -496,7 +525,11 @@ def pending_upload():
                 e = row['COLOUR']
                 f = e.upper()
                 trimmed_text = re.sub(r'^\s+|\s+$', '', f)
-                all_data = Mocdm_pending(ext_dely=row['Ex-Fty'],mcn=row['MCN'],po=row['PO#'],ship_to=row['Ship To'],label=row['Label'],linked_store=row['Linked Store'],des=row['DES'],gp_name=row['Group Name'],style=d,org_buyer=h,color=trimmed_text,qty=row['QTY'],vessel_date=row['Vessel'],factory=row['Factory'],db_gb_code=row['DB/GB Pkg Code'],sdn_po=row['SDN PO'],customer_po=row['Customer Po#'],upc_no=row['UPC Number'],linked_so_no=row['Linked SO Num'],ref_no=row['Ref.Number'],material_log_no=row['Material Lot No:'],season=row['Season'],buyer_txt=row['Buyer'],order_date=row['Order Date'],kmz_id=row['KZM ID'],remark=row['Remark'],shpg_job=row['ShpgJob'],xfty_date=row['xFty Date'],myanmar=txt,previous=row['Ex-Fty'])
+                if not row['xFty Date']:
+                    l = None
+                else:
+                    l = datetime.strptime(j, '%Y-%m-%d')
+                all_data = Mocdm_pending(ext_dely=row['Ex-Fty'],mcn=row['MCN'],po=row['PO#'],ship_to=row['Ship To'],label=row['Label'],linked_store=row['Linked Store'],des=row['DES'],gp_name=row['Group Name'],style=d,org_buyer=h,color=trimmed_text,qty=row['QTY'],vessel_date=row['Vessel'],factory=row['Factory'],db_gb_code=row['DB/GB Pkg Code'],sdn_po=row['SDN PO'],customer_po=row['Customer Po#'],upc_no=row['UPC Number'],linked_so_no=row['Linked SO Num'],ref_no=row['Ref.Number'],material_log_no=row['Material Lot No:'],season=row['Season'],buyer_txt=row['Buyer'],order_date=row['Order Date'],kmz_id=row['KZM ID'],remark=row['Remark'],shpg_job=row['ShpgJob'],xfty_date=l,myanmar=txt,previous=row['Ex-Fty'])
                 db.session.add(all_data)
                 db.session.commit()
             return redirect(url_for('auth.pendinglist'))
@@ -522,48 +555,81 @@ def deletePending():
 @auth.route('/orderlist/<int:page_num>', methods=['GET','POST'])
 @login_required
 def orderlist(page_num):
-    if request.method=='GET':
-        po = request.args.get('po')
-        style = request.args.get('style')
-        org_buyer = request.args.get('org_buyer')
-        color = request.args.get('color')
-        gp_name = request.args.get('gp_name')
-        ext_dely = request.args.get('ext_dely')
-        order_date = request.args.get('order_date')
-        factory = request.args.get('factory')
-        label = request.args.get('label')
-        all_data = db.session.query(Mocdm_erp.po,Mocdm_pending.label,Mocdm_pending.des,Mocdm_pending.mcn,Mocdm_pending.previous,Mocdm_pending.ext_dely,Mocdm_pending.myanmar,Mocdm_erp.style,Mocdm_erp.buyer_version,Mocdm_erp.pending_buyer,Mocdm_erp.product_name,Mocdm_erp.main_color,Mocdm_erp.season,Mocdm_erp.vessel_date,Mocdm_erp.category,Mocdm_erp.material_classification,Mocdm_erp.material_code,Mocdm_erp.material,Mocdm_erp.material_chinese,Mocdm_erp.size,Mocdm_erp.color,Mocdm_erp.org_consume,Mocdm_erp.unit,Mocdm_erp.loss,Mocdm_erp.consume_point,Mocdm_erp.order_qty,Mocdm_erp.consume,Mocdm_erp.gp,Mocdm_pending.order_date,Mocdm_pending.factory).join(Mocdm_pending,(Mocdm_pending.po == Mocdm_erp.po) & (Mocdm_pending.style == Mocdm_erp.style) & (Mocdm_pending.color == Mocdm_erp.main_color) & (Mocdm_pending.org_buyer == Mocdm_erp.pending_buyer),isouter = True).paginate(per_page=100, page=page_num, error_out=True) 
-        return render_template('orderlist.html', po = po,style = style, org_buyer = org_buyer, color = color, gp_name = gp_name, ext_dely = ext_dely, order_date = order_date, label=label, factory= factory,all_data = all_data, orderlist_active="is_active('/orderlist')")
-    else:
-        po = request.form['po']
-        style = request.form['style']
-        org_buyer = request.form['org_buyer']
-        color = request.form['color']
-        gp_name = request.form['gp_name']
-        ext_dely = request.form['ext_dely']
-        order_date = request.form['order_date']
-        factory = request.form['factory']
-        label = request.form['label']
-        session['po'] = po
-        session['style'] = style
-        session['org_buyer'] = org_buyer
-        session['color'] = color
-        session['gp_name'] = gp_name
-        session['ext_dely'] = ext_dely
-        session['order_date'] = order_date
-        session['factory'] = factory
-        session['label'] = label
-        search1 = "%{}%".format(po)
-        search2 = "%{}%".format(style)
-        search3 = "%{}%".format(org_buyer)
-        search4 = "%{}%".format(color)
-        search5 = "%{}%".format(gp_name)
-        search6 = "%{}%".format(ext_dely)
-        search7 = "%{}%".format(order_date)
-        search8 = "%{}%".format(factory)
-        search9 = "%{}%".format(label)
-        all_data = db.session.query(Mocdm_erp.po,Mocdm_pending.label,Mocdm_pending.des,Mocdm_pending.mcn,Mocdm_pending.previous,Mocdm_pending.ext_dely,Mocdm_pending.myanmar,Mocdm_erp.style,Mocdm_erp.buyer_version,Mocdm_erp.pending_buyer,Mocdm_erp.product_name,Mocdm_erp.main_color,Mocdm_erp.season,Mocdm_erp.vessel_date,Mocdm_erp.category,Mocdm_erp.material_classification,Mocdm_erp.material_code,Mocdm_erp.material,Mocdm_erp.material_chinese,Mocdm_erp.size,Mocdm_erp.color,Mocdm_erp.org_consume,Mocdm_erp.unit,Mocdm_erp.loss,Mocdm_erp.consume_point,Mocdm_erp.order_qty,Mocdm_erp.consume,Mocdm_erp.gp,Mocdm_pending.order_date,Mocdm_pending.factory).join(Mocdm_pending,(Mocdm_pending.po == Mocdm_erp.po) & (Mocdm_pending.style == Mocdm_erp.style) & (Mocdm_pending.color == Mocdm_erp.main_color) & (Mocdm_pending.org_buyer == Mocdm_erp.pending_buyer),isouter = True).filter((Mocdm_pending.po.like(search1)),(Mocdm_pending.style.like(search2)),(Mocdm_pending.org_buyer.like(search3)),(Mocdm_pending.color.like(search4)),(Mocdm_pending.gp_name.like(search5)),(Mocdm_pending.ext_dely.like(search6)),(Mocdm_pending.order_date.like(search7)),(Mocdm_pending.factory.like(search8)),(Mocdm_pending.label.like(search9))).paginate(per_page=100, page=page_num, error_out=True)
-        return render_template("orderlist.html", po = po,style = style, org_buyer = org_buyer, color = color, gp_name = gp_name, ext_dely = ext_dely, order_date = order_date, factory= factory, label=label, all_data = all_data, orderlist_active="is_active('/orderlist')")
+    try:
+        if request.method=='POST' or request.args.get('search')=='True' :
+            if (request.args.get('po')): 
+                po = request.args.get('po')
+            else:
+                po = request.form.get('po', '')
+
+            if (request.args.get('style')): 
+                style = request.args.get('style')
+            else:
+                style = request.form.get('style', '')
+
+            if (request.args.get('org_buyer')): 
+                org_buyer = request.args.get('org_buyer')
+            else:
+                org_buyer = request.form.get('org_buyer', '')
+
+            if (request.args.get('color')): 
+                color = request.args.get('color')
+            else:
+                color = request.form.get('color', '')
+
+            if (request.args.get('gp_name')): 
+                gp_name = request.args.get('gp_name')
+            else:
+                gp_name = request.form.get('gp_name', '')
+
+            if (request.args.get('ext_dely')): 
+                ext_dely = request.args.get('ext_dely')
+            else:
+                ext_dely = request.form.get('ext_dely', '')
+
+            if (request.args.get('order_date')): 
+                order_date = request.args.get('order_date')
+            else:
+                order_date = request.form.get('order_date', '')
+
+            if (request.args.get('factory')): 
+                factory = request.args.get('factory')
+            else:
+                factory = request.form.get('factory', '')
+
+            if (request.args.get('label')): 
+                label = request.args.get('label')
+            else:
+                label = request.form.get('label', '')
+            session['po'] = po
+            session['style'] = style
+            session['org_buyer'] = org_buyer
+            session['color'] = color
+            session['gp_name'] = gp_name
+            session['ext_dely'] = ext_dely
+            session['order_date'] = order_date
+            session['factory'] = factory
+            session['label'] = label
+            search1 = "%{}%".format(po)
+            search2 = "%{}%".format(style)
+            search3 = "%{}%".format(org_buyer)
+            search4 = "%{}%".format(color)
+            search5 = "%{}%".format(gp_name)
+            search6 = "%{}%".format(ext_dely)
+            search7 = "%{}%".format(order_date)
+            search8 = "%{}%".format(factory)
+            search9 = "%{}%".format(label)
+            all_data = db.session.query(Mocdm_erp.po,Mocdm_pending.label,Mocdm_pending.des,Mocdm_pending.mcn,Mocdm_pending.previous,Mocdm_pending.ext_dely,Mocdm_pending.myanmar,Mocdm_erp.style,Mocdm_erp.buyer_version,Mocdm_erp.pending_buyer,Mocdm_erp.product_name,Mocdm_erp.main_color,Mocdm_erp.season,Mocdm_erp.vessel_date,Mocdm_erp.category,Mocdm_erp.material_classification,Mocdm_erp.material_code,Mocdm_erp.material,Mocdm_erp.material_chinese,Mocdm_erp.size,Mocdm_erp.color,Mocdm_erp.org_consume,Mocdm_erp.unit,Mocdm_erp.loss,Mocdm_erp.consume_point,Mocdm_erp.order_qty,Mocdm_erp.consume,Mocdm_erp.gp,Mocdm_pending.order_date,Mocdm_pending.factory).join(Mocdm_pending,(Mocdm_pending.po == Mocdm_erp.po) & (Mocdm_pending.style == Mocdm_erp.style) & (Mocdm_pending.color == Mocdm_erp.main_color) & (Mocdm_pending.org_buyer == Mocdm_erp.pending_buyer),isouter = True).filter((Mocdm_pending.po.like(search1)),(Mocdm_pending.style.like(search2)),(Mocdm_pending.org_buyer.like(search3)),(Mocdm_pending.color.like(search4)),(Mocdm_pending.gp_name.like(search5)),(Mocdm_pending.ext_dely.like(search6)),(Mocdm_pending.order_date.like(search7)),(Mocdm_pending.factory.like(search8)),(Mocdm_pending.label.like(search9))).paginate(per_page=100, page=page_num, error_out=True)
+            return render_template("orderlist.html", po = po,style = style, org_buyer = org_buyer, color = color, gp_name = gp_name, ext_dely = ext_dely, order_date = order_date, factory= factory, label=label, all_data = all_data, orderlist_active="is_active('/orderlist')")
+        else:
+            all_data = db.session.query(Mocdm_erp.po,Mocdm_pending.label,Mocdm_pending.des,Mocdm_pending.mcn,Mocdm_pending.previous,Mocdm_pending.ext_dely,Mocdm_pending.myanmar,Mocdm_erp.style,Mocdm_erp.buyer_version,Mocdm_erp.pending_buyer,Mocdm_erp.product_name,Mocdm_erp.main_color,Mocdm_erp.season,Mocdm_erp.vessel_date,Mocdm_erp.category,Mocdm_erp.material_classification,Mocdm_erp.material_code,Mocdm_erp.material,Mocdm_erp.material_chinese,Mocdm_erp.size,Mocdm_erp.color,Mocdm_erp.org_consume,Mocdm_erp.unit,Mocdm_erp.loss,Mocdm_erp.consume_point,Mocdm_erp.order_qty,Mocdm_erp.consume,Mocdm_erp.gp,Mocdm_pending.order_date,Mocdm_pending.factory).join(Mocdm_pending,(Mocdm_pending.po == Mocdm_erp.po) & (Mocdm_pending.style == Mocdm_erp.style) & (Mocdm_pending.color == Mocdm_erp.main_color) & (Mocdm_pending.org_buyer == Mocdm_erp.pending_buyer),isouter = True).paginate(per_page=100, page=page_num, error_out=True) 
+            return render_template('orderlist.html', all_data = all_data, orderlist_active="is_active('/orderlist')")
+    except SQLAlchemyError as e:
+        current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        logging.basicConfig(filename= f'error_log.log', level=logging.ERROR)
+        logging.error(str(e))
+    # return redirect(url_for('auth.pendinglist'))
+    return f"<td>{all_data.ext_dely}</td>,<td>{all_data.mcn}</td>,<td>{all_data.po}</td>,<td>{all_data.myanmar}</td>,<td>{all_data.ship_to}</td>,<td>{all_data.label}</td>,<td>{all_data.linked_store}</td>,<td>{all_data.des}</td>,<td>{all_data.gp_name}</td>,<td>{all_data.style}</td>,<td>{all_data.org_buyer}</td>,<td>{all_data.color}</td>,<td>{all_data.qty}</td>,<td>{all_data.vessel_date}</td>,<td>{all_data.factory}</td>,<td>{all_data.db_gb_code}</td>,<td>{all_data.sdn_po}</td>,<td>{all_data.customer_po}</td>,<td>{all_data.upc_no}</td>,<td>{all_data.linked_so_no}</td>,<td>{all_data.ref_no}</td>,<td>{all_data.material_log_no}</td>,<td>{all_data.season}</td>,<td>{all_data.buyer_txt}</td>,<td>{all_data.order_date}</td>,<td>{all_data.kmz_id}</td>,<td>{all_data.remark}</td>,<td>{all_data.shpg_job}</td>,<td>{all_data.xfty_date}</td>,<td>{all_data.status}</td>,<td><a href='/pendingUpdate'  class='btn btn-primary' value='{all_data.id}' edit-row-value='{all_data.id}' data-bs-toggle='modal' data-bs-target='#myModal{all_data.id}'>Edit</a></td>"
 
 # all_data = db.session.query(Mocdm_erp.po,Mocdm_pending.label,Mocdm_pending.des,Mocdm_pending.mcn,Mocdm_pending.previous,Mocdm_pending.ext_dely,Mocdm_pending.myanmar,Mocdm_erp.style,Mocdm_erp.buyer_version,Mocdm_erp.pending_buyer,Mocdm_erp.product_name,Mocdm_erp.main_color,Mocdm_erp.season,Mocdm_erp.vessel_date,Mocdm_erp.category,Mocdm_erp.material_classification,Mocdm_erp.material_code,Mocdm_erp.material,Mocdm_erp.material_chinese,Mocdm_erp.size,Mocdm_erp.color,Mocdm_erp.org_consume,Mocdm_erp.unit,Mocdm_erp.loss,Mocdm_erp.consume_point,Mocdm_erp.order_qty,Mocdm_erp.consume,Mocdm_erp.gp,Mocdm_pending.order_date,Mocdm_pending.factory).join(Mocdm_pending,(Mocdm_pending.po == Mocdm_erp.po) & (Mocdm_pending.style == Mocdm_erp.style) & (Mocdm_pending.color == Mocdm_erp.main_color) & (Mocdm_pending.org_buyer == Mocdm_erp.pending_buyer),isouter = True).all()
 
@@ -591,9 +657,9 @@ def download_order():
         all_data = db.session.query(Mocdm_erp.po,Mocdm_pending.label,Mocdm_pending.des,Mocdm_pending.mcn,Mocdm_pending.previous,Mocdm_pending.ext_dely,Mocdm_pending.myanmar,Mocdm_erp.style,Mocdm_erp.buyer_version,Mocdm_erp.pending_buyer,Mocdm_erp.product_name,Mocdm_erp.main_color,Mocdm_erp.season,Mocdm_erp.vessel_date,Mocdm_erp.category,Mocdm_erp.material_classification,Mocdm_erp.material_code,Mocdm_erp.material,Mocdm_erp.material_chinese,Mocdm_erp.size,Mocdm_erp.color,Mocdm_erp.org_consume,Mocdm_erp.unit,Mocdm_erp.loss,Mocdm_erp.consume_point,Mocdm_erp.order_qty,Mocdm_erp.consume,Mocdm_erp.gp,Mocdm_pending.order_date,Mocdm_pending.factory).join(Mocdm_pending,(Mocdm_pending.po == Mocdm_erp.po) & (Mocdm_pending.style == Mocdm_erp.style) & (Mocdm_pending.color == Mocdm_erp.main_color) & (Mocdm_pending.org_buyer == Mocdm_erp.pending_buyer),isouter = True).filter((Mocdm_pending.po.like(po)),(Mocdm_pending.style.like(style)),(Mocdm_pending.org_buyer.like(org_buyer)),(Mocdm_pending.color.like(color)),(Mocdm_pending.gp_name.like(gp_name)),(Mocdm_pending.ext_dely.like(ext_dely)),(Mocdm_pending.order_date.like(order_date)),(Mocdm_pending.factory.like(factory)),(Mocdm_pending.label.like(label))).all()
         wb = Workbook()
         ws = wb.active
-        ws.append(['PO','LABEL','DES','D/C','PREVIOUS','DELY','MYANMAR','STYLE','BUYER VERSION','BUYER','PRODUCT NAME','MAIN COLOR','SEASON','VESSEL DATE','CATEGORY','MATERIAL CLASSIFICATION','MATERIAL CODE','MATERIAL NAME IN CHINESE','MATERIAL','SIZE','COLOUR','ORIGINAL CONSUME','UNIT','LOSS','CONSUME POINT','ORDER QTY','CONSUME','GROUP','Order Date','FACTORY'])
+        ws.append(['PO','LABEL','DES','D/C','PREVIOUS','DELY','MYANMAR','STYLE','BUYER VERSION','BUYER','PRODUCT NAME','MAIN COLOR','SEASON','VESSEL DATE','CATEGORY','MATERIAL CLASSIFICATION','MATERIAL CODE','MATERIAL NAME IN CHINESE','MATERIAL','SIZE','COLOUR','ORIGINAL CONSUME','UNIT','LOSS','CONSUME POINT','ORDER QTY','CONSUME','GROUP','ORDER DATE','FACTORY'])
         for item in all_data:
-            ws.append([item.po,item.label,item.des,item.mcn,item.previous,item.ext_dely,item.myanmar,item.style,item.buyer_version,item.pending_buyer,item.product_name,item.main_color,item.season,item.vessel_date,item.category,item.material_classification,item.material_code,item.material,item.material_chinese,item.size,item.color,item.org_consume,item.unit,item.loss,item.consume_point,item.order_qty,item.consume,item.gp,item.order_date,item.factory])
+            ws.append([item.po,item.label,item.des,item.mcn,item.previous.strftime('%m/%d/%Y'),item.ext_dely.strftime('%m/%d/%Y'),item.myanmar,item.style,item.buyer_version,item.pending_buyer,item.product_name,item.main_color,item.season,item.vessel_date.strftime('%m/%d/%Y'),item.category,item.material_classification,item.material_code,item.material,item.material_chinese,item.size,item.color,item.org_consume,item.unit,item.loss,item.consume_point,item.order_qty,item.consume,item.gp,item.order_date.strftime('%m/%d/%Y'),item.factory])
         file = BytesIO()
         wb.save(file)
         file.seek(0)
@@ -612,7 +678,7 @@ def download_order():
         ws = wb.active
         ws.append(['PO','LABEL','DES','D/C','PREVIOUS','DELY','MYANMAR','STYLE','BUYER VERSION','BUYER','PRODUCT NAME','MAIN COLOR','SEASON','VESSEL DATE','CATEGORY','MATERIAL CLASSIFICATION','MATERIAL CODE','MATERIAL NAME IN CHINESE','MATERIAL','SIZE','COLOUR','ORIGINAL CONSUME','UNIT','LOSS','CONSUME POINT','ORDER QTY','CONSUME','GROUP','Order Date','FACTORY'])
         for item in all_data1:
-            ws.append([item.po,item.label,item.des,item.mcn,item.previous,item.ext_dely,item.myanmar,item.style,item.buyer_version,item.pending_buyer,item.product_name,item.main_color,item.season,item.vessel_date,item.category,item.material_classification,item.material_code,item.material,item.material_chinese,item.size,item.color,item.org_consume,item.unit,item.loss,item.consume_point,item.order_qty,item.consume,item.gp,item.order_date,item.factory])
+            ws.append([item.po,item.label,item.des,item.mcn,item.previous.strftime('%m/%d/%Y'),item.ext_dely.strftime('%m/%d/%Y'),item.myanmar,item.style,item.buyer_version,item.pending_buyer,item.product_name,item.main_color,item.season,item.vessel_date.strftime('%m/%d/%Y'),item.category,item.material_classification,item.material_code,item.material,item.material_chinese,item.size,item.color,item.org_consume,item.unit,item.loss,item.consume_point,item.order_qty,item.consume,item.gp,item.order_date.strftime('%m/%d/%Y'),item.factory])
         file = BytesIO()
         wb.save(file)
         file.seek(0)
@@ -929,31 +995,51 @@ def view_image(id):
 @login_required
 def consump_list(page_num):
     try:
-        if request.method=='GET':
-            po = request.args.get('po')
-            style = request.args.get('style')
-            org_buyer = request.args.get('org_buyer')
-            color = request.args.get('color')
-            gp_name = request.args.get('gp_name')
-            ext_dely = request.args.get('ext_dely')
-            order_date = request.args.get('order_date')
-            factory = request.args.get('factory')
-            des = request.args.get('des')
-            all_data = db.session.query(Mocdm_pending.factory, Mocdm_pending.gp_name, Mocdm_pending.qty, 
-                            Mocdm_pending.ext_dely, Mocdm_pending.style, Mocdm_pending.org_buyer)\
-                    .group_by(Mocdm_pending.factory, Mocdm_pending.gp_name, Mocdm_pending.qty, 
-                                Mocdm_pending.ext_dely, Mocdm_pending.style, Mocdm_pending.org_buyer).paginate(per_page=100, page=page_num, error_out=True)
-            return render_template('consumpList.html', po = po,style = style, org_buyer = org_buyer, color = color, gp_name = gp_name, ext_dely = ext_dely, order_date = order_date, des=des, factory= factory, all_data=all_data, consump_active="is_active('/consump')")
-        else:
-            po = request.form['po']
-            style = request.form['style']
-            org_buyer = request.form['org_buyer']
-            color = request.form['color']
-            order_date = request.form['order_date']
-            des = request.form['des']
-            gp_name = request.form['gp_name']
-            ext_dely = request.form['ext_dely']
-            factory = request.form['factory']
+        if request.method=='POST' or request.args.get('search')=='True' :
+            if (request.args.get('po')): 
+                po = request.args.get('po')
+            else:
+                po = request.form.get('po', '')
+
+            if (request.args.get('style')): 
+                style = request.args.get('style')
+            else:
+                style = request.form.get('style', '')
+
+            if (request.args.get('org_buyer')): 
+                org_buyer = request.args.get('org_buyer')
+            else:
+                org_buyer = request.form.get('org_buyer', '')
+
+            if (request.args.get('color')): 
+                color = request.args.get('color')
+            else:
+                color = request.form.get('color', '')
+
+            if (request.args.get('gp_name')): 
+                gp_name = request.args.get('gp_name')
+            else:
+                gp_name = request.form.get('gp_name', '')
+
+            if (request.args.get('ext_dely')): 
+                ext_dely = request.args.get('ext_dely')
+            else:
+                ext_dely = request.form.get('ext_dely', '')
+
+            if (request.args.get('order_date')): 
+                order_date = request.args.get('order_date')
+            else:
+                order_date = request.form.get('order_date', '')
+
+            if (request.args.get('factory')): 
+                factory = request.args.get('factory')
+            else:
+                factory = request.form.get('factory', '')
+
+            if (request.args.get('des')): 
+                des = request.args.get('des')
+            else:
+                des = request.form.get('des', '')
             session['po'] = po
             session['style'] = style
             session['org_buyer'] = org_buyer
@@ -974,6 +1060,12 @@ def consump_list(page_num):
             search9 = "%{}%".format(factory)
             all_data = Mocdm_pending.query.filter((Mocdm_pending.po.like(search1)),(Mocdm_pending.style.like(search2)),(Mocdm_pending.org_buyer.like(search3)),(Mocdm_pending.color.like(search4)),(Mocdm_pending.order_date.like(search5)),(Mocdm_pending.des.like(search6)),(Mocdm_pending.gp_name.like(search7)),(Mocdm_pending.ext_dely.like(search8)),(Mocdm_pending.factory.like(search9))).group_by(Mocdm_pending.factory, Mocdm_pending.gp_name, Mocdm_pending.qty,Mocdm_pending.ext_dely, Mocdm_pending.style, Mocdm_pending.org_buyer).paginate(per_page=100, page=page_num, error_out=True)
             return render_template("consumpList.html", po=po,style=style,org_buyer=org_buyer,color=color,order_date=order_date,des=des,gp_name=gp_name,ext_dely=ext_dely,factory=factory,all_data=all_data, consump_active="is_active('/consump')")
+        else:
+            all_data = db.session.query(Mocdm_pending.factory, Mocdm_pending.gp_name, Mocdm_pending.qty, 
+                            Mocdm_pending.ext_dely, Mocdm_pending.style, Mocdm_pending.org_buyer)\
+                    .group_by(Mocdm_pending.factory, Mocdm_pending.gp_name, Mocdm_pending.qty, 
+                                Mocdm_pending.ext_dely, Mocdm_pending.style, Mocdm_pending.org_buyer).paginate(per_page=100, page=page_num, error_out=True)
+            return render_template('consumpList.html', all_data=all_data, consump_active="is_active('/consump')")
     except SQLAlchemyError as e:
         current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         logging.basicConfig(filename= f'error_log.log', level=logging.ERROR)

@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, flash, request, redirect, url_for
+from flask import Flask, session
 import os
 from flask_login import login_required, current_user
 from models import Mocdm_erp,Mocdm_pending,Mocdm_consumption,Mocdm_schedule
@@ -25,7 +26,10 @@ def imageupload(id):
 
 @main.route('/') 
 def index():
-    return render_template('login.html')
+    if not 'user_session' in session:
+        return render_template('login.html')
+    else:
+        return redirect(url_for('main.profile'))
 
 @main.route('/erpfileupload') 
 def erpfileupload():
