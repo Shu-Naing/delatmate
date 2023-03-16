@@ -59,6 +59,7 @@ def login():
                 return redirect(url_for('auth.login')) 
             login_user(user, remember=remember)
             session["role"] = user.role
+            session["user_session"] = user.id
             current_page = current_app.config.get('CURRENT_PAGE')
             current_page_home = 'home'
             return redirect(url_for('main.profile'))
@@ -648,7 +649,7 @@ def download_order():
         ws = wb.active
         ws.append(['PO','LABEL','DES','D/C','PREVIOUS','DELY','MYANMAR','STYLE','BUYER VERSION','BUYER','PRODUCT NAME','MAIN COLOR','SEASON','VESSEL DATE','CATEGORY','MATERIAL CLASSIFICATION','MATERIAL CODE','MATERIAL NAME IN CHINESE','MATERIAL','SIZE','COLOUR','ORIGINAL CONSUME','UNIT','LOSS','CONSUME POINT','ORDER QTY','CONSUME','GROUP','ORDER DATE','FACTORY'])
         for item in all_data:
-            ws.append([item.po,item.label,item.des,item.mcn,item.previous.strftime('%m/%d/%Y'),item.ext_dely.strftime('%m/%d/%Y'),item.myanmar,item.style,item.buyer_version,item.pending_buyer,item.product_name,item.main_color,item.season,item.vessel_date,item.category,item.material_classification,item.material_code,item.material,item.material_chinese,item.size,item.color,item.org_consume,item.unit,item.loss,item.consume_point,item.order_qty,item.consume,item.gp,item.order_date.strftime('%m/%d/%Y'),item.factory])
+            ws.append([item.po,item.label,item.des,item.mcn,item.previous.strftime('%m/%d/%Y'),item.ext_dely.strftime('%m/%d/%Y'),item.myanmar,item.style,item.buyer_version,item.pending_buyer,item.product_name,item.main_color,item.season,item.vessel_date.strftime('%m/%d/%Y'),item.category,item.material_classification,item.material_code,item.material,item.material_chinese,item.size,item.color,item.org_consume,item.unit,item.loss,item.consume_point,item.order_qty,item.consume,item.gp,item.order_date.strftime('%m/%d/%Y'),item.factory])
         file = BytesIO()
         wb.save(file)
         file.seek(0)
@@ -667,7 +668,7 @@ def download_order():
         ws = wb.active
         ws.append(['PO','LABEL','DES','D/C','PREVIOUS','DELY','MYANMAR','STYLE','BUYER VERSION','BUYER','PRODUCT NAME','MAIN COLOR','SEASON','VESSEL DATE','CATEGORY','MATERIAL CLASSIFICATION','MATERIAL CODE','MATERIAL NAME IN CHINESE','MATERIAL','SIZE','COLOUR','ORIGINAL CONSUME','UNIT','LOSS','CONSUME POINT','ORDER QTY','CONSUME','GROUP','Order Date','FACTORY'])
         for item in all_data1:
-            ws.append([item.po,item.label,item.des,item.mcn,item.previous.strftime('%m/%d/%Y'),item.ext_dely.strftime('%m/%d/%Y'),item.myanmar,item.style,item.buyer_version,item.pending_buyer,item.product_name,item.main_color,item.season,item.vessel_date,item.category,item.material_classification,item.material_code,item.material,item.material_chinese,item.size,item.color,item.org_consume,item.unit,item.loss,item.consume_point,item.order_qty,item.consume,item.gp,item.order_date.strftime('%m/%d/%Y'),item.factory])
+            ws.append([item.po,item.label,item.des,item.mcn,item.previous.strftime('%m/%d/%Y'),item.ext_dely.strftime('%m/%d/%Y'),item.myanmar,item.style,item.buyer_version,item.pending_buyer,item.product_name,item.main_color,item.season,item.vessel_date.strftime('%m/%d/%Y'),item.category,item.material_classification,item.material_code,item.material,item.material_chinese,item.size,item.color,item.org_consume,item.unit,item.loss,item.consume_point,item.order_qty,item.consume,item.gp,item.order_date.strftime('%m/%d/%Y'),item.factory])
         file = BytesIO()
         wb.save(file)
         file.seek(0)
