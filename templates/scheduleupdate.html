@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block content %}
+<h3 class="title" style="text-align: center;">Schedule Report File Upload</h3>
+<!-- <div class="box"> -->
+    <div name="" id="" class="container tab-pane active"><br>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="notification is-danger">
+                {{ messages[0] }}<br> Go to <a href="{{ url_for('auth.login') }}">login page</a>.
+            </div>
+        {% endif %}
+    {% endwith %}
+</div>
+                <div class="col-md-4">
+                <form method="POST" action="/schedule/update/{{all_data.id}}" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="dely_date">Dely Date</label>
+                        <input type="date" class="form-control" name="dely_date" id="dely_date" value="{{all_data.dely}}">
+                      </div>
+                      <div class="form-group">
+                        <label for="qty">Quantity</label>
+                        <input type="text" class="form-control" name="qty" id="qty" value="{{all_data.qty}}">
+                      </div>
+                      <div class="form-group">
+                        <label for="target">Target</label>
+                        <input type="text" class="form-control" name="target" id="target" value="{{all_data.target}}">
+                      </div>
+                      <div class="form-group">
+                        <label for="balance">Balance</label>
+                        <input type="text" class="form-control" name="balance" id="balance" value="{{all_data.balance}}">
+                      </div>
+                      <div class="form-group">
+                        <label for="zip">Zip Thread</label>
+                        <input type="text" class="form-control" name="zip" id="zip" value="{{all_data.zip_thread}}">
+                      </div>
+                      <div class="form-group">
+                        <label for="group">Group</label>
+                        <input type="text" class="form-control" name="group" id="group" value="{{all_data.group}}">
+                      </div>
+                      <div class="form-group">
+                        <label for="version">Version</label>
+                        <input type="text" class="form-control" name="version" id="version" value="{{all_data.version}}">
+                      </div>
+                      <div class="form-group">
+                        <label for="style">Style</label>
+                        <input type="text" class="form-control" name="style" id="style" value="{{all_data.style}}">
+                      </div>
+                      <div class="form-group">
+                        <label for="data_date">Data Date</label>
+                        <input type="date" class="form-control" name="data_date" id="data_date" value="{{all_data.data_date}}">
+                      </div>
+                      <div class="form-group">
+                        <label for="total">Total</label>
+                        <input type="text" class="form-control" name="total" id="total" value="{{all_data.total}}">
+                      </div>
+                      <div class="form-group">
+                        <label for="factory">Factory</label>
+                        <input type="text" class="form-control" name="factory" id="factory" value="{{all_data.factory}}">
+                      </div>
+                      {% if all_data.image_path %}
+                        <div class="form-group">
+                            <img src="/{{all_data.image_path}}" alt="" srcset="">
+                        </div>
+                    {% endif %}
+                      <div class="form-group">
+                        <label for="image_path">Image</label>
+                        <input type="file" class="form-control" name="image_path" id="image_path">
+                      </div>
+                    <button class="btn btn-success" type="submit">Update</button>
+                    </form>
+                </div>
+{% endblock %}

@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for, request, flash, Response
+from flask import Blueprint, render_template, redirect, url_for, request, flash, Response, current_app as app
 from flask import Flask, request, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 from models import Mocdm_users,Mocdm_erp,Mocdm_pending,Mocdm_consumption,Mocdm_schedule
@@ -8,7 +8,7 @@ from flask_login import login_user, logout_user, login_required, current_user
 from flask_security import roles_accepted
 from io import TextIOWrapper
 from flask import make_response
-from sqlalchemy import exc
+from sqlalchemy import exc, func
 from sqlalchemy.exc import DataError, IntegrityError
 from sqlalchemy.exc import SQLAlchemyError
 from datetime import datetime
@@ -22,6 +22,7 @@ from openpyxl import load_workbook
 from openpyxl.styles import Alignment
 from openpyxl.styles import Font
 from io import BytesIO
+import collections
 import pyttsx3 
 import csv
 import logging
@@ -812,10 +813,106 @@ def scheduleUpload():
 @login_required
 def schedulelist(page_num):
     if request.method=='GET':
-        all_data = Mocdm_schedule.query.paginate(per_page=100, page=page_num, error_out=True)
-        return render_template('schedulereport.html',all_data = all_data, schedule_active="is_active('/schedule')")
+        search_factory = request.args.get("search_factory")
+        if search_factory:
+            all_data = Mocdm_schedule.query.filter(Mocdm_schedule.factory == search_factory).all()
+        else:
+            all_data = Mocdm_schedule.query.all()
+        # Send default values when db rows are empty
+        if len(all_data) <= 0:
+            return render_template('schedulereport.html',
+                               all_data = all_data,
+                               today = datetime.now().strftime("%m/%d/%Y"),
+                               index_range = 0,
+                               dates = [],
+                               occurrence = 0,
+                               schedule_active="is_active('/schedule')")
 
-@auth.route('/deleteSchedule/<id>/', methods = ['GET', 'POST'])
+        # Get start and end date from db
+        start_date = db.session.query(func.min(Mocdm_schedule.data_date)).scalar()
+        end_date = db.session.query(func.max(Mocdm_schedule.data_date)).scalar()
+        
+        # Get the list of dates between start and end
+        get_all_date = pd.date_range(start_date, end_date, freq='d')
+        date_range = [dict(days = days) for days in get_all_date]
+
+        # Mocdm_schedule.query.paginate(per_page=100, page=page_num, error_out=True)
+        all_data = [item.__dict__ for item in all_data]
+
+        # Find all occurrences
+        occurrence = collections.Counter()
+        for items in all_data:
+            occurrence[items["data_date"]] +=1
+        occurrence_count = occurrence.most_common(1)[0][1]
+
+        result = []
+        for row in range(occurrence_count):
+            splice_by_row = []
+            column_range = [dict(days = days) for days in get_all_date]
+
+            # Get data by each row
+            for date_index in range(len(column_range)):
+                for column in all_data:
+                    if column["data_date"] == date_range[date_index]["days"].date():
+                        splice_by_row.append({
+                            "idx": date_index,
+                            "data": column
+                        })
+                        all_data.remove(column)
+                        break
+                    else:
+                        pass
+            
+            # Make data by its idx. 
+            for i in range(len(column_range)):
+                for idx, x in enumerate([a['idx'] for a in splice_by_row]):
+                    if x == i:
+                        column_range[i]['existed'] = True
+                        column_range[i]['data_idx'] = idx
+                    else:
+                        pass
+            result.append({
+                "list_of_placement": column_range,
+                "data": splice_by_row,
+            })
+
+        return render_template('schedulereport.html',
+                               all_data = result,
+                               today = datetime.now().strftime("%m/%d/%Y"),
+                               index_range = len(date_range),
+                               dates = date_range,
+                               occurrence = occurrence_count,
+                               search_factory = search_factory,
+                               schedule_active="is_active('/schedule')")
+
+@auth.route('/schedule/update/<id>', methods = ['GET', 'POST'])
+def updateSchedule(id):
+    all_data = Mocdm_schedule.query.get(id)
+    if request.method == 'GET':
+        return render_template("scheduleupdate.html", all_data=all_data)
+    else:
+        all_data.dely_date = request.form['dely_date']
+        all_data.qty = request.form['qty']
+        all_data.target = request.form['target']
+        all_data.balance = request.form['balance']
+        all_data.zip_thread = request.form['zip']
+        all_data.group = request.form['group']
+        all_data.version = request.form['version']
+        all_data.style = request.form['style']
+        all_data.data_date = request.form['data_date']
+        all_data.total = request.form['total']
+        all_data.factory = request.form['factory']
+        if "image_path" in request.files and request.files['image_path'].filename:
+            file = request.files['image_path']
+            filename = file.filename
+            file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(file_path)
+            os.remove(all_data.image_path)
+            all_data.image_path = file_path
+        db.session.commit()
+        return redirect(url_for("auth.schedulelist"))
+
+@auth.route('/deleteSchedule/<id>/', methods = ['POST'])
 def deleteSchedule(id):
     all_data = Mocdm_schedule.query.get(id)
     db.session.delete(all_data)

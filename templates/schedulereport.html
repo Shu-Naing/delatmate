@@ -15,156 +15,75 @@
 
                
                 <a href="{{ url_for('main.sheduleupload') }}" type="submit" class="btn btn-outline-primary">+ New Schedule List</a>
-            </div>
-  </div>
+                <div class="dropdown">
+                  <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Factory
+                  </button>
+                  <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="/schedulelist?search_factory=DMHB">DMHB</a></li>
+                    <li><a class="dropdown-item" href="/schedulelist?search_factory=DMSLG">DMSLG</a></li>
+                    <li><a class="dropdown-item" href="/schedulelist?search_factory=HYHB">HYHB</a></li>
+                    <li><a class="dropdown-item" href="/schedulelist?search_factory=HCHB">HCHB</a></li>
+                    <li><a class="dropdown-item" href="/schedulelist?search_factory=DHSHB">DHSHB</a></li>
+                    <li><a class="dropdown-item" href="/schedulelist?search_factory=MYHB">MYHB</a></li>
+                    <li><a class="dropdown-item" href="/schedulelist?search_factory=DWSLG">DWSLG</a></li>
+                  </ul>
+                </div>
+              </div>
+          </div>
+          {% if search_factory %}
+            <h3 class="title m-0" style="white-space:nowrap;">Search by: {{search_factory}} factory</h3>
+          {% endif %}
             <div class="table-responsive">
                 <table class="table table-bordered table-striped" id="myTable">
-                    <thead>
-                      <tr>
-                        <th>LINE</th>
-                        <th>DELY</th>
-                        <th>QTY</th>
-                        <th>Target(H/W)</th>
-                        <th>Balance(PVC)</th>
-                        <th>Zip & Thread</th>
-                        <th>Group</th>
-                        <th>Style</th>
-                        <th>Version</th>
-                        <th>Image</th>
-                        <th>Delete</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {% for row in all_data %}
-                      <tr>
-                        <td>{{row.line}}</td>
-                        <td>{{row.dely}}</td>
-                        <td><a type="submit" href="/consumptionreport?style={{row.style}}&dely_date={{row.dely}}&group_name={{row.group}}&qty_no={{row.qty}}&buyer={{row.buyer}}">{{row.qty}}</a></td>
-                        <td>{{row.target}}</td>
-                        <td>{{row.balance}}</td>
-                        <td>{{row.zip_thread}}</td>
-                        <td>{{row.group}}</td>
-                        <td>{{row.style}}</td>
-                        <td>{{row.version}}</td>
-                        <td>
-                          <form action="/imageupload" method="post" enctype="multipart/form-data">
-                            <!-- <input type="hidden"  name="id" value="{{row.id}}"> -->
-                            <input type="hidden"  name="id" value="{{row.id}}">
-                            <input type="file" name="image">
-                            <input type="submit" value="Upload">
-                            <img src="{{row.image_path}}" alt="" width="100px" height="100px">
-                            
-                        </form>
-                        
-
-                    </td>
-                    <td>
-                      <a href="/deleteSchedule/{{row.id}}" class="btn btn-danger btn-xs" onclick="return confirm('Are You Sure To Delete ?')">Delete</a>
-                  </td>
-                        <!-- <td>{{row.remark}}</td> -->
-                        <!-- <td>{{row.status}}</td> -->
-                      </tr>
-                      <div class="modal fade" id="myModal{{row.id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                        <div class="modal-dialog">
-                          <div class="modal-content">
-                      
-                            <!-- Modal Header -->
-                            <div class="modal-header">
-                              <h4 class="modal-title">Update Informations</h4>
-                              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                            </div>
-                      
-                            <!-- Modal body -->
-                            <div class="modal-body">
-                                <form action="{{url_for('auth.erpUpdate')}}" method="POST">
-                                    <input type="hidden"  name="id" value="{{row.id}}">
-                                    <h5>BUYER VERSION</h5>
-                                    <input type="text" class="form-control mt-3" name="buyer_version"  value="{{row.buyer_version}}">
-                                    <br>
-                                    <h5>PRODUCT NAME</h5>
-                                    <input type="text" class="form-control mt-3" name="product_name"  value="{{row.product_name}}">
-                                    <br>
-                                    <h5>MAIN COLOR</h5>
-                                    <input type="text" class="form-control mt-3" name="main_color"  value="{{row.main_color}}">
-                                    <br>
-                                    <h5>SEASON</h5>
-                                    <input type="text" class="form-control mt-3" name="season"  value="{{row.season}}">
-                                    <br>
-                                    <h5>CATEGORY</h5>
-                                    <input type="text" class="form-control mt-3" name="category"  value="{{row.category}}">
-                                    <br>
-                                    <h5>MATERIAL CLASSIFICATION</h5>
-                                    <input type="text" class="form-control mt-3" name="material_classification"  value="{{row.material_classification}}">
-                                    <br>
-                                    <h5>MATERIAL CODE</h5>
-                                    <input type="text" class="form-control mt-3" name="material_code"  value="{{row.material_code}}">
-                                    <br>
-                                    <h5>MATERIAL </h5>
-                                    <input type="text" class="form-control mt-3" name="material"  value="{{row.material}}">
-                                    <br>
-                                    <h5>MATERIAL NAME IN CHINESE</h5>
-                                    <input type="text" class="form-control mt-3" name="material_chinese"  value="{{row.material_chinese}}">
-                                    <br>
-                                    <h5>SIZE</h5>
-                                    <input type="text" class="form-control mt-3" name="size"  value="{{row.size}}">
-                                    <br>
-                                    <h5>ORIGINAL CONSUME</h5>
-                                    <input type="text" class="form-control mt-3" name="org_consume"  value="{{row.org_consume}}">
-                                    <br>
-                                    <h5>UNIT</h5>
-                                    <input type="text" class="form-control mt-3" name="unit"  value="{{row.unit}}">
-                                    <br>
-                                    <h5>LOSS</h5>
-                                    <input type="text" class="form-control mt-3" name="loss"  value="{{row.loss}}">
-                                    <br>
-                                    <h5>CONSUME POINT</h5>
-                                    <input type="text" class="form-control mt-3" name="consume_point"  value="{{row.consume_point}}">
-                                    <br>
-                                    <h5>ORDER QTY</h5>
-                                    <input type="text" class="form-control mt-3" name="order_qty"  value="{{row.order_qty}}">
-                                    <br>
-                                    <h5>CONSUME</h5>
-                                    <input type="text" class="form-control mt-3" name="consume"  value="{{row.consume}}">
-                                    <br>
-                                  <button class="btn btn-primary" type="submit">Update</button>
-                                </form>
-                      
-                            <!-- Modal footer -->
-                            <br>
-                            <div class="modal-footer">
-                              <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-                            </div>
-                      
-                        </div>
-                        </div>
-                      </div>
-                      
+                  <thead>
+                    <tr>
+                      <th></th>
+                      <th>EU</th>
+                      <th>LiuJo</th>
+                      <th>INT</th>
+                      <th>{{today}}</th>
+                    </tr>
+                    <tr>
+                      <tr></tr>
+                      <td>Line</td>
+                      {% for index in range(index_range) %}
+                        <td>{{dates[index]["days"].day}}</td>
+                      {% endfor %}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for row in range(occurrence) %}
+                    <tr>
+                      <td>Dely<br>Q'Ty<br>{{row+1}}<br>Target<br>Balance<br>Zip_Thread<br>Total<br>Factory</td>
+                      {% for column in range(index_range) %}
+                      {% if  all_data[row]["list_of_placement"][column]["existed"]%}
+                          <td>
+                            {{
+                              all_data[row]['data'][all_data[row]["list_of_placement"][column]['data_idx']]["data"].dely}}<br>
+                              <a href="/consumptionreport?style={{all_data[row]['data'][all_data[row]['list_of_placement'][column]['data_idx']]['data'].style}}&dely_date={{all_data[row]['data'][all_data[row]['list_of_placement'][column]['data_idx']]['data'].dely}}&group_name={{all_data[row]['data'][all_data[row]['list_of_placement'][column]['data_idx']]['data'].group}}&qty_no={{all_data[row]['data'][all_data[row]['list_of_placement'][column]['data_idx']]['data'].qty}}&buyer={{all_data[row]['data'][all_data[row]['list_of_placement'][column]['data_idx']]['data'].buyer}}">{{all_data[row]['data'][all_data[row]["list_of_placement"][column]['data_idx']]["data"].qty}}</a><br> <br>
+                              {{all_data[row]['data'][all_data[row]["list_of_placement"][column]['data_idx']]["data"].target}}<br>
+                              {{all_data[row]['data'][all_data[row]["list_of_placement"][column]['data_idx']]["data"].balance}}<br>
+                              {{all_data[row]['data'][all_data[row]["list_of_placement"][column]['data_idx']]["data"].zip_thread}}<br>
+                              {{all_data[row]['data'][all_data[row]["list_of_placement"][column]['data_idx']]["data"].total}}<br>
+                              {{all_data[row]['data'][all_data[row]["list_of_placement"][column]['data_idx']]["data"].factory}}<br>
+                              {% if all_data[row]['data'][all_data[row]["list_of_placement"][column]['data_idx']]["data"].image_path %}
+                                <img src="/{{all_data[row]['data'][all_data[row]['list_of_placement'][column]['data_idx']]['data'].image_path}}" alt="" srcset="">
+                              {% endif %}
+                              <form enctype="multipart/form-data" method="post" action="imageupload/{{all_data[row]['data'][all_data[row]['list_of_placement'][column]['data_idx']]['data'].id}}">
+                                <input name="file" class="form-control form-control-sm" id="formFileSm" type="file" /> <button class="btn btn-success" type="submit">Submit</button>
+                              </form> <br>
+                              <a href="/schedule/update/{{all_data[row]['data'][all_data[row]['list_of_placement'][column]['data_idx']]['data'].id}}" class="btn btn-primary" role="button"><i class="bi-pencil"></i></a> |
+                              <button class="btn btn-danger" id="{{all_data[row]['data'][all_data[row]['list_of_placement'][column]['data_idx']]['data'].id}}" onclick="delete_schedule(this.id)"><i class="bi-trash"></i></button></td>
+                      {% else %}
+                        <td></td>
+                      {% endif %}
                     {% endfor %}
-                    
-                    </tbody>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
                 </table>
-                <ul class="pagination">
-                  {% if all_data.has_prev %}
-                   <li class="page-item"><a class="page-link" href="{{ url_for('auth.erplist', page_num=all_data.prev_num) }}">Previous</a></li>
-                  {% else %}
-                   <li class="page-item disabled"><span class="page-link">Previous</span>
-                  {% endif %}
-                   </li>
-                     
-                  {% for page in all_data.iter_pages(left_edge=3, right_edge=3) %}
-                  {% if page %}
-                   <li class="page-item"><a class="page-link" href="{{ url_for('auth.erplist', page_num=page) }}">{{ page }}</a></li>
-                  {% else %}
-                   <li class="page-item disabled" id="example_ellipsis"><a href="#" class="page-link">…</a></li> 
-                  {% endif %}
-                  {% endfor %}
-                   
-                  {% if all_data.has_next %}
-                   <li class="page-item"><a class="page-link" href="{{ url_for('auth.erplist', page_num=all_data.next_num) }}">Next</a></li>
-                  {% else %}
-                   <li class="page-item disabled"><span class="page-link">Next</span>
-                  {% endif %}
-                   </ul>
+
               </div>
               <br>
               <br>

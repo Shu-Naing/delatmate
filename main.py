@@ -11,16 +11,16 @@ main = Blueprint('main', __name__)
 def is_active(page):
     return True if request.path == page else False
 
-@main.route('/imageupload', methods=['POST'])
-def imageupload():
-    file = request.files['image']
+@main.route('/imageupload/<id>', methods=['POST'])
+def imageupload(id):
+    file = request.files['file']
     filename = file.filename
-    file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-    file.save(file_path)
-    id = request.form.get('id')
-    image = Mocdm_schedule.query.filter_by(id=id).first()
-    image.image_path = file_path
-    db.session.commit()
+    if file and filename:
+        file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        file.save(file_path)
+        image = Mocdm_schedule.query.filter_by(id=id).first()
+        image.image_path = file_path
+        db.session.commit()
     return redirect(url_for('auth.schedulelist'))
 
 @main.route('/') 
