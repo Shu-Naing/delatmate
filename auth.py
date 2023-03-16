@@ -898,31 +898,51 @@ def view_image(id):
 @login_required
 def consump_list(page_num):
     try:
-        if request.method=='GET':
-            po = request.args.get('po')
-            style = request.args.get('style')
-            org_buyer = request.args.get('org_buyer')
-            color = request.args.get('color')
-            gp_name = request.args.get('gp_name')
-            ext_dely = request.args.get('ext_dely')
-            order_date = request.args.get('order_date')
-            factory = request.args.get('factory')
-            des = request.args.get('des')
-            all_data = db.session.query(Mocdm_pending.factory, Mocdm_pending.gp_name, Mocdm_pending.qty, 
-                            Mocdm_pending.ext_dely, Mocdm_pending.style, Mocdm_pending.org_buyer)\
-                    .group_by(Mocdm_pending.factory, Mocdm_pending.gp_name, Mocdm_pending.qty, 
-                                Mocdm_pending.ext_dely, Mocdm_pending.style, Mocdm_pending.org_buyer).paginate(per_page=100, page=page_num, error_out=True)
-            return render_template('consumpList.html', po = po,style = style, org_buyer = org_buyer, color = color, gp_name = gp_name, ext_dely = ext_dely, order_date = order_date, des=des, factory= factory, all_data=all_data, consump_active="is_active('/consump')")
-        else:
-            po = request.form['po']
-            style = request.form['style']
-            org_buyer = request.form['org_buyer']
-            color = request.form['color']
-            order_date = request.form['order_date']
-            des = request.form['des']
-            gp_name = request.form['gp_name']
-            ext_dely = request.form['ext_dely']
-            factory = request.form['factory']
+        if request.method=='POST' or request.args.get('search')=='True' :
+            if (request.args.get('po')): 
+                po = request.args.get('po')
+            else:
+                po = request.form.get('po', '')
+
+            if (request.args.get('style')): 
+                style = request.args.get('style')
+            else:
+                style = request.form.get('style', '')
+
+            if (request.args.get('org_buyer')): 
+                org_buyer = request.args.get('org_buyer')
+            else:
+                org_buyer = request.form.get('org_buyer', '')
+
+            if (request.args.get('color')): 
+                color = request.args.get('color')
+            else:
+                color = request.form.get('color', '')
+
+            if (request.args.get('gp_name')): 
+                gp_name = request.args.get('gp_name')
+            else:
+                gp_name = request.form.get('gp_name', '')
+
+            if (request.args.get('ext_dely')): 
+                ext_dely = request.args.get('ext_dely')
+            else:
+                ext_dely = request.form.get('ext_dely', '')
+
+            if (request.args.get('order_date')): 
+                order_date = request.args.get('order_date')
+            else:
+                order_date = request.form.get('order_date', '')
+
+            if (request.args.get('factory')): 
+                factory = request.args.get('factory')
+            else:
+                factory = request.form.get('factory', '')
+
+            if (request.args.get('des')): 
+                des = request.args.get('des')
+            else:
+                des = request.form.get('des', '')
             session['po'] = po
             session['style'] = style
             session['org_buyer'] = org_buyer
@@ -943,6 +963,12 @@ def consump_list(page_num):
             search9 = "%{}%".format(factory)
             all_data = Mocdm_pending.query.filter((Mocdm_pending.po.like(search1)),(Mocdm_pending.style.like(search2)),(Mocdm_pending.org_buyer.like(search3)),(Mocdm_pending.color.like(search4)),(Mocdm_pending.order_date.like(search5)),(Mocdm_pending.des.like(search6)),(Mocdm_pending.gp_name.like(search7)),(Mocdm_pending.ext_dely.like(search8)),(Mocdm_pending.factory.like(search9))).group_by(Mocdm_pending.factory, Mocdm_pending.gp_name, Mocdm_pending.qty,Mocdm_pending.ext_dely, Mocdm_pending.style, Mocdm_pending.org_buyer).paginate(per_page=100, page=page_num, error_out=True)
             return render_template("consumpList.html", po=po,style=style,org_buyer=org_buyer,color=color,order_date=order_date,des=des,gp_name=gp_name,ext_dely=ext_dely,factory=factory,all_data=all_data, consump_active="is_active('/consump')")
+        else:
+            all_data = db.session.query(Mocdm_pending.factory, Mocdm_pending.gp_name, Mocdm_pending.qty, 
+                            Mocdm_pending.ext_dely, Mocdm_pending.style, Mocdm_pending.org_buyer)\
+                    .group_by(Mocdm_pending.factory, Mocdm_pending.gp_name, Mocdm_pending.qty, 
+                                Mocdm_pending.ext_dely, Mocdm_pending.style, Mocdm_pending.org_buyer).paginate(per_page=100, page=page_num, error_out=True)
+            return render_template('consumpList.html', all_data=all_data, consump_active="is_active('/consump')")
     except SQLAlchemyError as e:
         current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         logging.basicConfig(filename= f'error_log.log', level=logging.ERROR)

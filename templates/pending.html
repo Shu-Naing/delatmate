@@ -297,7 +297,7 @@
                 {% if request.method == 'POST' or request.args.get('search')=='True' %}
                 <ul class="pagination">
                   {% if all_data.has_prev %}
-                   <li class="page-item"><a class="page-link" href="{{ url_for('auth.erplist', page_num=all_data.prev_num) }}">Previous</a></li>
+                   <li class="page-item"><a class="page-link" href="{{ url_for('auth.pendinglist', page_num=all_data.prev_num) }}">Previous</a></li>
                   {% else %}
                    <li class="page-item disabled"><span class="page-link">Previous</span>
                   {% endif %}
