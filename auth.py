@@ -494,12 +494,17 @@ def pendingUpdate():
             all_data.shpg_job = request.form['shpg_job']
             all_data.status = request.form['status']
             db.session.commit()
+            if not all_data.xfty_date:
+                w = all_data.xfty_date
+            else:
+                w = all_data.xfty_date.strftime('%m/%d/%Y')
+            
     except SQLAlchemyError as e:
         current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         logging.basicConfig(filename= f'error_log.log', level=logging.ERROR)
         logging.error(str(e))
     # return redirect(url_for('auth.pendinglist'))
-    return f"<td>{all_data.ext_dely}</td>,<td>{all_data.mcn}</td>,<td>{all_data.po}</td>,<td>{all_data.myanmar}</td>,<td>{all_data.ship_to}</td>,<td>{all_data.label}</td>,<td>{all_data.linked_store}</td>,<td>{all_data.des}</td>,<td>{all_data.gp_name}</td>,<td>{all_data.style}</td>,<td>{all_data.org_buyer}</td>,<td>{all_data.color}</td>,<td>{all_data.qty}</td>,<td>{all_data.vessel_date}</td>,<td>{all_data.factory}</td>,<td>{all_data.db_gb_code}</td>,<td>{all_data.sdn_po}</td>,<td>{all_data.customer_po}</td>,<td>{all_data.upc_no}</td>,<td>{all_data.linked_so_no}</td>,<td>{all_data.ref_no}</td>,<td>{all_data.material_log_no}</td>,<td>{all_data.season}</td>,<td>{all_data.buyer_txt}</td>,<td>{all_data.order_date}</td>,<td>{all_data.kmz_id}</td>,<td>{all_data.remark}</td>,<td>{all_data.shpg_job}</td>,<td>{all_data.xfty_date.strftime('%m/%d/%Y')}</td>,<td>{all_data.status}</td>,<td><a href='/pendingUpdate'  class='btn btn-primary' value='{all_data.id}' edit-row-value='{all_data.id}' data-bs-toggle='modal' data-bs-target='#myModal{all_data.id}'>Edit</a></td>"
+    return f"<td>{all_data.ext_dely}</td>,<td>{all_data.mcn}</td>,<td>{all_data.po}</td>,<td>{all_data.myanmar}</td>,<td>{all_data.ship_to}</td>,<td>{all_data.label}</td>,<td>{all_data.linked_store}</td>,<td>{all_data.des}</td>,<td>{all_data.gp_name}</td>,<td>{all_data.style}</td>,<td>{all_data.org_buyer}</td>,<td>{all_data.color}</td>,<td>{all_data.qty}</td>,<td>{all_data.vessel_date}</td>,<td>{all_data.factory}</td>,<td>{all_data.db_gb_code}</td>,<td>{all_data.sdn_po}</td>,<td>{all_data.customer_po}</td>,<td>{all_data.upc_no}</td>,<td>{all_data.linked_so_no}</td>,<td>{all_data.ref_no}</td>,<td>{all_data.material_log_no}</td>,<td>{all_data.season}</td>,<td>{all_data.buyer_txt}</td>,<td>{all_data.order_date}</td>,<td>{all_data.kmz_id}</td>,<td>{all_data.remark}</td>,<td>{all_data.shpg_job}</td>,<td>{w}</td>,<td>{all_data.status}</td>,<td><a href='/pendingUpdate'  class='btn btn-primary' value='{all_data.id}' edit-row-value='{all_data.id}' data-bs-toggle='modal' data-bs-target='#myModal{all_data.id}'>Edit</a></td>"
 
 @auth.route("/pending_upload", methods=['POST'])
 @login_required

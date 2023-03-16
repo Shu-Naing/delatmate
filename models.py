@@ -74,7 +74,7 @@ class Mocdm_pending(UserMixin, db.Model):
     kmz_id = db.Column(db.Integer)
     remark = db.Column(db.String(255))
     shpg_job = db.Column(db.String(255))
-    xfty_date = db.Column(db.String(255))
+    xfty_date = db.Column(db.Date)
     status = db.Column(db.String(255))
     previous = db.Column(db.Date)
     myanmar = db.Column(db.String(255))
