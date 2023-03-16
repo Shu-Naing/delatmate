@@ -89,7 +89,7 @@
 
             </div>
             <br>
-            {% if request.method == 'POST' %}
+            {% if request.method == 'POST' or request.args.get('search')=='True'  %}
             <p><a href="/download_pending?search=true&po={{po}}&style={{style}}&org_buyer={{org_buyer}}&color={{color}}&gp_name={{gp_name}}&ext_dely={{ext_dely}}&order_date={{order_date}}">Download</a></p>
             {% elif request.method == 'GET' %}
               <p><a href="/download_pending?search=false">Download</a></p>
@@ -176,10 +176,10 @@
                         <td>{{row.kmz_id}}</td>
                         <td>{{row.remark}}</td>
                         <td>{{row.shpg_job}}</td>
-                        {% if row.xfty_date %}
-                        <td>{{row.xfty_date.strftime('%m/%d/%Y')}}</td>
+                        {% if row.xfty_date is none %}
+                          <td>{{row.xfty_date}}</td>
                         {% else %}
-                        <td>{{row.xfty_date}}</td>
+                          <td>{{row.xfty_date.strftime('%m/%d/%Y')}}</td>
                         {% endif %}
                         <td>{{row.status}}</td>
                         <td>
@@ -292,17 +292,17 @@
                     
                     </tbody>
                 </table>
+                {% if request.method == 'POST' or request.args.get('search')=='True' %}
                 <ul class="pagination">
                   {% if all_data.has_prev %}
-                   <li class="page-item"><a class="page-link" href="{{ url_for('auth.pendinglist', page_num=all_data.prev_num) }}">Previous</a></li>
+                   <li class="page-item"><a class="page-link" href="{{ url_for('auth.erplist', page_num=all_data.prev_num) }}">Previous</a></li>
                   {% else %}
                    <li class="page-item disabled"><span class="page-link">Previous</span>
                   {% endif %}
-                   </li>
-                     
+                   </li>                     
                   {% for page in all_data.iter_pages(left_edge=3, right_edge=3) %}
                   {% if page %}
-                   <li class="page-item"><a class="page-link" href="{{ url_for('auth.pendinglist', page_num=page) }}">{{ page }}</a></li>
+                   <li class="page-item"><a class="page-link" href="{{ url_for('auth.pendinglist', page_num=page,po = po,style=style,org_buyer=org_buyer,color=color,gp_name=gp_name,ext_dely=ext_dely,order_date=order_date,search=True) }}">{{ page }}</a></li>
                   {% else %}
                    <li class="page-item disabled" id="example_ellipsis"><a href="#" class="page-link">…</a></li> 
                   {% endif %}
@@ -313,7 +313,31 @@
                   {% else %}
                    <li class="page-item disabled"><span class="page-link">Next</span>
                   {% endif %}
+                </ul>
+                {% elif request.method == 'GET' %}
+                <ul class="pagination">
+                  {% if all_data.has_prev %}
+                   <li class="page-item"><a class="page-link" href="{{ url_for('auth.erplist', page_num=all_data.prev_num) }}">Previous</a></li>
+                  {% else %}
+                   <li class="page-item disabled"><span class="page-link">Previous</span>
+                  {% endif %}
+                   </li>
+                     
+                  {% for page in all_data.iter_pages(left_edge=3, right_edge=3) %}
+                  {% if page %}
+                   <li class="page-item"><a class="page-link" href="{{ url_for('auth.erplist', page_num=page) }}">{{ page }}</a></li>
+                  {% else %}
+                   <li class="page-item disabled" id="example_ellipsis"><a href="#" class="page-link">…</a></li> 
+                  {% endif %}
+                  {% endfor %}
+                   
+                  {% if all_data.has_next %}
+                   <li class="page-item"><a class="page-link" href="{{ url_for('auth.erplist', page_num=all_data.next_num) }}">Next</a></li>
+                  {% else %}
+                   <li class="page-item disabled"><span class="page-link">Next</span>
+                  {% endif %}
                    </ul>
+                {% endif %}
               </div>
             </div>
 
