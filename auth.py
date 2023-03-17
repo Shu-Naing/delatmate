@@ -879,24 +879,29 @@ def scheduleUpload():
 @auth.route('/schedulelist/<int:page_num>', methods=['GET', 'POST'])
 @login_required
 def schedulelist(page_num):
-    try:
-        if request.method=='GET':
-            search_factory = request.args.get("search_factory")
+    if request.method=='GET':
+        search_factory = request.args.get("search_factory")
+        if search_factory:
+            all_data = Mocdm_schedule.query.filter(Mocdm_schedule.factory == search_factory).all()
+        else:
+            all_data = Mocdm_schedule.query.all()
+        # Send default values when db rows are empty
+        if len(all_data) <= 0:
+            return render_template('schedulereport.html',
+                               all_data = all_data,
+                               today = datetime.now().strftime("%m/%d/%Y"),
+                               index_range = 0,
+                               dates = [],
+                               occurrence = 0,
+                               schedule_active="is_active('/schedule')")
 
-            if search_factory:
-                all_data = Mocdm_schedule.query.filter(Mocdm_schedule.factory == search_factory).all()
-            else:
-                all_data = Mocdm_schedule.query.all()
-            # Send default values when db rows are empty
-            if len(all_data) <= 0:
-                return render_template('schedulereport.html',
-                                all_data = all_data,
-                                today = datetime.now().strftime("%m/%d/%Y"),
-                                index_range = 0,
-                                dates = [],
-                                occurrence = 0,
-                                search_factory = search_factory,
-                                schedule_active="is_active('/schedule')")
+        # Get start and end date from db
+        start_date = db.session.query(func.min(Mocdm_schedule.data_date)).scalar()
+        end_date = db.session.query(func.max(Mocdm_schedule.data_date)).scalar()
+        
+        # Get the list of dates between start and end
+        get_all_date = pd.date_range(start_date, end_date, freq='d')
+        date_range = [dict(days = days) for days in get_all_date]
 
         # Mocdm_schedule.query.paginate(per_page=100, page=page_num, error_out=True)
         all_data = [item.__dict__ for item in all_data]
@@ -926,63 +931,20 @@ def schedulelist(page_num):
                     else:
                         pass
             
-            # Get the list of dates between start and end
-            get_all_date = pd.date_range(start_date, end_date, freq='d')
-            date_range = [dict(days = days) for days in get_all_date]
-
-            # Mocdm_schedule.query.paginate(per_page=100, page=page_num, error_out=True)
-            all_data = [item.__dict__ for item in all_data]
-
-            # Find all occurrences
-            occurrence = collections.Counter()
-            for items in all_data:
-                occurrence[items["data_date"]] +=1
-            occurrence_count = occurrence.most_common(1)[0][1]
-
-            result = []
-            for row in range(occurrence_count):
-                splice_by_row = []
-                column_range = [dict(days = days) for days in get_all_date]
-
-                # Get data by each row
-                for date_index in range(len(column_range)):
-                    for column in all_data:
-                        if column["data_date"] == date_range[date_index]["days"].date():
-                            splice_by_row.append({
-                                "idx": date_index,
-                                "data": column
-                            })
-                            all_data.remove(column)
-                            break
-                        else:
-                            pass
-                
-                # Make data by its idx. 
-                for i in range(len(column_range)):
-                    for idx, x in enumerate([a['idx'] for a in splice_by_row]):
-                        if x == i:
-                            column_range[i]['existed'] = True
-                            column_range[i]['data_idx'] = idx
-                        else:
-                            pass
-                result.append({
-                    "list_of_placement": column_range,
-                    "data": splice_by_row,
-                })
+            # Make data by its idx. 
+            for i in range(len(column_range)):
+                for idx, x in enumerate([a['idx'] for a in splice_by_row]):
+                    if x == i:
+                        column_range[i]['existed'] = True
+                        column_range[i]['data_idx'] = idx
+                    else:
+                        pass
+            result.append({
+                "list_of_placement": column_range,
+                "data": splice_by_row,
+            })
 
         return render_template('schedulereport.html',
-                                all_data = result,
-                                today = datetime.now().strftime("%m/%d/%Y"),
-                                index_range = len(date_range),
-                                dates = date_range,
-                                occurrence = occurrence_count,
-                                search_factory = search_factory,
-                                schedule_active="is_active('/schedule')")
-    except SQLAlchemyError as e:
-        current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-        logging.basicConfig(filename= f'error_log.log', level=logging.DEBUG)
-        logging.error(str(e))
-    return render_template('schedulereport.html',
                                all_data = result,
                                today = datetime.now().strftime("%m/%d/%Y"),
                                index_range = len(date_range),
@@ -991,7 +953,6 @@ def schedulelist(page_num):
                                occurrence = len(line_list),
                                search_factory = search_factory,
                                schedule_active="is_active('/schedule')")
-
 
 @auth.route('/schedule/update/<id>', methods = ['GET', 'POST'])
 def updateSchedule(id):
