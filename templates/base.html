@@ -103,17 +103,17 @@
                     Order List
                 </a>
               </li>
-
+              <li class="nav-item">
+                <a href="{{ url_for('auth.ddCon') }}" class="nav-link  {% if dd_active %}active{% endif %}">
+                  Consumption Report
+                </a>
+              </li>
               <li class="nav-item">
                 <a href="{{ url_for('auth.schedulelist') }}" class="nav-link  {% if schedule_active %}active{% endif %}">
                     Schedule Report
                 </a>
               </li>
-              <li class="nav-item">
-                <a href="{{ url_for('auth.ddCon') }}" class="nav-link  {% if dd_active %}active{% endif %}">
-                  Consumption
-                </a>
-              </li>
+              
               {% endif %}
             </ul>
 
@@ -160,6 +160,11 @@
                 <a href="{{ url_for('auth.schedulelist') }}" class="nav-link  {% if emp_active %}active{% endif %}">
                     Schedule Report
                 </a>
+            </li>
+            <li class="nav-item">
+              <a href="{{ url_for('auth.ddCon') }}" class="nav-link  {% if dd_active %}active{% endif %}">
+                Consumption
+              </a>
             </li>
            
             

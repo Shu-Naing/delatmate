@@ -34,6 +34,7 @@
           {% if search_factory %}
             <h3 class="title m-0" style="white-space:nowrap;">Search by: {{search_factory}} factory</h3>
           {% endif %}
+          <br>
             <div class="table-responsive">
                 <table class="table table-bordered table-striped" id="myTable">
                   <thead>
@@ -55,27 +56,38 @@
                   <tbody>
                     {% for row in range(occurrence) %}
                     <tr>
-                      <td>Dely<br>Q'Ty<br>{{row+1}}<br>Target<br>Balance<br>Zip_Thread<br><br>Factory</td>
+                      <td>Dely<br>Qty<br><br><h3 style="padding: 3px;">{{row+1}}</h3><br>Target<br>Balance<br>Zip_Thread<br><br></td>
                       {% for column in range(index_range) %}
                       {% if  all_data[row]["list_of_placement"][column]["existed"]%}
                           <td>
                             {{
-                              all_data[row]['data'][all_data[row]["list_of_placement"][column]['data_idx']]["data"].dely}}<br>
+                              all_data[row]['data'][all_data[row]["list_of_placement"][column]['data_idx']]["data"].dely.strftime('%m/%d/%Y')}}<br>
                               <!-- <a href="/consumptionreport?style={{all_data[row]['data'][all_data[row]['list_of_placement'][column]['data_idx']]['data'].style}}&dely_date={{all_data[row]['data'][all_data[row]['list_of_placement'][column]['data_idx']]['data'].dely}}&group_name={{all_data[row]['data'][all_data[row]['list_of_placement'][column]['data_idx']]['data'].gp}}&qty_no={{all_data[row]['data'][all_data[row]['list_of_placement'][column]['data_idx']]['data'].qty}}&buyer={{all_data[row]['data'][all_data[row]['list_of_placement'][column]['data_idx']]['data'].buyer}}">{{all_data[row]['data'][all_data[row]["list_of_placement"][column]['data_idx']]["data"].qty}}</a><br> <br> -->
                               <a href="/consumptionreport?factory={{all_data[row]['data'][all_data[row]['list_of_placement'][column]['data_idx']]['data'].factory}}&style={{all_data[row]['data'][all_data[row]['list_of_placement'][column]['data_idx']]['data'].style}}&dely_date={{all_data[row]['data'][all_data[row]['list_of_placement'][column]['data_idx']]['data'].dely}}&group_name={{all_data[row]['data'][all_data[row]['list_of_placement'][column]['data_idx']]['data'].gp}}&qty_no={{all_data[row]['data'][all_data[row]['list_of_placement'][column]['data_idx']]['data'].qty}}&buyer={{all_data[row]['data'][all_data[row]['list_of_placement'][column]['data_idx']]['data'].buyer}}">{{all_data[row]['data'][all_data[row]["list_of_placement"][column]['data_idx']]["data"].qty}}</a><br> <br>
+                              {{all_data[row]['data'][all_data[row]["list_of_placement"][column]['data_idx']]["data"].gp}}<br>
+                              {{all_data[row]['data'][all_data[row]["list_of_placement"][column]['data_idx']]["data"].style}}<br>
+                              {{all_data[row]['data'][all_data[row]["list_of_placement"][column]['data_idx']]["data"].buyer}}<br>
                               {{all_data[row]['data'][all_data[row]["list_of_placement"][column]['data_idx']]["data"].target}}<br>
                               {{all_data[row]['data'][all_data[row]["list_of_placement"][column]['data_idx']]["data"].balance}}<br>
                               {{all_data[row]['data'][all_data[row]["list_of_placement"][column]['data_idx']]["data"].zip_thread}}<br>
                               {{all_data[row]['data'][all_data[row]["list_of_placement"][column]['data_idx']]["data"].total}}<br>
-                              {{all_data[row]['data'][all_data[row]["list_of_placement"][column]['data_idx']]["data"].factory}}<br>
+                              <!-- {{all_data[row]['data'][all_data[row]["list_of_placement"][column]['data_idx']]["data"].factory}}<br> -->
                               {% if all_data[row]['data'][all_data[row]["list_of_placement"][column]['data_idx']]["data"].image_path %}
-                                <img src="/{{all_data[row]['data'][all_data[row]['list_of_placement'][column]['data_idx']]['data'].image_path}}" alt="" srcset="" width="150px" height="auto">
+                              <img src="/{{all_data[row]['data'][all_data[row]['list_of_placement'][column]['data_idx']]['data'].image_path}}" alt="" srcset="" width="150px" height="auto">
+                                {% endif %}
+                              <div>
+                              {% if session["role"] == 'superadmin' %}
+                                  <div>
+                                  
+                                <form enctype="multipart/form-data" method="post" action="imageupload/{{all_data[row]['data'][all_data[row]['list_of_placement'][column]['data_idx']]['data'].id}}">
+                                  <input name="file" class="form-control form-control-sm" id="formFileSm" type="file" /> <button class="btn btn-success" type="submit">Submit</button>
+                                </form> <br>
+                                <a href="/schedule/update/{{all_data[row]['data'][all_data[row]['list_of_placement'][column]['data_idx']]['data'].id}}" class="btn btn-primary" role="button"><i class="bi-pencil"></i></a> |
+                                <button class="btn btn-danger" id="{{all_data[row]['data'][all_data[row]['list_of_placement'][column]['data_idx']]['data'].id}}" onclick="delete_schedule(this.id)"><i class="bi-trash"></i></button></td>
+                                  </div>
                               {% endif %}
-                              <form enctype="multipart/form-data" method="post" action="imageupload/{{all_data[row]['data'][all_data[row]['list_of_placement'][column]['data_idx']]['data'].id}}">
-                                <input name="file" class="form-control form-control-sm" id="formFileSm" type="file" /> <button class="btn btn-success" type="submit">Submit</button>
-                              </form> <br>
-                              <a href="/schedule/update/{{all_data[row]['data'][all_data[row]['list_of_placement'][column]['data_idx']]['data'].id}}" class="btn btn-primary" role="button"><i class="bi-pencil"></i></a> |
-                              <button class="btn btn-danger" id="{{all_data[row]['data'][all_data[row]['list_of_placement'][column]['data_idx']]['data'].id}}" onclick="delete_schedule(this.id)"><i class="bi-trash"></i></button></td>
+                              </div>
+                                
                       {% else %}
                         <td></td>
                       {% endif %}
