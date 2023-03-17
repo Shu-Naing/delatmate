@@ -55,20 +55,21 @@
                   <tbody>
                     {% for row in range(occurrence) %}
                     <tr>
-                      <td>Dely<br>Q'Ty<br>{{row+1}}<br>Target<br>Balance<br>Zip_Thread<br>Total<br>Factory</td>
+                      <td>Dely<br>Q'Ty<br>{{row+1}}<br>Target<br>Balance<br>Zip_Thread<br><br>Factory</td>
                       {% for column in range(index_range) %}
                       {% if  all_data[row]["list_of_placement"][column]["existed"]%}
                           <td>
                             {{
                               all_data[row]['data'][all_data[row]["list_of_placement"][column]['data_idx']]["data"].dely}}<br>
-                              <a href="/consumptionreport?style={{all_data[row]['data'][all_data[row]['list_of_placement'][column]['data_idx']]['data'].style}}&dely_date={{all_data[row]['data'][all_data[row]['list_of_placement'][column]['data_idx']]['data'].dely}}&group_name={{all_data[row]['data'][all_data[row]['list_of_placement'][column]['data_idx']]['data'].group}}&qty_no={{all_data[row]['data'][all_data[row]['list_of_placement'][column]['data_idx']]['data'].qty}}&buyer={{all_data[row]['data'][all_data[row]['list_of_placement'][column]['data_idx']]['data'].buyer}}">{{all_data[row]['data'][all_data[row]["list_of_placement"][column]['data_idx']]["data"].qty}}</a><br> <br>
+                              <!-- <a href="/consumptionreport?style={{all_data[row]['data'][all_data[row]['list_of_placement'][column]['data_idx']]['data'].style}}&dely_date={{all_data[row]['data'][all_data[row]['list_of_placement'][column]['data_idx']]['data'].dely}}&group_name={{all_data[row]['data'][all_data[row]['list_of_placement'][column]['data_idx']]['data'].gp}}&qty_no={{all_data[row]['data'][all_data[row]['list_of_placement'][column]['data_idx']]['data'].qty}}&buyer={{all_data[row]['data'][all_data[row]['list_of_placement'][column]['data_idx']]['data'].buyer}}">{{all_data[row]['data'][all_data[row]["list_of_placement"][column]['data_idx']]["data"].qty}}</a><br> <br> -->
+                              <a href="/consumptionreport?factory={{all_data[row]['data'][all_data[row]['list_of_placement'][column]['data_idx']]['data'].factory}}&style={{all_data[row]['data'][all_data[row]['list_of_placement'][column]['data_idx']]['data'].style}}&dely_date={{all_data[row]['data'][all_data[row]['list_of_placement'][column]['data_idx']]['data'].dely}}&group_name={{all_data[row]['data'][all_data[row]['list_of_placement'][column]['data_idx']]['data'].gp}}&qty_no={{all_data[row]['data'][all_data[row]['list_of_placement'][column]['data_idx']]['data'].qty}}&buyer={{all_data[row]['data'][all_data[row]['list_of_placement'][column]['data_idx']]['data'].buyer}}">{{all_data[row]['data'][all_data[row]["list_of_placement"][column]['data_idx']]["data"].qty}}</a><br> <br>
                               {{all_data[row]['data'][all_data[row]["list_of_placement"][column]['data_idx']]["data"].target}}<br>
                               {{all_data[row]['data'][all_data[row]["list_of_placement"][column]['data_idx']]["data"].balance}}<br>
                               {{all_data[row]['data'][all_data[row]["list_of_placement"][column]['data_idx']]["data"].zip_thread}}<br>
                               {{all_data[row]['data'][all_data[row]["list_of_placement"][column]['data_idx']]["data"].total}}<br>
                               {{all_data[row]['data'][all_data[row]["list_of_placement"][column]['data_idx']]["data"].factory}}<br>
                               {% if all_data[row]['data'][all_data[row]["list_of_placement"][column]['data_idx']]["data"].image_path %}
-                                <img src="/{{all_data[row]['data'][all_data[row]['list_of_placement'][column]['data_idx']]['data'].image_path}}" alt="" srcset="">
+                                <img src="/{{all_data[row]['data'][all_data[row]['list_of_placement'][column]['data_idx']]['data'].image_path}}" alt="" srcset="" width="150px" height="auto">
                               {% endif %}
                               <form enctype="multipart/form-data" method="post" action="imageupload/{{all_data[row]['data'][all_data[row]['list_of_placement'][column]['data_idx']]['data'].id}}">
                                 <input name="file" class="form-control form-control-sm" id="formFileSm" type="file" /> <button class="btn btn-success" type="submit">Submit</button>

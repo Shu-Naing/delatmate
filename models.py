@@ -102,7 +102,7 @@ class Mocdm_schedule(UserMixin, db.Model):
     target = db.Column(db.String(255))
     balance = db.Column(db.String(255))
     zip_thread= db.Column(db.String(255))
-    group = db.Column(db.String(255))
+    gp = db.Column(db.String(255))
     style = db.Column(db.String(255))
     version = db.Column(db.String(255))
     factory = db.Column(db.String(255))
