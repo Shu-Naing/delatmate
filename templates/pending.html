@@ -319,7 +319,7 @@
                 {% elif request.method == 'GET' %}
                 <ul class="pagination">
                   {% if all_data.has_prev %}
-                   <li class="page-item"><a class="page-link" href="{{ url_for('auth.erplist', page_num=all_data.prev_num) }}">Previous</a></li>
+                   <li class="page-item"><a class="page-link" href="{{ url_for('auth.pendinglist', page_num=all_data.prev_num) }}">Previous</a></li>
                   {% else %}
                    <li class="page-item disabled"><span class="page-link">Previous</span>
                   {% endif %}
@@ -327,14 +327,14 @@
                      
                   {% for page in all_data.iter_pages(left_edge=3, right_edge=3) %}
                   {% if page %}
-                   <li class="page-item"><a class="page-link" href="{{ url_for('auth.erplist', page_num=page) }}">{{ page }}</a></li>
+                   <li class="page-item"><a class="page-link" href="{{ url_for('auth.pendinglist', page_num=page) }}">{{ page }}</a></li>
                   {% else %}
                    <li class="page-item disabled" id="example_ellipsis"><a href="#" class="page-link">…</a></li> 
                   {% endif %}
                   {% endfor %}
                    
                   {% if all_data.has_next %}
-                   <li class="page-item"><a class="page-link" href="{{ url_for('auth.erplist', page_num=all_data.next_num) }}">Next</a></li>
+                   <li class="page-item"><a class="page-link" href="{{ url_for('auth.pendinglist', page_num=all_data.next_num) }}">Next</a></li>
                   {% else %}
                    <li class="page-item disabled"><span class="page-link">Next</span>
                   {% endif %}
