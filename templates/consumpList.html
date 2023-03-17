@@ -19,42 +19,42 @@
         <form action="/ddCon" method="POST" enctype="multipart/form-data">
           <div class="row mb-3">
               <div class="col-md-3">
-                <label for="po">PO:</label>
-                <input type="text" class="form-control" id="po" name="po" value="{{session['po']}}">
+                <label for="con_po">PO:</label>
+                <input type="text" class="form-control" id="con_po" name="con_po" value="{{session['con_po']}}">
               </div>
               <div class="col-md-3">
-                <label for="style">Style:</label>
-                <input type="text" class="form-control" id="style"  name="style" value="{{session['style']}}">
+                <label for="con_style">Style:</label>
+                <input type="text" class="form-control" id="con_style"  name="con_style" value="{{session['con_style']}}">
               </div>
               <div class="col-md-3">
-                <label for="org_buyer">Buyer:</label>
-                <input type="text" class="form-control" id="org_buyer"  name="org_buyer" value="{{session['org_buyer']}}">
+                <label for="con_org_buyer">Buyer:</label>
+                <input type="text" class="form-control" id="con_org_buyer"  name="con_org_buyer" value="{{session['con_org_buyer']}}">
               </div>
               <div class="col-md-3">
-                <label for="color">Color:</label>
-                <input type="text" class="form-control" id="color"  name="color" value="{{session['color']}}">
+                <label for="con_color">Color:</label>
+                <input type="text" class="form-control" id="con_color"  name="con_color" value="{{session['con_color']}}">
               </div>
           </div>
           <div class="row align-items-end">
             <div class="col-md-3">
-              <label for="gp_name">Group:</label>
-             <input type="text" class="form-control" id="gp_name" name="gp_name" value="{{session['gp_name']}}">
+              <label for="con_gp_name">Group:</label>
+             <input type="text" class="form-control" id="con_gp_name" name="con_gp_name" value="{{session['con_gp_name']}}">
             </div>
             <div class="col-md-3">
-              <label for="factory">Factory:</label>
-             <input type="text" class="form-control" id="factory"  name="factory" value="{{session['factory']}}">
+              <label for="con_factory">Factory:</label>
+             <input type="text" class="form-control" id="con_factory"  name="con_factory" value="{{session['con_factory']}}">
             </div>
             <div class="col-md-3">
-              <label for="des">DES:</label>
-             <input type="text" class="form-control" id="des"  name="des" value="{{session['des']}}">
+              <label for="con_des">DES:</label>
+             <input type="text" class="form-control" id="con_des"  name="con_des" value="{{session['con_des']}}">
             </div>
             <div class="col-md-3">
-              <label for="order_date">Order Date</label>
-              <input type="date" id="order_date" class="form-control" name="order_date" min="2000-01-02" value="{{session['order_date']}}">
+              <label for="con_order_date">Order Date</label>
+              <input type="date" id="order_date" class="form-control" name="con_order_date" min="2000-01-02" value="{{session['con_order_date']}}">
             </div>
             <div class="col-md-3">
-              <label for="start">Delivery Date</label>
-              <input type="date" id="ext_dely" class="form-control" name="ext_dely" min="2000-01-02" value="{{session['ext_dely']}}"> 
+              <label for="con_ext_dely">Delivery Date</label>
+              <input type="date" id="ext_dely" class="form-control" name="con_ext_dely" min="2000-01-02" value="{{session['con_ext_dely']}}"> 
             </div>
             <div class="col-md-3">
               <input type="submit" class="form-control btn btn-primary" value="Search" >

@@ -332,61 +332,61 @@ def erpUpdate():
 @login_required
 def pendinglist(page_num):
     if request.method=='POST' or request.args.get('search')=='True' :
-            if (request.args.get('po')): 
-                po = request.args.get('po')
+            if (request.args.get('pen_po')): 
+                pen_po = request.args.get('po')
             else:
-                po = request.form.get('po', '')
+                pen_po = request.form.get('pen_po', '')
 
-            if (request.args.get('style')): 
-                style = request.args.get('style')
+            if (request.args.get('pen_style')): 
+                pen_style = request.args.get('pen_style')
             else:
-                style = request.form.get('style', '')
+                pen_style = request.form.get('pen_style', '')
 
-            if (request.args.get('org_buyer')): 
-                org_buyer = request.args.get('org_buyer')
+            if (request.args.get('pen_org_buyer')): 
+                pen_org_buyer = request.args.get('pen_org_buyer')
             else:
-                org_buyer = request.form.get('org_buyer', '')
+                pen_org_buyer = request.form.get('pen_org_buyer', '')
 
-            if (request.args.get('color')): 
-                color = request.args.get('color')
+            if (request.args.get('pen_color')): 
+                pen_color = request.args.get('pen_color')
             else:
-                color = request.form.get('color', '')
+                pen_color = request.form.get('pen_color', '')
 
-            if (request.args.get('gp_name')): 
-                gp_name = request.args.get('gp_name')
+            if (request.args.get('pen_gp_name')): 
+                pen_gp_name = request.args.get('pen_gp_name')
             else:
-                gp_name = request.form.get('gp_name', '')
+                pen_gp_name = request.form.get('pen_gp_name', '')
 
-            if (request.args.get('ext_dely')): 
-                ext_dely = request.args.get('ext_dely')
+            if (request.args.get('pen_ext_dely')): 
+                pen_ext_dely = request.args.get('pen_ext_dely')
             else:
-                ext_dely = request.form.get('ext_dely', '')
+                pen_ext_dely = request.form.get('pen_ext_dely', '')
 
-            if (request.args.get('order_date')): 
-                order_date = request.args.get('order_date')
+            if (request.args.get('pen_order_date')): 
+                pen_order_date = request.args.get('pen_order_date')
             else:
-                order_date = request.form.get('order_date', '')
+                pen_order_date = request.form.get('pen_order_date', '')
 
-            if (request.args.get('order_date')): 
-                order_date = request.args.get('order_date')
+            if (request.args.get('pen_order_date')): 
+                pen_order_date = request.args.get('pen_order_date')
             else:
-                order_date = request.form.get('order_date', '') 
-            session['po'] = po
-            session['style'] = style
-            session['org_buyer'] = org_buyer
-            session['color'] = color
-            session['gp_name'] = gp_name
-            session['ext_dely'] = ext_dely
-            session['order_date'] = order_date
-            search1 = "%{}%".format(po)
-            search2 = "%{}%".format(style)
-            search3 = "%{}%".format(org_buyer)
-            search4 = "%{}%".format(color)
-            search5 = "%{}%".format(gp_name)
-            search6 = "%{}%".format(ext_dely)
-            search7 = "%{}%".format(order_date)
+                pen_order_date = request.form.get('pen_order_date', '') 
+            session['pen_po'] = pen_po
+            session['pen_style'] = pen_style
+            session['pen_org_buyer'] = pen_org_buyer
+            session['pen_color'] = pen_color
+            session['pen_gp_name'] = pen_gp_name
+            session['pen_ext_dely'] = pen_ext_dely
+            session['pen_order_date'] = pen_order_date
+            search1 = "%{}%".format(pen_po)
+            search2 = "%{}%".format(pen_style)
+            search3 = "%{}%".format(pen_org_buyer)
+            search4 = "%{}%".format(pen_color)
+            search5 = "%{}%".format(pen_gp_name)
+            search6 = "%{}%".format(pen_ext_dely)
+            search7 = "%{}%".format(pen_order_date)
             all_data = Mocdm_pending.query.filter((Mocdm_pending.po.like(search1)),(Mocdm_pending.style.like(search2)),(Mocdm_pending.org_buyer.like(search3)),(Mocdm_pending.color.like(search4)),(Mocdm_pending.gp_name.like(search5)),(Mocdm_pending.ext_dely.like(search6)),(Mocdm_pending.order_date.like(search7))).paginate(per_page=100, page=page_num, error_out=True)
-            return render_template("pending.html",po = po,style=style,org_buyer=org_buyer,color=color,gp_name=gp_name,ext_dely=ext_dely,order_date=order_date, all_data = all_data, pending_active="is_active('/pending')")       
+            return render_template("pending.html",pen_pen_po = pen_po,pen_style=pen_style,pen_org_buyer=pen_org_buyer,pen_color=pen_color,pen_gp_name=pen_gp_name,pen_ext_dely=pen_ext_dely,pen_order_date=pen_order_date, all_data = all_data, pending_active="is_active('/pending')")       
     else:
         all_data = Mocdm_pending.query.paginate(per_page=100, page=page_num, error_out=True)
         return render_template('pending.html',all_data = all_data, pending_active="is_active('/pending')")
@@ -557,70 +557,70 @@ def deletePending():
 def orderlist(page_num):
     try:
         if request.method=='POST' or request.args.get('search')=='True' :
-            if (request.args.get('po')): 
-                po = request.args.get('po')
+            if (request.args.get('or_po')): 
+                or_po = request.args.get('or_po')
             else:
-                po = request.form.get('po', '')
+                or_po = request.form.get('or_po', '')
 
-            if (request.args.get('style')): 
-                style = request.args.get('style')
+            if (request.args.get('or_style')): 
+                or_style = request.args.get('or_style')
             else:
-                style = request.form.get('style', '')
+                or_style = request.form.get('or_style', '')
 
-            if (request.args.get('org_buyer')): 
-                org_buyer = request.args.get('org_buyer')
+            if (request.args.get('or_org_buyer')): 
+                or_org_buyer = request.args.get('or_org_buyer')
             else:
-                org_buyer = request.form.get('org_buyer', '')
+                or_org_buyer = request.form.get('or_org_buyer', '')
 
-            if (request.args.get('color')): 
-                color = request.args.get('color')
+            if (request.args.get('or_color')): 
+                or_color = request.args.get('or_color')
             else:
-                color = request.form.get('color', '')
+                or_color = request.form.get('or_color', '')
 
-            if (request.args.get('gp_name')): 
-                gp_name = request.args.get('gp_name')
+            if (request.args.get('or_gp_name')): 
+                or_gp_name = request.args.get('or_gp_name')
             else:
-                gp_name = request.form.get('gp_name', '')
+                or_gp_name = request.form.get('or_gp_name', '')
 
-            if (request.args.get('ext_dely')): 
-                ext_dely = request.args.get('ext_dely')
+            if (request.args.get('or_ext_dely')): 
+                or_ext_dely = request.args.get('or_ext_dely')
             else:
-                ext_dely = request.form.get('ext_dely', '')
+                or_ext_dely = request.form.get('or_ext_dely', '')
 
-            if (request.args.get('order_date')): 
-                order_date = request.args.get('order_date')
+            if (request.args.get('or_order_date')): 
+                or_order_date = request.args.get('or_order_date')
             else:
-                order_date = request.form.get('order_date', '')
+                or_order_date = request.form.get('or_order_date', '')
 
-            if (request.args.get('factory')): 
-                factory = request.args.get('factory')
+            if (request.args.get('or_factory')): 
+                or_factory = request.args.get('or_factory')
             else:
-                factory = request.form.get('factory', '')
+                or_factory = request.form.get('or_factory', '')
 
-            if (request.args.get('label')): 
-                label = request.args.get('label')
+            if (request.args.get('or_label')): 
+                or_label = request.args.get('or_label')
             else:
-                label = request.form.get('label', '')
-            session['po'] = po
-            session['style'] = style
-            session['org_buyer'] = org_buyer
-            session['color'] = color
-            session['gp_name'] = gp_name
-            session['ext_dely'] = ext_dely
-            session['order_date'] = order_date
-            session['factory'] = factory
-            session['label'] = label
-            search1 = "%{}%".format(po)
-            search2 = "%{}%".format(style)
-            search3 = "%{}%".format(org_buyer)
-            search4 = "%{}%".format(color)
-            search5 = "%{}%".format(gp_name)
-            search6 = "%{}%".format(ext_dely)
-            search7 = "%{}%".format(order_date)
-            search8 = "%{}%".format(factory)
-            search9 = "%{}%".format(label)
+                or_label = request.form.get('or_label', '')
+            session['or_po'] = or_po
+            session['or_style'] = or_style
+            session['or_org_buyer'] = or_org_buyer
+            session['or_color'] = or_color
+            session['or_gp_name'] = or_gp_name
+            session['or_ext_dely'] = or_ext_dely
+            session['or_order_date'] = or_order_date
+            session['or_factory'] = or_factory
+            session['or_label'] = or_label
+            search1 = "%{}%".format(or_po)
+            search2 = "%{}%".format(or_style)
+            search3 = "%{}%".format(or_org_buyer)
+            search4 = "%{}%".format(or_color)
+            search5 = "%{}%".format(or_gp_name)
+            search6 = "%{}%".format(or_ext_dely)
+            search7 = "%{}%".format(or_order_date)
+            search8 = "%{}%".format(or_factory)
+            search9 = "%{}%".format(or_label)
             all_data = db.session.query(Mocdm_erp.po,Mocdm_pending.label,Mocdm_pending.des,Mocdm_pending.mcn,Mocdm_pending.previous,Mocdm_pending.ext_dely,Mocdm_pending.myanmar,Mocdm_erp.style,Mocdm_erp.buyer_version,Mocdm_erp.pending_buyer,Mocdm_erp.product_name,Mocdm_erp.main_color,Mocdm_erp.season,Mocdm_erp.vessel_date,Mocdm_erp.category,Mocdm_erp.material_classification,Mocdm_erp.material_code,Mocdm_erp.material,Mocdm_erp.material_chinese,Mocdm_erp.size,Mocdm_erp.color,Mocdm_erp.org_consume,Mocdm_erp.unit,Mocdm_erp.loss,Mocdm_erp.consume_point,Mocdm_erp.order_qty,Mocdm_erp.consume,Mocdm_erp.gp,Mocdm_pending.order_date,Mocdm_pending.factory,Mocdm_erp.status).join(Mocdm_pending,(Mocdm_pending.po == Mocdm_erp.po) & (Mocdm_pending.style == Mocdm_erp.style) & (Mocdm_pending.color == Mocdm_erp.main_color) & (Mocdm_pending.org_buyer == Mocdm_erp.pending_buyer),isouter = True).filter((Mocdm_pending.po.like(search1)),(Mocdm_pending.style.like(search2)),(Mocdm_pending.org_buyer.like(search3)),(Mocdm_pending.color.like(search4)),(Mocdm_pending.gp_name.like(search5)),(Mocdm_pending.ext_dely.like(search6)),(Mocdm_pending.order_date.like(search7)),(Mocdm_pending.factory.like(search8)),(Mocdm_pending.label.like(search9))).paginate(per_page=100, page=page_num, error_out=True)
-            return render_template("orderlist.html", po = po,style = style, org_buyer = org_buyer, color = color, gp_name = gp_name, ext_dely = ext_dely, order_date = order_date, factory= factory, label=label, all_data = all_data, orderlist_active="is_active('/orderlist')")
+            return render_template("orderlist.html", or_po = or_po,or_style = or_style, org_buyer = or_org_buyer, or_color = or_color, or_gp_name = or_gp_name, or_ext_dely = or_ext_dely, or_order_date = or_order_date, or_factory= or_factory, or_label=or_label, all_data = all_data, orderlist_active="is_active('/orderlist')")
         else:
             all_data = db.session.query(Mocdm_erp.po,Mocdm_pending.label,Mocdm_pending.des,Mocdm_pending.mcn,Mocdm_pending.previous,Mocdm_pending.ext_dely,Mocdm_pending.myanmar,Mocdm_erp.style,Mocdm_erp.buyer_version,Mocdm_erp.pending_buyer,Mocdm_erp.product_name,Mocdm_erp.main_color,Mocdm_erp.season,Mocdm_erp.vessel_date,Mocdm_erp.category,Mocdm_erp.material_classification,Mocdm_erp.material_code,Mocdm_erp.material,Mocdm_erp.material_chinese,Mocdm_erp.size,Mocdm_erp.color,Mocdm_erp.org_consume,Mocdm_erp.unit,Mocdm_erp.loss,Mocdm_erp.consume_point,Mocdm_erp.order_qty,Mocdm_erp.consume,Mocdm_erp.gp,Mocdm_pending.order_date,Mocdm_pending.factory,Mocdm_erp.status).join(Mocdm_pending,(Mocdm_pending.po == Mocdm_erp.po) & (Mocdm_pending.style == Mocdm_erp.style) & (Mocdm_pending.color == Mocdm_erp.main_color) & (Mocdm_pending.org_buyer == Mocdm_erp.pending_buyer),isouter = True).paginate(per_page=100, page=page_num, error_out=True) 
             return render_template('orderlist.html', all_data = all_data, orderlist_active="is_active('/orderlist')")
@@ -893,6 +893,7 @@ def schedulelist(page_num):
                                index_range = 0,
                                dates = [],
                                occurrence = 0,
+                               search_factory = search_factory,
                                schedule_active="is_active('/schedule')")
 
         # Get start and end date from db
@@ -1003,69 +1004,69 @@ def ddCon(page_num):
     logging.error('reach ddcon')
     if request.method=='POST' or request.args.get('search')=='True' :
         logging.error('reach post')
-        if (request.args.get('po')): 
-            po = request.args.get('po')
+        if (request.args.get('con_po')): 
+            con_po = request.args.get('con_po')
         else:
-            po = request.form.get('po', '')
-        if (request.args.get('style')): 
-            style = request.args.get('style')
+            con_po = request.form.get('con_po', '')
+        if (request.args.get('con_style')): 
+            con_style = request.args.get('con_style')
         else:
-            style = request.form.get('style', '')
+            con_style = request.form.get('con_style', '')
 
-        if (request.args.get('org_buyer')): 
-            org_buyer = request.args.get('org_buyer')
+        if (request.args.get('con_org_buyer')): 
+            con_org_buyer = request.args.get('con_org_buyer')
         else:
-            org_buyer = request.form.get('org_buyer', '')
+            con_org_buyer = request.form.get('con_org_buyer', '')
 
-        if (request.args.get('color')): 
-            color = request.args.get('color')
+        if (request.args.get('con_color')): 
+            con_color = request.args.get('con_color')
         else:
-            color = request.form.get('color', '')
+            con_color = request.form.get('con_color', '')
 
-        if (request.args.get('gp_name')): 
-            gp_name = request.args.get('gp_name')
+        if (request.args.get('con_gp_name')): 
+            con_gp_name = request.args.get('con_gp_name')
         else:
-            gp_name = request.form.get('gp_name', '')
+            con_gp_name = request.form.get('con_gp_name', '')
 
-        if (request.args.get('ext_dely')): 
-            ext_dely = request.args.get('ext_dely')
+        if (request.args.get('con_ext_dely')): 
+            con_ext_dely = request.args.get('con_ext_dely')
         else:
-            ext_dely = request.form.get('ext_dely', '')
+            con_ext_dely = request.form.get('con_ext_dely', '')
 
-        if (request.args.get('order_date')): 
-            order_date = request.args.get('order_date')
+        if (request.args.get('con_order_date')): 
+            con_order_date = request.args.get('con_order_date')
         else:
-            order_date = request.form.get('order_date', '')
+            con_order_date = request.form.get('con_order_date', '')
 
-        if (request.args.get('factory')): 
-            factory = request.args.get('factory')
+        if (request.args.get('con_factory')): 
+            con_factory = request.args.get('con_factory')
         else:
-            factory = request.form.get('factory', '')
+            con_factory = request.form.get('con_factory', '')
 
-        if (request.args.get('des')): 
-            des = request.args.get('des')
+        if (request.args.get('con_des')): 
+            con_des = request.args.get('con_des')
         else:
-            des = request.form.get('des', '')
-        session['po'] = po
-        session['style'] = style
-        session['org_buyer'] = org_buyer
-        session['color'] = color
-        session['gp_name'] = gp_name
-        session['ext_dely'] = ext_dely
-        session['order_date'] = order_date
-        session['factory'] = factory
-        session['des'] = des
-        search1 = "%{}%".format(po)
-        search2 = "%{}%".format(style)
-        search3 = "%{}%".format(org_buyer)
-        search4 = "%{}%".format(color)
-        search5 = "%{}%".format(gp_name)
-        search6 = "%{}%".format(ext_dely)
-        search7 = "%{}%".format(order_date)
-        search8 = "%{}%".format(factory)
-        search9 = "%{}%".format(des)
+            con_des = request.form.get('con_des', '')
+        session['con_po'] = con_po
+        session['con_style'] = con_style
+        session['con_org_buyer'] = con_org_buyer
+        session['con_color'] = con_color
+        session['con_gp_name'] = con_gp_name
+        session['con_ext_dely'] = con_ext_dely
+        session['con_order_date'] = con_order_date
+        session['con_factory'] = con_factory
+        session['con_des'] = con_des
+        search1 = "%{}%".format(con_po)
+        search2 = "%{}%".format(con_style)
+        search3 = "%{}%".format(con_org_buyer)
+        search4 = "%{}%".format(con_color)
+        search5 = "%{}%".format(con_gp_name)
+        search6 = "%{}%".format(con_ext_dely)
+        search7 = "%{}%".format(con_order_date)
+        search8 = "%{}%".format(con_factory)
+        search9 = "%{}%".format(con_des)
         all_data = db.session.query(Mocdm_pending.factory, Mocdm_pending.gp_name, Mocdm_pending.qty,Mocdm_pending.ext_dely, Mocdm_pending.style, Mocdm_pending.org_buyer).filter((Mocdm_pending.po.like(search1)),(Mocdm_pending.style.like(search2)),(Mocdm_pending.org_buyer.like(search3)),(Mocdm_pending.color.like(search4)),(Mocdm_pending.gp_name.like(search5)),(Mocdm_pending.ext_dely.like(search6)),(Mocdm_pending.order_date.like(search7)),(Mocdm_pending.factory.like(search8)),(Mocdm_pending.des.like(search9))).group_by(Mocdm_pending.factory, Mocdm_pending.gp_name, Mocdm_pending.qty,Mocdm_pending.ext_dely, Mocdm_pending.style, Mocdm_pending.org_buyer).paginate(per_page=100, page=page_num, error_out=True)
-        return render_template("consumpList.html", po=po,style=style,org_buyer=org_buyer,color=color,order_date=order_date,des=des,gp_name=gp_name,ext_dely=ext_dely,factory=factory,all_data=all_data, consump_active="is_active('/consump')")
+        return render_template("consumpList.html", con_po=con_po,con_style=con_style,con_org_buyer=con_org_buyer,con_color=con_color,con_order_date=con_order_date,con_des=con_des,con_gp_name=con_gp_name,con_ext_dely=con_ext_dely,con_factory=con_factory,all_data=all_data, dd_active="is_active('/dd')")
     else:
         logging.error('reach not post')
         logging.error(request.method)
