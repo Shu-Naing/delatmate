@@ -905,21 +905,22 @@ def schedulelist(page_num):
         # Mocdm_schedule.query.paginate(per_page=100, page=page_num, error_out=True)
         all_data = [item.__dict__ for item in all_data]
 
-        # Find all occurrences
-        occurrence = collections.Counter()
-        for items in all_data:
-            occurrence[items["data_date"]] +=1
-        occurrence_count = occurrence.most_common(1)[0][1]
+        # # Find all occurrences
+        # occurrence = collections.Counter()
+        # for items in all_data:
+        #     occurrence[items["data_date"]] +=1
+        # occurrence_count = occurrence.most_common(1)[0][1]
+        line_list = [i['line'] for i in all_data]
 
         result = []
-        for row in range(occurrence_count):
+        for row in range(len(line_list)):
             splice_by_row = []
             column_range = [dict(days = days) for days in get_all_date]
 
             # Get data by each row
             for date_index in range(len(column_range)):
                 for column in all_data:
-                    if column["data_date"] == date_range[date_index]["days"].date():
+                    if column["data_date"] == date_range[date_index]["days"].date() and column['line'] == line_list[row]:
                         splice_by_row.append({
                             "idx": date_index,
                             "data": column
@@ -947,7 +948,8 @@ def schedulelist(page_num):
                                today = datetime.now().strftime("%m/%d/%Y"),
                                index_range = len(date_range),
                                dates = date_range,
-                               occurrence = occurrence_count,
+                               line_list = line_list,
+                               occurrence = len(line_list),
                                search_factory = search_factory,
                                schedule_active="is_active('/schedule')")
 

@@ -55,13 +55,14 @@
                   <tbody>
                     {% for row in range(occurrence) %}
                     <tr>
-                      <td>Dely<br>Q'Ty<br>{{row+1}}<br>Target<br>Balance<br>Zip_Thread<br>Total<br>Factory</td>
+                      <td>Dely<br>Q'Ty<br>{{line_list[row]}}<br>Target<br>Balance<br>Zip_Thread<br>Total<br>Factory</td>
                       {% for column in range(index_range) %}
-                      {% if  all_data[row]["list_of_placement"][column]["existed"]%}
+                      {% if all_data[row]["list_of_placement"][column]["existed"]%}
                           <td>
                             {{
                               all_data[row]['data'][all_data[row]["list_of_placement"][column]['data_idx']]["data"].dely}}<br>
-                              <a href="/consumptionreport?style={{all_data[row]['data'][all_data[row]['list_of_placement'][column]['data_idx']]['data'].style}}&dely_date={{all_data[row]['data'][all_data[row]['list_of_placement'][column]['data_idx']]['data'].dely}}&group_name={{all_data[row]['data'][all_data[row]['list_of_placement'][column]['data_idx']]['data'].group}}&qty_no={{all_data[row]['data'][all_data[row]['list_of_placement'][column]['data_idx']]['data'].qty}}&buyer={{all_data[row]['data'][all_data[row]['list_of_placement'][column]['data_idx']]['data'].buyer}}">{{all_data[row]['data'][all_data[row]["list_of_placement"][column]['data_idx']]["data"].qty}}</a><br> <br>
+                              <a href="/consumptionreport?style={{all_data[row]['data'][all_data[row]['list_of_placement'][column]['data_idx']]['data'].style}}&dely_date={{all_data[row]['data'][all_data[row]['list_of_placement'][column]['data_idx']]['data'].dely}}&group_name={{all_data[row]['data'][all_data[row]['list_of_placement'][column]['data_idx']]['data'].group}}&qty_no={{all_data[row]['data'][all_data[row]['list_of_placement'][column]['data_idx']]['data'].qty}}&buyer={{all_data[row]['data'][all_data[row]['list_of_placement'][column]['data_idx']]['data'].buyer}}">{{all_data[row]['data'][all_data[row]["list_of_placement"][column]['data_idx']]["data"].qty}}</a><br> 
+                              {{all_data[row]['data'][all_data[row]["list_of_placement"][column]['data_idx']]["data"].line}}<br>
                               {{all_data[row]['data'][all_data[row]["list_of_placement"][column]['data_idx']]["data"].target}}<br>
                               {{all_data[row]['data'][all_data[row]["list_of_placement"][column]['data_idx']]["data"].balance}}<br>
                               {{all_data[row]['data'][all_data[row]["list_of_placement"][column]['data_idx']]["data"].zip_thread}}<br>
