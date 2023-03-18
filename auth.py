@@ -729,9 +729,11 @@ def consumptionreport(page_num):
         group_name = request.args.get('group_name')
         qty_no = request.args.get('qty_no')
         dely_date = request.args.get('dely_date')
+        date_object = datetime.strptime(dely_date, "%Y-%m-%d").date()
+        new_date_string = date_object.strftime("%m/%d/%Y")
         buyer = request.args.get('buyer')
-        all_data = db.session.query(Mocdm_erp.id.label("erpid"),Mocdm_consumption.id,Mocdm_erp.category,Mocdm_erp.material,Mocdm_erp.color,Mocdm_erp.unit,Mocdm_erp.consume,Mocdm_erp.order_qty,Mocdm_consumption.issued_qty,Mocdm_consumption.balance,Mocdm_consumption.date,Mocdm_consumption.issued_by_leader,Mocdm_consumption.factory_line,Mocdm_consumption.reciever,Mocdm_consumption.remark).join(Mocdm_pending,(Mocdm_pending.po == Mocdm_erp.po) & (Mocdm_pending.color == Mocdm_erp.main_color) & (Mocdm_pending.style == Mocdm_erp.style) & (Mocdm_pending.org_buyer == Mocdm_erp.pending_buyer),isouter = True).join(Mocdm_consumption,(Mocdm_consumption.erp_id == Mocdm_erp.id),isouter = True).filter(Mocdm_pending.factory == factory,Mocdm_pending.gp_name == group_name,Mocdm_pending.style == style,Mocdm_pending.qty == qty_no,Mocdm_pending.ext_dely == dely_date).paginate(per_page=100, page=page_num, error_out=True)
-        return render_template('consumptionreport.html',all_data = all_data,factory=factory, style=style, group_name=group_name, qty_no=qty_no, dely_date=dely_date, buyer=buyer)
+        all_data = db.session.query(Mocdm_erp.id.label("erpid"),Mocdm_consumption.id,Mocdm_erp.category,Mocdm_erp.material,Mocdm_erp.color,Mocdm_erp.unit,Mocdm_erp.consume,Mocdm_erp.order_qty,Mocdm_consumption.issued_qty,Mocdm_consumption.balance,Mocdm_consumption.date,Mocdm_consumption.issued_by_leader,Mocdm_consumption.factory_line,Mocdm_consumption.reciever,Mocdm_consumption.remark,Mocdm_pending.qty).join(Mocdm_pending,(Mocdm_pending.po == Mocdm_erp.po) & (Mocdm_pending.color == Mocdm_erp.main_color) & (Mocdm_pending.style == Mocdm_erp.style) & (Mocdm_pending.org_buyer == Mocdm_erp.pending_buyer),isouter = True).join(Mocdm_consumption,(Mocdm_consumption.erp_id == Mocdm_erp.id),isouter = True).filter(Mocdm_pending.factory == factory,Mocdm_pending.gp_name == group_name,Mocdm_pending.style == style,Mocdm_pending.qty == qty_no,Mocdm_pending.ext_dely == dely_date).paginate(per_page=100, page=page_num, error_out=True)
+        return render_template('consumptionreport.html',all_data = all_data,factory=factory, style=style, group_name=group_name, qty_no=qty_no, dely_date=new_date_string, buyer=buyer)
 
 
 @auth.route('/searchcreport', methods=['GET','POST'])
@@ -787,72 +789,38 @@ def consumptionreportUpdate():
 
 @auth.route('/download/consumptionreport', methods=['GET', 'POST'])
 def download_consumptionreportreport():
-    try:
-        style = request.args.get('style')
-        group_name = request.args.get('group_name')
-        qty_no = request.args.get('qty_no')
-        dely_date = request.args.get('dely_date')
-        buyer = request.args.get('buyer')
-        all_data = db.session.query(Mocdm_erp.category,Mocdm_erp.material,Mocdm_erp.color,Mocdm_erp.unit,Mocdm_erp.consume,Mocdm_erp.order_qty,Mocdm_consumption.issued_qty,Mocdm_consumption.balance,Mocdm_consumption.date,Mocdm_consumption.issued_by_leader,Mocdm_consumption.factory_line,Mocdm_consumption.reciever,Mocdm_consumption.remark).join(Mocdm_pending,(Mocdm_pending.po == Mocdm_erp.po) & (Mocdm_pending.color == Mocdm_erp.main_color) & (Mocdm_pending.style == Mocdm_erp.style) & (Mocdm_pending.org_buyer == Mocdm_erp.pending_buyer),isouter = True).join(Mocdm_consumption,(Mocdm_consumption.erp_id == Mocdm_erp.id),isouter = True).filter(Mocdm_pending.gp_name == group_name,Mocdm_pending.style == style,Mocdm_pending.qty == qty_no,Mocdm_pending.ext_dely == dely_date).all()       
-        wb = Workbook()
-        ws = wb.active
-        ws.merge_cells('J1:M1')
-        
-        ws['J1'] = 'Manager'
-        ws['J2'] = ''
-        ws['J1'].alignment = Alignment(horizontal='center', vertical='center')
-        ws.append(['Style','Group Name','Qty','Dely Date','Buyer'])
-        ws.append([style,group_name,qty_no,dely_date,buyer])
-        ws.append(['CATEGORY','MATERIAL','COLOUR','UNIT','CONSUME','ORDER QTY','ISSUED QTY','BALANCE','DATE','ISSUED BY (Leader)','Factory line','RECEIVER','REMARK','SIGN'])
-        for item in all_data:
-            ws.append([item.category,item.material,item.color,item.unit,item.consume,item.order_qty,item.issued_qty,item.balance,item.date,item.issued_by_leader,item.factory_line,item.reciever,item.remark])
-        file = BytesIO()
-        wb.save(file)
-        file.seek(0)
-        filename = 'consumptionsreport.xlsx'
-        r = Response(
-            file.read(),
-            headers={
-                'Content-Disposition': f'attachment;filename={filename}',
-                'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-            }
-        )
-        return r
-        
-        # output = io.BytesIO()
-        # # workbook = openpyxl.Workbook()
-        # wb = Workbook()
-        # worksheet = wb.active
-        # worksheet.title = 'Example'
-        # worksheet.cell(row=1, column=1, value=((['CATEGORY','MATERIAL','COLOUR','UNIT','CONSUME','ORDER QTY','ISSUED QTY','BALANCE','DATE','ISSUED BY (Leader)','Factory line','RECEIVER','REMARK'])))
-        # worksheet.cell(row=1, column=2, value=(['CATEGORY','MATERIAL','COLOUR','UNIT','CONSUME','ORDER QTY','ISSUED QTY','BALANCE','DATE','ISSUED BY (Leader)','Factory line','RECEIVER','REMARK']))
-        # for i, example in enumerate(all_data, start=2):
-        #     worksheet.cell(row=i, column=1, value=[example.category,example.material,example.color,example.unit,example.consume,example.order_qty,example.issued_qty,example.balance,example.date,example.issued_by_leader,example.factory_line,example.reciever,example.remark])
-        #     # worksheet.cell(row=i, column=2, value=example.column2)
-        # workbook.save(output)
-        # output.seek(0)
-        # response = make_response(output.getvalue())
-        # response.headers['Content-Type'] = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-        # response.headers['Content-Disposition'] = 'attachment; filename=example.xlsx'
-        # return response
-
-
-        # df = pd.DataFrame((tuple(t) for t in all_data), columns=('CATEGORY','MATERIAL','COLOUR','UNIT','CONSUME','ORDER QTY','ISSUED QTY','BALANCE','DATE','ISSUED BY (Leader)','Factory line','RECEIVER','REMARK'))
-        # out = io.BytesIO()
-        # writer = pd.ExcelWriter(out, engine='openpyxl')
-        # df.to_excel(excel_writer=writer, index=False, sheet_name='Sheet1')
-        # writer.save()
-        # writer.close()
-        # r = make_response(out.getvalue())
-        # r.headers["Content-Disposition"] = "attachment; filename=consumptionreport.xlsx"
-        # r.headers["Content-type"] = "application/x-xls"
-
-        # return r 
-    except SQLAlchemyError as e:
-        current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-        logging.basicConfig(filename= f'error_log.log', level=logging.ERROR)
-        logging.error(str(e))
-    return redirect(url_for('auth.profile'))
+    factory = request.args.get('factory')
+    style = request.args.get('style')
+    group_name = request.args.get('group_name')
+    qty_no = request.args.get('qty_no')
+    dely_date = request.args.get('dely_date')
+    date_object = datetime.strptime(dely_date, "%m/%d/%Y").date()
+    new_date_string = date_object.strftime("%Y-%m-%d")
+    buyer = request.args.get('buyer')
+    all_data = db.session.query(Mocdm_erp.id.label("erpid"),Mocdm_consumption.id,Mocdm_erp.category,Mocdm_erp.material,Mocdm_erp.color,Mocdm_erp.unit,Mocdm_erp.consume,Mocdm_erp.order_qty,Mocdm_consumption.issued_qty,Mocdm_consumption.balance,Mocdm_consumption.date,Mocdm_consumption.issued_by_leader,Mocdm_consumption.factory_line,Mocdm_consumption.reciever,Mocdm_consumption.remark,Mocdm_pending.qty).join(Mocdm_pending,(Mocdm_pending.po == Mocdm_erp.po) & (Mocdm_pending.color == Mocdm_erp.main_color) & (Mocdm_pending.style == Mocdm_erp.style) & (Mocdm_pending.org_buyer == Mocdm_erp.pending_buyer),isouter = True).join(Mocdm_consumption,(Mocdm_consumption.erp_id == Mocdm_erp.id),isouter = True).filter(Mocdm_pending.factory == factory,Mocdm_pending.gp_name == group_name,Mocdm_pending.qty == qty_no,Mocdm_pending.ext_dely == new_date_string,Mocdm_pending.style == style,Mocdm_pending.org_buyer == buyer).all()       
+    wb = Workbook()
+    ws = wb.active
+    ws.merge_cells('J1:M1')
+    ws['J1'] = 'Manager'
+    ws['J2'] = ''
+    ws['J1'].alignment = Alignment(horizontal='center', vertical='center')
+    ws.append(['Factory','Group Name','Qty','Dely Date','Style','Buyer'])
+    ws.append([factory,group_name,qty_no,dely_date,style,buyer])
+    ws.append(['CATEGORY','MATERIAL','COLOUR','QTY','CONSUME','TOTAL QTY','ISSUED QTY','BALANCE','DATE','ISSUED BY (Leader)','Factory line','RECEIVER','REMARK','SIGN'])
+    for item in all_data:
+        ws.append([item.category,item.material,item.color,item.qty,item.consume,item.order_qty,item.issued_qty,item.balance,item.date,item.issued_by_leader,item.factory_line,item.reciever,item.remark])
+    file = BytesIO()
+    wb.save(file)
+    file.seek(0)
+    filename = 'consumptionsreport.xlsx'
+    r = Response(
+        file.read(),
+        headers={
+            'Content-Disposition': f'attachment;filename={filename}',
+            'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        }
+    )
+    return r
 
 @auth.route("/scheduleUpload", methods=['POST'])
 @login_required
@@ -1199,7 +1167,7 @@ def consumption_list_report(page_num):
             new_date_string = date_object.strftime("%m/%d/%Y")
             style = request.args.get('style')
             org_buyer = request.args.get('org_buyer')
-            all_data = db.session.query(Mocdm_erp.id.label("erpid"),Mocdm_consumption.id,Mocdm_erp.category,Mocdm_erp.material,Mocdm_erp.color,Mocdm_erp.unit,Mocdm_erp.consume,Mocdm_erp.order_qty,Mocdm_consumption.issued_qty,Mocdm_consumption.balance,Mocdm_consumption.date,Mocdm_consumption.issued_by_leader,Mocdm_consumption.factory_line,Mocdm_consumption.reciever,Mocdm_consumption.remark,Mocdm_pending.qty).join(Mocdm_pending,(Mocdm_pending.po == Mocdm_erp.po) & (Mocdm_pending.color == Mocdm_erp.main_color) & (Mocdm_pending.style == Mocdm_erp.style) & (Mocdm_pending.org_buyer == Mocdm_erp.pending_buyer),isouter = True).join(Mocdm_consumption,(Mocdm_consumption.erp_id == Mocdm_erp.id),isouter = True).filter(Mocdm_pending.factory == factory,Mocdm_pending.gp_name == gp_name,Mocdm_pending.qty == qty,Mocdm_pending.ext_dely == ext_dely,Mocdm_pending.style == style,Mocdm_pending.org_buyer == org_buyer).paginate(per_page=100, page=page_num, error_out=True)
+            all_data = db.session.query(Mocdm_erp.id.label("erpid"),Mocdm_consumption.id,Mocdm_erp.category,Mocdm_erp.material,Mocdm_erp.color,Mocdm_erp.consume,Mocdm_erp.order_qty,Mocdm_consumption.issued_qty,Mocdm_consumption.balance,Mocdm_consumption.date,Mocdm_consumption.issued_by_leader,Mocdm_consumption.factory_line,Mocdm_consumption.reciever,Mocdm_consumption.remark,Mocdm_pending.qty).join(Mocdm_pending,(Mocdm_pending.po == Mocdm_erp.po) & (Mocdm_pending.color == Mocdm_erp.main_color) & (Mocdm_pending.style == Mocdm_erp.style) & (Mocdm_pending.org_buyer == Mocdm_erp.pending_buyer),isouter = True).join(Mocdm_consumption,(Mocdm_consumption.erp_id == Mocdm_erp.id),isouter = True).filter(Mocdm_pending.factory == factory,Mocdm_pending.gp_name == gp_name,Mocdm_pending.qty == qty,Mocdm_pending.ext_dely == ext_dely,Mocdm_pending.style == style,Mocdm_pending.org_buyer == org_buyer).paginate(per_page=100, page=page_num, error_out=True)
             return render_template('consumptionlistreport.html',factory=factory, gp_name=gp_name, qty=qty, ext_dely=new_date_string, style=style, org_buyer=org_buyer, all_data = all_data)
     except SQLAlchemyError as e:
         current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
@@ -1225,10 +1193,10 @@ def download_consumptionlistreportreport():
         ws['J2'] = ''
         ws['J1'].alignment = Alignment(horizontal='center', vertical='center')
         ws.append(['Factory','Group','Qty','Dely','STYLE','BUYER'])
-        ws.append([factory,gp_name,qty,ext_dely,org_buyer])
+        ws.append([factory,gp_name,qty,ext_dely,style,org_buyer])
         ws.append(['CATEGORY','MATERIAL','COLOUR','CONSUME','QTY','TOTAL QTY','ISSUED QTY','BALANCE','DATE','ISSUED BY (Leader)','Factory line','RECEIVER','REMARK','SIGN'])
         for item in all_data:
-            ws.append([item.category,item.material,item.color,item.qty,item.consume,item.order_qty,item.issued_qty,item.balance,item.date,item.issued_by_leader,item.factory_line,item.reciever,item.remark])
+            ws.append([item.category,item.material,item.color,item.consume,item.qty,item.order_qty,item.issued_qty,item.balance,item.date,item.issued_by_leader,item.factory_line,item.reciever,item.remark])
         file = BytesIO()
         wb.save(file)
         file.seek(0)
