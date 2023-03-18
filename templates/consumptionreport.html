@@ -86,10 +86,13 @@
                         <td>{{row.qty}}</td>
                         <td>{{row.consume_point}}</td>
                         <td>{{row.consume}}</td>
-                        <td>{{row.order_qty}}</td>
                         <td>{{row.issued_qty}}</td>
                         <td>{{row.balance}}</td>
+                        {% if row.date %}
+                        <td>{{row.date.strftime('%m/%d/%Y')}}</td>
+                        {% else %}
                         <td>{{row.date}}</td>
+                        {% endif %}
                         <td>{{row.issued_by_leader}}</td>
                         <td>{{row.factory_line}}</td>
                         <td>{{row.reciever}}</td>

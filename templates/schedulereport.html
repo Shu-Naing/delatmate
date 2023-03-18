@@ -56,7 +56,7 @@
                   <tbody>
                     {% for row in range(occurrence) %}
                     <tr>
-                      <td>Dely<br>Q'Ty<br><br><h3 style="padding: 3px;">{{line_list[row]}}</h3><br>Target<br>Balance<br>Zip&Thread<br><br></td>
+                      <td>Dely<br>Q'Ty<br><br><h3 style="padding: 3px;">{{line_list[row]}}</h3><br><br>Target<br><br>Balance<br><br>Zip&Thread<br><br></td>
                       {% for column in range(index_range) %}
                       {% if all_data[row]["list_of_placement"][column]["existed"]%}
                           <td>
@@ -66,11 +66,11 @@
                               <br>
                               {{all_data[row]['data'][all_data[row]["list_of_placement"][column]['data_idx']]["data"].gp}}<br>
                               {{all_data[row]['data'][all_data[row]["list_of_placement"][column]['data_idx']]["data"].style}}<br>
-                              {{all_data[row]['data'][all_data[row]["list_of_placement"][column]['data_idx']]["data"].buyer}}<br>
-                              {{all_data[row]['data'][all_data[row]["list_of_placement"][column]['data_idx']]["data"].target}}<br>
-                              {{all_data[row]['data'][all_data[row]["list_of_placement"][column]['data_idx']]["data"].balance}}<br>
-                              {{all_data[row]['data'][all_data[row]["list_of_placement"][column]['data_idx']]["data"].zip_thread}}<br>
-                              {{all_data[row]['data'][all_data[row]["list_of_placement"][column]['data_idx']]["data"].total}}<br>
+                              {{all_data[row]['data'][all_data[row]["list_of_placement"][column]['data_idx']]["data"].buyer}}<br><br>
+                              <p style="border: 1px solid; min-width: 100px; padding: 3px;">{{all_data[row]['data'][all_data[row]["list_of_placement"][column]['data_idx']]["data"].target}}<br></p>
+                              <p style="border: 1px solid; min-width: 100px;">{{all_data[row]['data'][all_data[row]["list_of_placement"][column]['data_idx']]["data"].balance}}<br></p>
+                              <p style="border: 1px solid; min-width: 100px;">{{all_data[row]['data'][all_data[row]["list_of_placement"][column]['data_idx']]["data"].zip_thread}}</p>
+                              <p style="border: 1px solid; min-width: 100px;">{{all_data[row]['data'][all_data[row]["list_of_placement"][column]['data_idx']]["data"].total}}<br></p>
                               <!-- {{all_data[row]['data'][all_data[row]["list_of_placement"][column]['data_idx']]["data"].factory}}<br> -->
                               {% if all_data[row]['data'][all_data[row]["list_of_placement"][column]['data_idx']]["data"].image_path %}
                               <img src="/{{all_data[row]['data'][all_data[row]['list_of_placement'][column]['data_idx']]['data'].image_path}}" alt="" srcset="" width="150px" height="auto">
