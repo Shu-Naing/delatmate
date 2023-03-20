@@ -79,6 +79,7 @@
                         <th>EXT-DELY</th>
                         <th>STYLE</th>
                         <th>BUYER</th>
+                        <th>DES</th>
                         <th>Details</th>
                       </tr>
                     </thead>
@@ -95,8 +96,9 @@
                         {% endif %}
                         <td>{{row.style}}</td>
                         <td>{{row.org_buyer}}</td>
+                        <td>{{row.des}}</td>
                         <td>
-                          <a type="submit" href="/consumption_list_report?factory={{row.factory}}&gp_name={{row.gp_name}}&qty={{row.qty}}&ext_dely={{row.ext_dely}}&style={{row.style}}&org_buyer={{row.org_buyer}}">View Detail</a>
+                          <a type="submit" href="/consumption_list_report?factory={{row.factory}}&gp_name={{row.gp_name}}&des={{row.des}}&qty={{row.qty}}&ext_dely={{row.ext_dely}}&style={{row.style}}&org_buyer={{row.org_buyer}}">View Detail</a>
                         </td>
                     {% endfor %}
                     </tbody>

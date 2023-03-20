@@ -106,6 +106,7 @@ class Mocdm_schedule(UserMixin, db.Model):
     style = db.Column(db.String(255))
     version = db.Column(db.String(255))
     factory = db.Column(db.String(255))
+    des = db.Column(db.String(255))
     total = db.Column(db.String(255))
     data_date = db.Column(db.Date)
     image_path = db.Column(db.String(255))
