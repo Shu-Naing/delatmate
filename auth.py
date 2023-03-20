@@ -725,16 +725,16 @@ def download_order():
 def consumptionreport(page_num):
     if request.method=='GET':
         factory = request.args.get('factory')
-        style = request.args.get('style')
-        group_name = request.args.get('group_name')
-        qty_no = request.args.get('qty_no')
+        gp_name = request.args.get('gp_name')
         des = request.args.get('des')
-        dely_date = request.args.get('dely_date')
-        date_object = datetime.strptime(dely_date, "%Y-%m-%d").date()
+        qty = request.args.get('qty')
+        ext_dely = request.args.get('ext_dely')
+        date_object = datetime.strptime(ext_dely, "%Y-%m-%d").date()
         new_date_string = date_object.strftime("%m/%d/%Y")
-        buyer = request.args.get('buyer')
-        all_data = db.session.query(Mocdm_erp.id.label("erpid"),Mocdm_consumption.id,Mocdm_erp.category,Mocdm_erp.material,Mocdm_erp.color,Mocdm_erp.consume_point,Mocdm_erp.consume,Mocdm_erp.order_qty,Mocdm_consumption.issued_qty,Mocdm_consumption.balance,Mocdm_consumption.date,Mocdm_consumption.issued_by_leader,Mocdm_consumption.factory_line,Mocdm_consumption.reciever,Mocdm_consumption.remark,Mocdm_pending.qty).join(Mocdm_pending,(Mocdm_pending.po == Mocdm_erp.po) & (Mocdm_pending.color == Mocdm_erp.main_color) & (Mocdm_pending.style == Mocdm_erp.style) & (Mocdm_pending.org_buyer == Mocdm_erp.pending_buyer),isouter = True).join(Mocdm_consumption,(Mocdm_consumption.erp_id == Mocdm_erp.id),isouter = True).filter(Mocdm_pending.des == des,Mocdm_pending.factory == factory,Mocdm_pending.gp_name == group_name,Mocdm_pending.style == style,Mocdm_pending.ext_dely == dely_date).paginate(per_page=100, page=page_num, error_out=True)
-        return render_template('consumptionreport.html',all_data = all_data,factory=factory, des=des,style=style, group_name=group_name, qty_no=qty_no, dely_date=new_date_string, buyer=buyer)
+        style = request.args.get('style')
+        org_buyer = request.args.get('org_buyer')
+        all_data = db.session.query(Mocdm_erp.id.label("erpid"),Mocdm_consumption.id,Mocdm_erp.category,Mocdm_erp.material,Mocdm_erp.color,Mocdm_erp.consume_point,Mocdm_erp.consume,Mocdm_consumption.issued_qty,Mocdm_consumption.balance,Mocdm_consumption.date,Mocdm_consumption.issued_by_leader,Mocdm_consumption.factory_line,Mocdm_consumption.reciever,Mocdm_consumption.remark,Mocdm_pending.qty).join(Mocdm_pending,(Mocdm_pending.po == Mocdm_erp.po) & (Mocdm_pending.color == Mocdm_erp.main_color) & (Mocdm_pending.style == Mocdm_erp.style) & (Mocdm_pending.org_buyer == Mocdm_erp.pending_buyer),isouter = True).join(Mocdm_consumption,(Mocdm_consumption.erp_id == Mocdm_erp.id),isouter = True).filter(Mocdm_pending.factory == factory,Mocdm_pending.gp_name == gp_name,Mocdm_pending.des == des,Mocdm_pending.ext_dely == ext_dely,Mocdm_pending.style == style,Mocdm_pending.org_buyer == org_buyer).paginate(per_page=100, page=page_num, error_out=True)
+        return render_template('consumptionlistreport.html',factory=factory, gp_name=gp_name, qty=qty, des=des, ext_dely=new_date_string,ext_delys=ext_dely, style=style, org_buyer=org_buyer, all_data = all_data)
 
 
 @auth.route('/searchcreport', methods=['GET','POST'])
@@ -791,14 +791,14 @@ def consumptionreportUpdate():
 @auth.route('/download/consumptionreport', methods=['GET', 'POST'])
 def download_consumptionreportreport():
     factory = request.args.get('factory')
-    style = request.args.get('style')
-    group_name = request.args.get('group_name')
-    qty_no = request.args.get('qty_no')
-    dely_date = request.args.get('dely_date')
-    date_object = datetime.strptime(dely_date, "%m/%d/%Y").date()
+    gp_name = request.args.get('gp_name')
+    qty = request.args.get('qty')
+    ext_dely = request.args.get('ext_dely')
+    date_object = datetime.strptime(ext_dely, "%m/%d/%Y").date()
     new_date_string = date_object.strftime("%Y-%m-%d")
-    buyer = request.args.get('buyer')
-    all_data = db.session.query(Mocdm_erp.id.label("erpid"),Mocdm_consumption.id,Mocdm_erp.category,Mocdm_erp.material,Mocdm_erp.color,Mocdm_erp.consume_point,Mocdm_erp.consume,Mocdm_erp.order_qty,Mocdm_consumption.issued_qty,Mocdm_consumption.balance,Mocdm_consumption.date,Mocdm_consumption.issued_by_leader,Mocdm_consumption.factory_line,Mocdm_consumption.reciever,Mocdm_consumption.remark,Mocdm_pending.qty).join(Mocdm_pending,(Mocdm_pending.po == Mocdm_erp.po) & (Mocdm_pending.color == Mocdm_erp.main_color) & (Mocdm_pending.style == Mocdm_erp.style) & (Mocdm_pending.org_buyer == Mocdm_erp.pending_buyer),isouter = True).join(Mocdm_consumption,(Mocdm_consumption.erp_id == Mocdm_erp.id),isouter = True).filter(Mocdm_pending.factory == factory,Mocdm_pending.gp_name == group_name,Mocdm_pending.qty == qty_no,Mocdm_pending.ext_dely == new_date_string,Mocdm_pending.style == style,Mocdm_pending.org_buyer == buyer).all()       
+    style = request.args.get('style')
+    org_buyer = request.args.get('org_buyer')
+    all_data = db.session.query(Mocdm_erp.id.label("erpid"),Mocdm_consumption.id,Mocdm_erp.category,Mocdm_erp.material,Mocdm_erp.color,Mocdm_erp.consume_point,Mocdm_erp.consume,Mocdm_erp.order_qty,Mocdm_consumption.issued_qty,Mocdm_consumption.balance,Mocdm_consumption.date,Mocdm_consumption.issued_by_leader,Mocdm_consumption.factory_line,Mocdm_consumption.reciever,Mocdm_consumption.remark,Mocdm_pending.qty).join(Mocdm_pending,(Mocdm_pending.po == Mocdm_erp.po) & (Mocdm_pending.color == Mocdm_erp.main_color) & (Mocdm_pending.style == Mocdm_erp.style) & (Mocdm_pending.org_buyer == Mocdm_erp.pending_buyer),isouter = True).join(Mocdm_consumption,(Mocdm_consumption.erp_id == Mocdm_erp.id),isouter = True).filter(Mocdm_pending.factory == factory,Mocdm_pending.gp_name == gp_name,Mocdm_pending.ext_dely == new_date_string,Mocdm_pending.style == style,Mocdm_pending.org_buyer == org_buyer).all()       
     wb = Workbook()
     ws = wb.active
     ws.merge_cells('J1:M1')
@@ -806,7 +806,7 @@ def download_consumptionreportreport():
     ws['J2'] = ''
     ws['J1'].alignment = Alignment(horizontal='center', vertical='center')
     ws.append(['Factory','Group Name','Qty','Dely Date','Style','Buyer'])
-    ws.append([factory,group_name,qty_no,dely_date,style,buyer])
+    ws.append([factory,group_name,qty_no,ext_dely,style,buyer])
     ws.append(['CATEGORY','MATERIAL','COLOUR','QTY','CONSUME','TOTAL QTY','ISSUED QTY','BALANCE','DATE','ISSUED BY (Leader)','Factory line','RECEIVER','REMARK','SIGN'])
     for item in all_data:
         ws.append([item.category,item.material,item.color,item.qty,item.consume_point,item.consume,item.issued_qty,item.balance,item.date,item.issued_by_leader,item.factory_line,item.reciever,item.remark])
@@ -1172,12 +1172,12 @@ def consumption_list_report(page_num):
             style = request.args.get('style')
             org_buyer = request.args.get('org_buyer')
             all_data = db.session.query(Mocdm_erp.id.label("erpid"),Mocdm_consumption.id,Mocdm_erp.category,Mocdm_erp.material,Mocdm_erp.color,Mocdm_erp.consume_point,Mocdm_erp.consume,Mocdm_consumption.issued_qty,Mocdm_consumption.balance,Mocdm_consumption.date,Mocdm_consumption.issued_by_leader,Mocdm_consumption.factory_line,Mocdm_consumption.reciever,Mocdm_consumption.remark,Mocdm_pending.qty).join(Mocdm_pending,(Mocdm_pending.po == Mocdm_erp.po) & (Mocdm_pending.color == Mocdm_erp.main_color) & (Mocdm_pending.style == Mocdm_erp.style) & (Mocdm_pending.org_buyer == Mocdm_erp.pending_buyer),isouter = True).join(Mocdm_consumption,(Mocdm_consumption.erp_id == Mocdm_erp.id),isouter = True).filter(Mocdm_pending.factory == factory,Mocdm_pending.gp_name == gp_name,Mocdm_pending.des == des,Mocdm_pending.ext_dely == ext_dely,Mocdm_pending.style == style,Mocdm_pending.org_buyer == org_buyer).paginate(per_page=100, page=page_num, error_out=True)
-            return render_template('consumptionlistreport.html',factory=factory, gp_name=gp_name, qty=qty, des=des, ext_dely=new_date_string, style=style, org_buyer=org_buyer, all_data = all_data)
+            return render_template('consumptionlistreport.html',factory=factory, gp_name=gp_name, qty=qty, des=des, ext_dely=new_date_string,ext_delys=ext_dely, style=style, org_buyer=org_buyer, all_data = all_data)
     except SQLAlchemyError as e:
         current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         logging.basicConfig(filename= f'error_log.log', level=logging.DEBUG)
         logging.error(str(e))
-    return render_template('consumptionlistreport.html',factory=factory, gp_name=gp_name, qty=qty,des=des, ext_dely=new_date_string, style=style, org_buyer=org_buyer, all_data = all_data)
+    return render_template('consumptionlistreport.html',factory=factory, gp_name=gp_name, qty=qty,des=des,ext_delys=ext_dely, ext_dely=new_date_string, style=style, org_buyer=org_buyer, all_data = all_data)
 
 @auth.route('/download/consumption_list_report', methods=['GET', 'POST'])
 def download_consumptionlistreportreport():
@@ -1189,7 +1189,7 @@ def download_consumptionlistreportreport():
         new_date_string = date_object.strftime("%Y-%m-%d")
         style = request.args.get('style')
         org_buyer = request.args.get('org_buyer')
-        all_data = db.session.query(Mocdm_erp.id.label("erpid"),Mocdm_consumption.id,Mocdm_erp.category,Mocdm_erp.material,Mocdm_erp.color,Mocdm_erp.consume_point,Mocdm_erp.consume,Mocdm_erp.order_qty,Mocdm_pending.qty,Mocdm_consumption.issued_qty,Mocdm_consumption.balance,Mocdm_consumption.date,Mocdm_consumption.issued_by_leader,Mocdm_consumption.factory_line,Mocdm_consumption.reciever,Mocdm_consumption.remark).join(Mocdm_pending,(Mocdm_pending.po == Mocdm_erp.po) & (Mocdm_pending.color == Mocdm_erp.main_color) & (Mocdm_pending.style == Mocdm_erp.style) & (Mocdm_pending.org_buyer == Mocdm_erp.pending_buyer),isouter = True).join(Mocdm_consumption,(Mocdm_consumption.erp_id == Mocdm_erp.id),isouter = True).filter(Mocdm_pending.factory == factory,Mocdm_pending.gp_name == gp_name,Mocdm_pending.qty == qty,Mocdm_pending.ext_dely == new_date_string,Mocdm_pending.style == style,Mocdm_pending.org_buyer == org_buyer).all()       
+        all_data = db.session.query(Mocdm_erp.id.label("erpid"),Mocdm_consumption.id,Mocdm_erp.category,Mocdm_erp.material,Mocdm_erp.color,Mocdm_erp.consume_point,Mocdm_erp.consume,Mocdm_erp.order_qty,Mocdm_pending.qty,Mocdm_consumption.issued_qty,Mocdm_consumption.balance,Mocdm_consumption.date,Mocdm_consumption.issued_by_leader,Mocdm_consumption.factory_line,Mocdm_consumption.reciever,Mocdm_consumption.remark).join(Mocdm_pending,(Mocdm_pending.po == Mocdm_erp.po) & (Mocdm_pending.color == Mocdm_erp.main_color) & (Mocdm_pending.style == Mocdm_erp.style) & (Mocdm_pending.org_buyer == Mocdm_erp.pending_buyer),isouter = True).join(Mocdm_consumption,(Mocdm_consumption.erp_id == Mocdm_erp.id),isouter = True).filter(Mocdm_pending.factory == factory,Mocdm_pending.gp_name == gp_name,Mocdm_pending.ext_dely == new_date_string,Mocdm_pending.style == style,Mocdm_pending.org_buyer == org_buyer).all()       
         wb = Workbook()
         ws = wb.active
         ws.merge_cells('J1:M1')

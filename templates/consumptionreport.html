@@ -27,8 +27,7 @@
             <br>
             <div class="container">
               <div class="row">
-<p><a href="/download/consumptionreport?factory={{factory}}&style={{style}}&dely_date={{dely_date}}&group_name={{group_name}}&qty_no={{qty_no}}&buyer={{buyer}}">Download</a></p>
-
+<p><a href="/download/consumptionreport?factory={{factory}}&gp_name={{gp_name}}&qty={{qty}}&ext_dely={{ext_dely}}&style={{style}}&org_buyer={{org_buyer}}">Download</a></p>
 
               </div>
             </div>
@@ -36,22 +35,22 @@
             <table class="table">
               <thead>
                 <tr class="table-secondary">
-                  <th>Factory</th>
-                  <th>Group Name</th>
-                  <th>Qty</th>
-                  <th>Dely Date</th>
-                  <th>Style</th>
-                  <th>Buyer</th>
+                  <th>FACTORY</th>
+                  <th>GROUP</th>
+                  <th>QTY</th>
+                  <th>DELY</th>
+                  <th>STYLE</th>
+                  <th>BUYER</th>
                 </tr>
               </thead>
               <tbody>     
                 <tr>
                   <td>{{factory}}</td>
-                  <td>{{group_name}}</td>
-                  <td>{{qty_no}}</td>
-                  <td>{{dely_date}}</td>
+                  <td>{{gp_name}}</td>
+                  <td>{{qty}}</td>
+                  <td>{{ext_dely}}</td>
                   <td>{{style}}</td>
-                  <td>{{buyer}}</td>
+                  <td>{{org_buyer}}</td>
                 </tr>
                 
               </tbody>
@@ -168,7 +167,7 @@
                      
                   {% for page in all_data.iter_pages(left_edge=3, right_edge=3) %}
                   {% if page %}
-                   <li class="page-item"><a class="page-link" href="{{ url_for('auth.consumptionreport', page_num=page) }}">{{ page }}</a></li>
+                   <li class="page-item"><a class="page-link" href="{{ url_for('auth.consumptionreport', page_num=page,factory=factory, des=des,style=style, group_name=group_name, qty_no=qty_no, dely_date=dely_dates, buyer=buyer) }}">{{ page }}</a></li>
                   {% else %}
                    <li class="page-item disabled" id="example_ellipsis"><a href="#" class="page-link">…</a></li> 
                   {% endif %}
