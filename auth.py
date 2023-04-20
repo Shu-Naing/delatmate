@@ -1036,12 +1036,12 @@ def ddCon(page_num):
         search7 = "%{}%".format(con_order_date)
         search8 = "%{}%".format(con_factory)
         search9 = "%{}%".format(con_des)
-        all_data = db.session.query(func.sum(Mocdm_pending.qty).label('qty'),Mocdm_pending.factory, Mocdm_pending.gp_name,Mocdm_pending.ext_dely, Mocdm_pending.style, Mocdm_pending.org_buyer).filter((Mocdm_pending.po.like(search1)),(Mocdm_pending.style.like(search2)),(Mocdm_pending.org_buyer.like(search3)),(Mocdm_pending.color.like(search4)),(Mocdm_pending.gp_name.like(search5)),(Mocdm_pending.ext_dely.like(search6)),(Mocdm_pending.order_date.like(search7)),(Mocdm_pending.factory.like(search8)),(Mocdm_pending.des.like(search9))).group_by(Mocdm_pending.factory, Mocdm_pending.gp_name,Mocdm_pending.des,Mocdm_pending.ext_dely, Mocdm_pending.style, Mocdm_pending.org_buyer).paginate(per_page=100, page=page_num, error_out=True)
+        all_data = db.session.query(func.sum(Mocdm_pending.qty).label('qty'),Mocdm_pending.factory,Mocdm_pending.des, Mocdm_pending.gp_name,Mocdm_pending.ext_dely, Mocdm_pending.style, Mocdm_pending.org_buyer).filter((Mocdm_pending.po.like(search1)),(Mocdm_pending.style.like(search2)),(Mocdm_pending.org_buyer.like(search3)),(Mocdm_pending.color.like(search4)),(Mocdm_pending.gp_name.like(search5)),(Mocdm_pending.ext_dely.like(search6)),(Mocdm_pending.order_date.like(search7)),(Mocdm_pending.factory.like(search8)),(Mocdm_pending.des.like(search9))).group_by(Mocdm_pending.factory, Mocdm_pending.gp_name,Mocdm_pending.des,Mocdm_pending.ext_dely, Mocdm_pending.style, Mocdm_pending.org_buyer).paginate(per_page=100, page=page_num, error_out=True)
         return render_template("consumpList.html", con_po=con_po,con_style=con_style,con_org_buyer=con_org_buyer,con_color=con_color,con_order_date=con_order_date,con_des=con_des,con_gp_name=con_gp_name,con_ext_dely=con_ext_dely,con_factory=con_factory,all_data=all_data, dd_active="is_active('/dd')")
     else:
         logging.error('reach not post')
         logging.error(request.method)
-        all_data = db.session.query(func.sum(Mocdm_pending.qty).label('qty'),Mocdm_pending.factory, Mocdm_pending.gp_name,Mocdm_pending.ext_dely, Mocdm_pending.style, Mocdm_pending.org_buyer,Mocdm_pending.des).group_by(Mocdm_pending.factory, Mocdm_pending.gp_name,Mocdm_pending.ext_dely, Mocdm_pending.style, Mocdm_pending.org_buyer,Mocdm_pending.des).paginate(per_page=100, page=page_num, error_out=True)
+        all_data = db.session.query(func.sum(Mocdm_pending.qty).label('qty'),Mocdm_pending.factory,Mocdm_pending.gp_name,Mocdm_pending.ext_dely, Mocdm_pending.style, Mocdm_pending.org_buyer,Mocdm_pending.des).group_by(Mocdm_pending.factory, Mocdm_pending.gp_name,Mocdm_pending.ext_dely, Mocdm_pending.style, Mocdm_pending.org_buyer,Mocdm_pending.des).paginate(per_page=100, page=page_num, error_out=True)
         return render_template('consumpList.html', all_data=all_data, dd_active="is_active('/dd')")
 
 
